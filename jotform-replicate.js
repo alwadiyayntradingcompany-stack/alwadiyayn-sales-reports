@@ -373,18 +373,56 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // دالة إرسال البيانات إلى Google Apps Script
-    function sendToGoogleAppsScript(data, submitButton) {
-        // رابط Google Apps Script لشركة الوادي
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
-        
-        // تحقق من وجود الرابط
-        if (GOOGLE_APPS_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
-            showErrorMessage('يرجى تحديث رابط Google Apps Script في الكود');
-            submitButton.textContent = 'خطأ في الإعداد';
-            submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-            return;
+   // دالة إرسال البيانات إلى Google Apps Script
+function sendToGoogleAppsScript(data, submitButton) {
+    // رابط Google Apps Script لشركة الوادي
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzp4pTpQRs7Is-QVQhO4vnqzkXQOJj0sOHCsQFCmiS3-iTsl5h78j6krKc25xqiW_ZaBA/exec';
+    
+    // تحقق من وجود الرابط
+    if (!GOOGLE_APPS_SCRIPT_URL || GOOGLE_APPS_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
+        showErrorMessage('يرجى تحديث رابط Google Apps Script في الكود');
+        submitButton.textContent = 'خطأ في الإعداد';
+        submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+        return;
+    }
+    
+    fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            submitButton.textContent = 'تم الإرسال بنجاح!';
+            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            
+            // عرض رسالة نجاح
+            showSuccessMessage(`تم حفظ البيانات في الصف رقم ${result.rowNumber} وتم رفع ${result.imageCount} صورة`);
+            
+            setTimeout(() => {
+                window.location.href = 'success.html';
+            }, 2000);
+        } else {
+            throw new Error(result.message || 'حدث خطأ في الإرسال');
         }
+    })
+    .catch(error => {
+        console.error('خطأ في الإرسال:', error);
+        submitButton.textContent = 'فشل الإرسال - حاول مرة أخرى';
+        submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+        
+        showErrorMessage('حدث خطأ في إرسال البيانات: ' + error.message);
+        
+        setTimeout(() => {
+            submitButton.textContent = 'إرسال / Submit / পাঠান';
+            submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+        }, 3000);
+    });
+}
+
         
         fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
@@ -518,3 +556,4 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
