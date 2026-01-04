@@ -19,37 +19,73 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // معالجة رفع الملفات مع شريط تقدم رئيسي وفرعي
-    const fileInput = document.querySelector('.file-input');
-    const fileStatus = document.querySelector('.file-status');
-    const uploadArea = document.querySelector('.file-upload-area');
-    const fileList = document.querySelector('.file-list');
-    const mainProgress = document.querySelector('.main-upload-progress');
-    const mainProgressBarFill = document.querySelector('.main-progress-bar-fill');
-    const mainProgressText = document.querySelector('.main-progress-text');
-    
-    // إضافة event listener للنقر على منطقة الرفع
-    if (uploadArea && fileInput) {
-        uploadArea.addEventListener('click', function(e) {
-            if (e.target === uploadArea || e.target.classList.contains('upload-icon') || 
-                e.target.classList.contains('upload-title') || e.target.classList.contains('upload-subtitle')) {
-                fileInput.click();
+  // معالجة رفع الملفات - حل بسيط يشتغل
+const fileInput = document.querySelector('.file-input');
+const fileStatus = document.querySelector('.file-status');
+const uploadArea = document.querySelector('.file-upload-area');
+
+// النقر على منطقة الرفع
+if (uploadArea && fileInput) {
+    uploadArea.addEventListener('click', function() {
+        fileInput.click();
+    });
+}
+
+// عند اختيار الملفات
+if (fileInput && fileStatus) {
+    fileInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        console.log('Files selected:', files.length);
+        
+        if (files.length > 0) {
+            // إظهار أسماء الملفات
+            let fileNames = [];
+            for (let i = 0; i < files.length; i++) {
+                fileNames.push(files[i].name);
             }
-        });
-    }
-    
-    if (fileInput && fileStatus) {
-        fileInput.addEventListener('change', function(e) {
-            const files = e.target.files;
-            console.log('Files selected:', files.length);
             
-            if (files.length > 0) {
-                // لا تفريغ القائمة، أضف الملفات الجديدة فقط
-                if (!fileList.classList.contains('active')) {
-                    fileList.innerHTML = '';
-                    fileList.classList.add('active');
-                }
-                
+            // تحديث حالة الملفات
+            fileStatus.textContent = `تم اختيار ${files.length} ملف: ${fileNames.slice(0, 2).join(', ')}${files.length > 2 ? '...' : ''}`;
+            fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
+            fileStatus.style.color = 'white';
+            fileStatus.style.padding = '10px';
+            fileStatus.style.borderRadius = '8px';
+            fileStatus.style.marginTop = '10px';
+        } else {
+            fileStatus.textContent = 'لم يتمّ اختيار أيّ ملفّ';
+            fileStatus.style.background = 'rgba(255, 255, 255, 0.2)';
+        }
+    });
+}
+
+// Drag and Drop
+if (uploadArea) {
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.background = 'rgba(255, 255, 255, 0.3)';
+        this.style.borderColor = 'rgba(255, 255, 255, 0.7)';
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.background = 'rgba(255, 255, 255, 0.1)';
+        this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.background = 'rgba(255, 255, 255, 0.1)';
+        this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        
+        const files = e.dataTransfer.files;
+        if (fileInput) {
+            fileInput.files = files;
+            const event = new Event('change', { bubbles: true });
+            fileInput.dispatchEvent(event);
+        }
+    });
+}
+           
                 // إظهار الشريط الرئيسي
                 if (mainProgress && mainProgressBarFill) {
                     mainProgress.classList.add('active');
@@ -577,3 +613,4 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
