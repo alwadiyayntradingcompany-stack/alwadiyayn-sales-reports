@@ -39,7 +39,6 @@ body::before {
     padding: 20px;
 }
 
-/* قسم الخلفية */
 .background-section {
     position: fixed;
     top: 0;
@@ -66,7 +65,6 @@ body::before {
     50% { transform: translateY(0px) scale(1); }
 }
 
-/* قسم النموذج */
 .form-section {
     width: 100%;
     max-width: 500px;
@@ -84,7 +82,6 @@ body::before {
     margin: 0 auto;
 }
 
-/* الشعار */
 .logo-container {
     margin-bottom: 40px;
     text-align: center;
@@ -108,7 +105,6 @@ body::before {
     to { text-shadow: 0 0 20px #fff, 0 0 30px #4fc3f7, 0 0 40px #4fc3f7; }
 }
 
-/* النموذج */
 .jotform-form {
     width: 100%;
     max-width: 400px;
@@ -117,7 +113,6 @@ body::before {
     gap: 20px;
 }
 
-/* حقول النموذج */
 .form-field {
     border-radius: 15px;
     padding: 20px;
@@ -134,12 +129,10 @@ body::before {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* حقل التاريخ الهجري فقط */
 .form-field.orange-field {
     z-index: 100;
 }
 
-/* ألوان الحقول */
 .pink-field {
     background: linear-gradient(135deg, #ff6b9d, #c44569);
 }
@@ -168,7 +161,22 @@ body::before {
     background: linear-gradient(135deg, #fdcb6e, #f39c12);
 }
 
-/* التسميات */
+.teal-field {
+    background: linear-gradient(135deg, #00b894, #00a085);
+}
+
+.indigo-field {
+    background: linear-gradient(135deg, #6c5ce7, #5f3dc4);
+}
+
+.brown-field {
+    background: linear-gradient(135deg, #8b6914, #a0522d);
+}
+
+.gray-field {
+    background: linear-gradient(135deg, #636e72, #2d3436);
+}
+
 .field-label {
     display: block;
     color: white;
@@ -182,7 +190,6 @@ body::before {
     text-align: right;
 }
 
-/* حقول الإدخال */
 .field-input {
     width: 100%;
     padding: 15px;
@@ -206,7 +213,6 @@ body::before {
     font-style: italic;
 }
 
-/* أيقونة التقويم */
 .calendar-icon {
     position: absolute;
     left: 20px;
@@ -217,7 +223,6 @@ body::before {
     pointer-events: none;
 }
 
-/* زر الإرسال */
 .submit-button {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -244,74 +249,72 @@ body::before {
     transform: translateY(-1px);
 }
 
-/* تصميم متجاوب */
-@media (max-width: 768px) {
-    .form-container {
-        flex-direction: column;
-    }
-    
-    .background-section {
-        flex: 0 0 200px;
-    }
-    
-    .form-section {
-        padding: 30px 20px;
-    }
-    
-    .wtc-logo {
-        font-size: 36px;
-        letter-spacing: 4px;
-    }
-    
-    .jotform-form {
-        max-width: 100%;
-    }
-    
-    .form-field {
-        padding: 15px;
-    }
-    
-    .field-input {
-        padding: 12px;
-        font-size: 14px;
-    }
-    
-    .submit-button {
-        padding: 15px 30px;
-        font-size: 16px;
-    }
+.file-upload-area {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-@media (max-width: 480px) {
-    .background-section {
-        flex: 0 0 150px;
-    }
-    
-    .form-section {
-        padding: 20px 15px;
-    }
-    
-    .wtc-logo {
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
-    
-    .form-field {
-        padding: 12px;
-    }
-    
-    .field-label {
-        font-size: 12px;
-        margin-bottom: 8px;
-    }
-    
-    .field-input {
-        padding: 10px;
-        font-size: 14px;
-    }
+.file-upload-area:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* التقويم الهجري - نسخة من النموذج القديم */
+.upload-text {
+    color: white;
+}
+
+.upload-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.upload-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.upload-subtitle {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-status {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin: 15px 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.file-info {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+}
+
 .hijri-date-picker {
     position: relative;
     display: inline-block;
@@ -327,16 +330,6 @@ body::before {
     font-size: 16px;
     background: rgba(255, 255, 255, 0.9);
     cursor: pointer;
-}
-
-.calendar-icon {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    pointer-events: none;
-    color: #667eea;
 }
 
 .hijri-calendar-popup {
@@ -463,304 +456,6 @@ body::before {
     box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
 }
 
-/* ألوان الحقول الإضافية */
-.teal-field {
-    background: linear-gradient(135deg, #00b894, #00a085);
-}
-
-.indigo-field {
-    background: linear-gradient(135deg, #6c5ce7, #5f3dc4);
-}
-
-.brown-field {
-    background: linear-gradient(135deg, #8b6914, #a0522d);
-}
-
-.gray-field {
-    background: linear-gradient(135deg, #636e72, #2d3436);
-}
-
-/* رفع الملفات */
-.file-upload-area {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    padding: 30px;
-    text-align: center;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.file-upload-area:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.upload-text {
-    color: white;
-}
-
-.upload-icon {
-    font-size: 48px;
-    margin-bottom: 15px;
-    opacity: 0.8;
-}
-
-.upload-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.upload-subtitle {
-    font-size: 14px;
-    opacity: 0.8;
-    margin-bottom: 15px;
-}
-
-.file-input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-}
-
-.file-status {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-size: 14px;
-    margin: 15px 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.file-info {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 12px;
-    line-height: 1.5;
-    margin: 0;
-}
-
-/* شريط التقدم */
-.upload-progress {
-    display: none;
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    margin: 15px 0;
-    overflow: hidden;
-}
-
-.upload-progress.active {
-    display: block;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4CAF50, #45a049);
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-bar-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.3),
-        transparent
-    );
-    animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-.progress-text {
-    color: white;
-    font-size: 12px;
-    margin-top: 5px;
-    text-align: center;
-}
-
-/* شريط التقدم الرئيسي */
-.main-upload-progress {
-    display: none;
-    width: 100%;
-    margin: 15px 0;
-}
-
-.main-upload-progress.active {
-    display: block;
-}
-
-.main-progress-bar {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 5px;
-    position: relative;
-}
-
-.main-progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4CAF50, #45a049);
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.3s ease;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.main-progress-text {
-    color: white;
-    font-size: 12px;
-    text-align: left;
-    font-weight: 500;
-}
-
-/* قائمة الملفات المرفوعة */
-.file-list {
-    display: none;
-    margin-top: 15px;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.file-list.active {
-    display: block;
-}
-
-.file-item {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.file-item-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.file-item-name {
-    color: white;
-    font-size: 14px;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-right: 10px;
-}
-
-.file-item-size {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 12px;
-}
-
-.file-item-remove {
-    background: rgba(255, 68, 68, 0.2);
-    border: 1px solid rgba(255, 68, 68, 0.3);
-    color: #ff4444;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.file-item-remove:hover {
-    background: rgba(255, 68, 68, 0.3);
-    transform: scale(1.05);
-}
-
-/* شريط التقدم لكل ملف */
-.file-progress {
-    display: block !important;
-    width: 100%;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-top: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.file-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #4CAF50, #45a049, #4CAF50);
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-}
-
-.file-progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.5),
-        transparent
-    );
-    animation: shimmer 1.5s infinite;
-}
-
-.file-progress-text {
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    margin-top: 5px;
-    text-align: left;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-/* عنوان النموذج */
 .form-header {
     text-align: center;
     margin-bottom: 40px;
@@ -777,7 +472,7 @@ body::before {
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
-/* علم المملكة العربية السعودية */
+
 .saudi-flag {
     position: fixed;
     top: 30px;
@@ -855,16 +550,81 @@ body::before {
     background: linear-gradient(180deg, #d4d4d4, #909090);
 }
 
+.flag-content video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
 @media (max-width: 768px) {
+    .form-container {
+        flex-direction: column;
+    }
+    
+    .background-section {
+        flex: 0 0 200px;
+    }
+    
+    .form-section {
+        padding: 30px 20px;
+    }
+    
+    .wtc-logo {
+        font-size: 36px;
+        letter-spacing: 4px;
+    }
+    
+    .jotform-form {
+        max-width: 100%;
+    }
+    
+    .form-field {
+        padding: 15px;
+    }
+    
+    .field-input {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .submit-button {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+    
     .saudi-flag {
         top: 20px;
         right: 20px;
         transform: scale(0.8);
     }
 }
-.flag-content video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 6px;
+
+@media (max-width: 480px) {
+    .background-section {
+        flex: 0 0 150px;
+    }
+    
+    .form-section {
+        padding: 20px 15px;
+    }
+    
+    .wtc-logo {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+    
+    .form-field {
+        padding: 12px;
+    }
+    
+    .field-label {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .field-input {
+        padding: 10px;
+        font-size: 14px;
+    }
 }
