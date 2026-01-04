@@ -203,21 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         }
         
-        function simulateUpload(progressBar, onComplete) {
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 20;
-                if (progress > 100) progress = 100;
-                
-                progressBar.style.width = progress + '%';
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    if (onComplete) onComplete();
-                }
-            }, 150);
-        }
-        
         function simulateUpload(progressBar, progressText, onComplete) {
             let progress = 0;
             const interval = setInterval(() => {
@@ -543,7 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             messageDiv.remove();
         }, 5000);
-    });
+    }
     
     // إضافة تأثيرات الماوس
     formFields.forEach((field, index) => {
