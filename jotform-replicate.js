@@ -19,270 +19,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-  // معالجة رفع الملفات - حل بسيط يشتغل
-const fileInput = document.querySelector('.file-input');
-const fileStatus = document.querySelector('.file-status');
-const uploadArea = document.querySelector('.file-upload-area');
+    // معالجة رفع الملفات - حل بسيط يشتغل
+    const fileInput = document.querySelector('.file-input');
+    const fileStatus = document.querySelector('.file-status');
+    const uploadArea = document.querySelector('.file-upload-area');
 
-// النقر على منطقة الرفع
-if (uploadArea && fileInput) {
-    uploadArea.addEventListener('click', function() {
-        fileInput.click();
-    });
-}
-
-// عند اختيار الملفات
-if (fileInput && fileStatus) {
-    fileInput.addEventListener('change', function(e) {
-        const files = e.target.files;
-        console.log('Files selected:', files.length);
-        
-        if (files.length > 0) {
-            // إظهار أسماء الملفات
-            let fileNames = [];
-            for (let i = 0; i < files.length; i++) {
-                fileNames.push(files[i].name);
-            }
-            
-            // تحديث حالة الملفات
-            fileStatus.textContent = `تم اختيار ${files.length} ملف: ${fileNames.slice(0, 2).join(', ')}${files.length > 2 ? '...' : ''}`;
-            fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
-            fileStatus.style.color = 'white';
-            fileStatus.style.padding = '10px';
-            fileStatus.style.borderRadius = '8px';
-            fileStatus.style.marginTop = '10px';
-        } else {
-            fileStatus.textContent = 'لم يتمّ اختيار أيّ ملفّ';
-            fileStatus.style.background = 'rgba(255, 255, 255, 0.2)';
-        }
-    });
-}
-
-// Drag and Drop
-if (uploadArea) {
-    uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        this.style.background = 'rgba(255, 255, 255, 0.3)';
-        this.style.borderColor = 'rgba(255, 255, 255, 0.7)';
-    });
-    
-    uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        this.style.background = 'rgba(255, 255, 255, 0.1)';
-        this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-    });
-    
-    uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        this.style.background = 'rgba(255, 255, 255, 0.1)';
-        this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-        
-        const files = e.dataTransfer.files;
-        if (fileInput) {
-            fileInput.files = files;
-            const event = new Event('change', { bubbles: true });
-            fileInput.dispatchEvent(event);
-        }
-    });
-}
-           
-                // إظهار الشريط الرئيسي
-                if (mainProgress && mainProgressBarFill) {
-                    mainProgress.classList.add('active');
-                    mainProgressText.textContent = `Uploading image 1 of ${files.length}`;
-                    mainProgressBarFill.style.width = '0%';
-                }
-                
-                let completedCount = 0;
-                const existingFiles = fileList.querySelectorAll('.file-item').length;
-                
-                // معالجة كل ملف على حدة
-                const totalFiles = files.length;
-                Array.from(files).forEach((file, index) => {
-                    console.log(`Processing file ${index + 1}: ${file.name}`);
-                    
-                    // إنشاء الملف فوراً
-                    createFileItem(file, existingFiles + index + 1, totalFiles, () => {
-                        completedCount++;
-                        console.log(`File ${completedCount} completed`);
-                        
-                        // تحديث الشريط الرئيسي
-                        if (mainProgress && mainProgressBarFill) {
-                            const progress = (completedCount / totalFiles) * 100;
-                            mainProgressBarFill.style.width = progress + '%';
-                            
-                            if (completedCount < totalFiles) {
-                                mainProgressText.textContent = `Uploading image ${completedCount + 1} of ${totalFiles}`;
-                            } else {
-                                mainProgressText.textContent = `Completed ${totalFiles} images`;
-                                fileStatus.textContent = `تم رفع ${totalFiles} ملف بنجاح`;
-                                fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
-                                
-                                setTimeout(() => {
-                                    mainProgress.classList.remove('active');
-                                }, 1000);
-                            }
-                        }
-                    });
-                });
-            }
+    // النقر على منطقة الرفع
+    if (uploadArea && fileInput) {
+        uploadArea.addEventListener('click', function() {
+            fileInput.click();
         });
-        
-        function createFileItem(file, currentNumber, totalNumber, onComplete) {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            fileItem.style.cssText = `
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 8px;
-                padding: 10px;
-                margin: 5px 0;
-                display: flex;
-                flex-direction: column;
-            `;
+    }
+
+    // عند اختيار الملفات
+    if (fileInput && fileStatus) {
+        fileInput.addEventListener('change', function(e) {
+            const files = e.target.files;
+            console.log('Files selected:', files.length);
             
-            // رأس الملف
-            const fileHeader = document.createElement('div');
-            fileHeader.className = 'file-item-header';
-            fileHeader.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 8px;
-            `;
-            
-            const fileName = document.createElement('div');
-            fileName.className = 'file-item-name';
-            fileName.textContent = file.name;
-            fileName.style.cssText = `
-                font-weight: 600;
-                color: white;
-                flex: 1;
-                margin-right: 10px;
-            `;
-            
-            const fileSize = document.createElement('div');
-            fileSize.className = 'file-item-size';
-            fileSize.textContent = formatFileSize(file.size);
-            fileSize.style.cssText = `
-                font-size: 12px;
-                color: rgba(255, 255, 255, 0.7);
-                margin-right: 10px;
-            `;
-            
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'file-item-remove';
-            removeBtn.textContent = '×';
-            removeBtn.style.cssText = `
-                background: rgba(255, 68, 68, 0.8);
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 20px;
-                height: 20px;
-                cursor: pointer;
-                font-size: 14px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            `;
-            removeBtn.onclick = () => {
-                fileItem.remove();
-                updateFileStatus();
-            };
-            
-            fileHeader.appendChild(fileName);
-            fileHeader.appendChild(fileSize);
-            fileHeader.appendChild(removeBtn);
-            
-            // شريط التقدم للملف
-            const fileProgress = document.createElement('div');
-            fileProgress.className = 'file-progress';
-            fileProgress.style.cssText = `
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 10px;
-                height: 6px;
-                overflow: hidden;
-                margin-bottom: 5px;
-            `;
-            
-            const progressBar = document.createElement('div');
-            progressBar.className = 'file-progress-bar';
-            progressBar.style.cssText = `
-                background: linear-gradient(135deg, #4CAF50, #45a049);
-                height: 100%;
-                width: 0%;
-                transition: width 0.3s ease;
-                border-radius: 10px;
-            `;
-            
-            const progressText = document.createElement('div');
-            progressText.className = 'file-progress-text';
-            progressText.textContent = 'جاري التحميل... 0%';
-            progressText.style.cssText = `
-                font-size: 12px;
-                color: rgba(255, 255, 255, 0.8);
-                text-align: center;
-            `;
-            
-            fileProgress.appendChild(progressBar);
-            
-            fileItem.appendChild(fileHeader);
-            fileItem.appendChild(fileProgress);
-            fileItem.appendChild(progressText);
-            
-            fileList.appendChild(fileItem);
-            
-            // بدء التحميل فوراً
-            setTimeout(() => {
-                simulateUpload(progressBar, progressText, onComplete);
-            }, 100);
-        }
-        
-        function simulateUpload(progressBar, progressText, onComplete) {
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 15 + 5; // زيادة السرعة
-                if (progress > 100) progress = 100;
-                
-                progressBar.style.width = progress + '%';
-                progressText.textContent = `جاري التحميل... ${Math.round(progress)}%`;
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    progressText.textContent = 'تم التحميل بنجاح! ✓';
-                    progressText.style.color = '#4CAF50';
-                    if (onComplete) onComplete();
+            if (files.length > 0) {
+                // إظهار أسماء الملفات
+                let fileNames = [];
+                for (let i = 0; i < files.length; i++) {
+                    fileNames.push(files[i].name);
                 }
-            }, 100); // سرعة أعلى
-        }
-        
-        function updateFileStatus() {
-            const fileItems = document.querySelectorAll('.file-item');
-            const completedItems = document.querySelectorAll('.file-progress-text[style*="color: rgb(76, 175, 80)"]');
-            
-            if (fileItems.length === 0) {
+                
+                // تحديث حالة الملفات
+                fileStatus.textContent = `تم اختيار ${files.length} ملف: ${fileNames.slice(0, 2).join(', ')}${files.length > 2 ? '...' : ''}`;
+                fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
+                fileStatus.style.color = 'white';
+                fileStatus.style.padding = '10px';
+                fileStatus.style.borderRadius = '8px';
+                fileStatus.style.marginTop = '10px';
+            } else {
                 fileStatus.textContent = 'لم يتمّ اختيار أيّ ملفّ';
                 fileStatus.style.background = 'rgba(255, 255, 255, 0.2)';
-            } else if (completedItems.length === fileItems.length) {
-                fileStatus.textContent = `تم رفع ${fileItems.length} ملف بنجاح`;
-                fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
-            } else {
-                fileStatus.textContent = `جاري رفع ${fileItems.length} ملف...`;
-                fileStatus.style.background = 'rgba(255, 193, 7, 0.3)';
             }
-        }
-        
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
+        });
     }
-    
-    // Drag and drop
+
+    // Drag and Drop
     if (uploadArea) {
         uploadArea.addEventListener('dragover', function(e) {
             e.preventDefault();
@@ -374,11 +150,7 @@ if (uploadArea) {
         });
         
         // التحقق من رفع الملفات
-        const fileInput = document.querySelector('.file-input');
-        const fileList = document.querySelector('.file-list');
-        const fileItems = fileList ? fileList.querySelectorAll('.file-item') : [];
-        
-        if (!fileInput || fileInput.files.length === 0 || fileItems.length === 0) {
+        if (!fileInput || fileInput.files.length === 0) {
             hasError = true;
             
             const errorDiv = document.createElement('div');
@@ -394,7 +166,6 @@ if (uploadArea) {
                 border: 1px solid rgba(255, 68, 68, 0.3);
             `;
             
-            const uploadArea = document.querySelector('.file-upload-area');
             if (uploadArea) {
                 uploadArea.appendChild(errorDiv);
             }
@@ -450,7 +221,7 @@ if (uploadArea) {
                     resolve({
                         name: file.name,
                         type: file.type,
-                        content: e.target.result.split(',')[1], // إزالة data:image/jpeg;base64,
+                        content: e.target.result.split(',')[1],
                         extension: file.name.split('.').pop()
                     });
                 };
@@ -470,16 +241,7 @@ if (uploadArea) {
     
     // دالة إرسال البيانات إلى Google Apps Script
     function sendToGoogleAppsScript(data, submitButton) {
-        // رابط Google Apps Script لشركة الوادي
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzp4pTpQRs7Is-QVQhO4vnqzkXQOJj0sOHCsQFCmiS3-iTsl5h78j6krKc25xqiW_ZaBA/exec';
-        
-        // تحقق من وجود الرابط
-        if (!GOOGLE_APPS_SCRIPT_URL || GOOGLE_APPS_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
-            showErrorMessage('يرجى تحديث رابط Google Apps Script في الكود');
-            submitButton.textContent = 'خطأ في الإعداد';
-            submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-            return;
-        }
         
         fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
@@ -494,11 +256,10 @@ if (uploadArea) {
                 submitButton.textContent = 'تم الإرسال بنجاح!';
                 submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
                 
-                // عرض رسالة نجاح
                 showSuccessMessage(`تم حفظ البيانات في الصف رقم ${result.rowNumber} وتم رفع ${result.imageCount} صورة`);
                 
                 setTimeout(() => {
-                    window.location.href = 'success.html';
+                    location.reload();
                 }, 2000);
             } else {
                 throw new Error(result.message || 'حدث خطأ في الإرسال');
@@ -508,8 +269,6 @@ if (uploadArea) {
             console.error('خطأ في الإرسال:', error);
             submitButton.textContent = 'فشل الإرسال - حاول مرة أخرى';
             submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-            
-            showErrorMessage('حدث خطأ في إرسال البيانات: ' + error.message);
             
             setTimeout(() => {
                 submitButton.textContent = 'إرسال / Submit / পাঠান';
@@ -541,77 +300,4 @@ if (uploadArea) {
             messageDiv.remove();
         }, 5000);
     }
-    
-    // دالة عرض رسالة الخطأ
-    function showErrorMessage(message) {
-        const messageDiv = document.createElement('div');
-        messageDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #ff4444, #cc0000);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(255, 68, 68, 0.3);
-            z-index: 10000;
-            font-weight: 600;
-            max-width: 300px;
-        `;
-        messageDiv.textContent = message;
-        document.body.appendChild(messageDiv);
-        
-        setTimeout(() => {
-            messageDiv.remove();
-        }, 5000);
-    }
-    
-    // إضافة تأثيرات الماوس
-    formFields.forEach((field, index) => {
-        field.style.animationDelay = `${index * 0.1}s`;
-        field.classList.add('fade-in');
-    });
-    
-    // إضافة حركة للأرض
-    const earthImage = document.querySelector('.earth-image');
-    if (earthImage) {
-        // إزالة جميع الحركات
-        earthImage.style.animation = 'none';
-        
-        earthImage.addEventListener('mouseenter', function() {
-            // بدون حركة
-        });
-        
-        earthImage.addEventListener('mouseleave', function() {
-            // بدون حركة
-        });
-    }
 });
-
-// إضافة أنيميشن fade-in
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes rotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-    
-    .fade-in {
-        animation: fade-in 0.6s ease-out forwards;
-        opacity: 0;
-    }
-`;
-document.head.appendChild(style);
-
-
