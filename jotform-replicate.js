@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // عرض شريط التقدم
                 if (mainProgress) {
                     mainProgress.style.display = 'block';
-                    mainProgressText.textContent = `تم اختيار ${files.length} ملف`;
+                    mainProgressText.textContent = `تم اختيار ${files.length} ملف - جاهز للرفع`;
                 }
                 
                 // عرض قائمة الملفات
