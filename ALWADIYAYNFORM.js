@@ -253,6 +253,9 @@ document.addEventListener('DOMContentLoaded', function() {
         Promise.all(filePromises).then(fileData => {
             formData.files = fileData;
             
+            // حفظ احتياطي قبل الإرسال
+            backupSubmissionData(formData);
+            
             // إرسال البيانات إلى Google Apps Script
             sendToGoogleAppsScript(formData, submitButton);
         });
@@ -274,6 +277,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // no-cors mode دايماً بيرجع success
             submitButton.textContent = 'تم الإرسال بنجاح!';
             submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            
+            // مسح بيانات النموذج فقط (النسخ الاحتياطية تبقى)
+            localStorage.removeItem('formData');
             
             setTimeout(() => {
                 window.open('success.html', '_self');
@@ -386,12 +392,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // تحميل البيانات المحفوظة
     loadSavedData();
     
-    // مسح البيانات المحفوظة بعد الإرسال الناجح
-    const originalSendFunction = sendToGoogleAppsScript;
-    window.sendToGoogleAppsScript = function(data, submitButton) {
-        originalSendFunction(data, submitButton);
-        localStorage.removeItem('formData');
-    };
+    // نظام الحفظ الاحتياطي المتعدد
+    function backupSubmissionData(data) {
+        const timestamp = new Date().toISOString();
+        const backupData = {
+            ...data,
+            timestamp: timestamp,
+            backupId: 'backup_' + Date.now()
+        };
+        
+        // حفظ في localStorage
+        let submissions = JSON.parse(localStorage.getItem('submissionBackups') || '[]');
+        submissions.push(backupData);
+        localStorage.setItem('submissionBackups', JSON.stringify(submissions));
+        
+        // حفظ في sessionStorage كنسخة إضافية
+        sessionStorage.setItem('lastSubmission', JSON.stringify(backupData));
+        
+        // حفظ في IndexedDB للأمان الإضافي
+        if ('indexedDB' in window) {
+            const request = indexedDB.open('SalesReportsDB', 1);
+            request.onupgradeneeded = function(e) {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains('submissions')) {
+                    db.createObjectStore('submissions', { keyPath: 'backupId' });
+                }
+            };
+            request.onsuccess = function(e) {
+                const db = e.target.result;
+                const transaction = db.transaction(['submissions'], 'readwrite');
+                const store = transaction.objectStore('submissions');
+                store.add(backupData);
+            };
+        }
+        
+        console.log('✅ Backup saved:', backupData.backupId);
+    }
     
     function updateClock() {
         const now = new Date();
