@@ -86,6 +86,17 @@
             left: 0;
         }
         
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100vw;
+                left: -100vw;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+        }
+        
         .sidebar-toggle {
             position: fixed;
             top: 20px;
@@ -178,6 +189,12 @@
         
         .main-content.sidebar-open {
             margin-right: 280px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content.sidebar-open {
+                margin-right: 0;
+            }
         }
         
         .header {
