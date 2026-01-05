@@ -314,4 +314,38 @@ document.addEventListener('DOMContentLoaded', function() {
             messageDiv.remove();
         }, 5000);
     }
+    
+    // الساعة الرقمية مع تحذير الشيفت
+    function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('ar-SA', {
+            timeZone: 'Asia/Riyadh',
+            hour12: false
+        });
+        const dateString = now.toLocaleDateString('ar-SA', {
+            timeZone: 'Asia/Riyadh',
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        document.getElementById('clockDisplay').textContent = timeString;
+        document.getElementById('clockDate').textContent = dateString;
+        
+        // تحذير قبل 12 بالليل
+        const hour = now.getHours();
+        const minute = now.getMinutes();
+        const warningDiv = document.getElementById('shiftWarning');
+        
+        if (hour === 23 && minute >= 50) {
+            warningDiv.style.display = 'block';
+        } else {
+            warningDiv.style.display = 'none';
+        }
+    }
+    
+    // تحديث الساعة كل ثانية
+    setInterval(updateClock, 1000);
+    updateClock();
 });

@@ -622,3 +622,45 @@ body::before {
         font-size: 14px;
     }
 }
+
+.digital-clock {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.clock-display {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.clock-date {
+    font-size: 12px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+.shift-warning {
+    background: #ff4444;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 11px;
+    margin-top: 10px;
+    text-align: center;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.5; }
+}
