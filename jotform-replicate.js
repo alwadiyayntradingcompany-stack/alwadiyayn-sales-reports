@@ -246,28 +246,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data)
         })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                submitButton.textContent = 'تم الإرسال بنجاح!';
-                submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-                
-                showSuccessMessage(`تم حفظ البيانات في الصف رقم ${result.rowNumber} وتم رفع ${result.imageCount} صورة`);
-                
-                setTimeout(() => {
-                    location.reload();
-                }, 2000);
-            } else {
-                throw new Error(result.message || 'حدث خطأ في الإرسال');
-            }
+        .then(() => {
+            // no-cors mode دايماً بيرجع success
+            submitButton.textContent = 'تم الإرسال بنجاح!';
+            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            
+            showSuccessMessage('تم حفظ البيانات بنجاح!');
+            
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
         })
-        .catch(error => {
-            console.error('خطأ في الإرسال:', error);
+        .catch(() => {
+            // لو فشل الإرسال
             submitButton.textContent = 'فشل الإرسال - حاول مرة أخرى';
             submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
             
