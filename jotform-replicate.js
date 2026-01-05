@@ -36,17 +36,33 @@ document.addEventListener('DOMContentLoaded', function() {
     if (fileInput && fileStatus) {
         fileInput.addEventListener('change', function(e) {
             const files = e.target.files;
-            console.log('Files selected:', files.length);
+            const fileList = document.querySelector('.file-list');
+            const mainProgress = document.querySelector('.main-upload-progress');
+            const mainProgressText = document.querySelector('.main-progress-text');
             
             if (files.length > 0) {
-                // إظهار أسماء الملفات
-                let fileNames = [];
-                for (let i = 0; i < files.length; i++) {
-                    fileNames.push(files[i].name);
+                // عرض شريط التقدم
+                if (mainProgress) {
+                    mainProgress.style.display = 'block';
+                    mainProgressText.textContent = `تم اختيار ${files.length} ملف`;
+                }
+                
+                // عرض قائمة الملفات
+                if (fileList) {
+                    fileList.innerHTML = '';
+                    for (let i = 0; i < files.length; i++) {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <span>صورة ${i + 1}: ${files[i].name}</span>
+                            <span>${(files[i].size / 1024 / 1024).toFixed(2)} MB</span>
+                        `;
+                        fileList.appendChild(fileItem);
+                    }
                 }
                 
                 // تحديث حالة الملفات
-                fileStatus.textContent = `تم اختيار ${files.length} ملف: ${fileNames.slice(0, 2).join(', ')}${files.length > 2 ? '...' : ''}`;
+                fileStatus.textContent = `تم اختيار ${files.length} ملف بنجاح ✓`;
                 fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
                 fileStatus.style.color = 'white';
                 fileStatus.style.padding = '10px';
@@ -55,6 +71,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 fileStatus.textContent = 'لم يتمّ اختيار أيّ ملفّ';
                 fileStatus.style.background = 'rgba(255, 255, 255, 0.2)';
+                if (fileList) fileList.innerHTML = '';
+                if (mainProgress) mainProgress.style.display = 'none';
             }
         });
     }
