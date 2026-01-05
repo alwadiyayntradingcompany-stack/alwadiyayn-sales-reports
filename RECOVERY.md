@@ -4,22 +4,22 @@
 
 ### الطريقة الأولى (سريعة):
 ```bash
-git reset --hard stable-v1.0
+git reset --hard stable-v1.1
 git push --force
 ```
 
 ### الطريقة الثانية (آمنة):
 ```bash
-git checkout stable-v1.0
+git checkout stable-v1.1
 git checkout -b recovery
 git push origin recovery
 ```
 
-## النسخة الآمنة محفوظة في:
-- Tag: `stable-v1.0`
-- التاريخ: 3 يناير 2025
-- الحالة: شغالة 100%
+## النسخ الآمنة المحفوظة:
+- **stable-v1.1** (الأحدث): مع صفحة الشكر - 3 يناير 2025 ✅
+- stable-v1.0: النسخة الأولى - 3 يناير 2025
 
 ## تحذير:
 - لا تعمل أي تعديلات بدون نسخ احتياطي
 - استخدم الأوامر دي فقط لو المشروع اتخرب
+- النسخة الحالية شغالة مع 13 فرع
