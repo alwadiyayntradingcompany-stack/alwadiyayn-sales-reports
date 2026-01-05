@@ -6,13 +6,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: 
-        url('489368.jpg') center/cover no-repeat fixed,
-        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3), transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(255, 219, 98, 0.2), transparent 50%),
-        linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    background-blend-mode: normal, overlay, overlay, overlay, normal;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
@@ -494,7 +488,7 @@ body::before {
 .flag-content {
     width: 180px;
     height: 120px;
-    background: url('FLAG IMAGE.jpg') center/cover no-repeat;
+    background: url('FLAG VIDEO.mp4') center/cover no-repeat;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
