@@ -320,7 +320,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         const timeString = now.toLocaleTimeString('en-US', {
             timeZone: 'Asia/Riyadh',
-            hour12: true
+            hour12: true,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
         });
         const dateString = now.toLocaleDateString('en-US', {
             timeZone: 'Asia/Riyadh',
