@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مراجعة سلامة البيانات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        .success-section {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #4CAF50;
+        }
+        .warning-section {
+            background: rgba(255, 152, 0, 0.1);
+            border-color: #ff9800;
+        }
+        .log-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .mismatch-item {
+            border-left-color: #ff4444;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .data-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .data-column {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .clear-btn {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .back-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 مراجعة سلامة البيانات</h1>
+        
+        <div class="section success-section">
+            <h2>✅ الإرساليات الناجحة</h2>
+            <div id="successfulSubmissions"></div>
+            <button class="clear-btn" onclick="clearSuccessLogs()">مسح السجلات الناجحة</button>
+        </div>
+        
+        <div class="section warning-section">
+            <h2>⚠️ تضارب البيانات المكتشف</h2>
+            <div id="dataMismatchLogs"></div>
+            <button class="clear-btn" onclick="clearMismatchLogs()">مسح سجلات التضارب</button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="back-btn" onclick="goBack()">العودة للنموذج</button>
+        </div>
+    </div>
+
+    <script>
+        function loadLogs() {
+            // تحميل الإرساليات الناجحة
+            const successLogs = JSON.parse(localStorage.getItem('successfulSubmissions') || '[]');
+            const successContainer = document.getElementById('successfulSubmissions');
+            
+            if (successLogs.length === 0) {
+                successContainer.innerHTML = '<p>لا توجد إرساليات ناجحة مسجلة</p>';
+            } else {
+                successContainer.innerHTML = successLogs.map(log => `
+                    <div class="log-item">
+                        <div class="timestamp">📅 ${new Date(log.timestamp).toLocaleString('ar-SA')}</div>
+                        <div><strong>الشركة:</strong> ${log.data['إسم الشركة / Company Name / কোম্পানির নাম'] || 'غير محدد'}</div>
+                        <div><strong>الفرع:</strong> ${log.data['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || 'غير محدد'}</div>
+                        <div><strong>المسئول:</strong> ${log.data['المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি'] || 'غير محدد'}</div>
+                        <div><strong>الكاش:</strong> ${log.data['كاش / Cash / নগদ'] || '0'} ريال</div>
+                        <div><strong>الشبكة:</strong> ${log.data['شبكة / Network / নেটওয়ার্ক'] || '0'} ريال</div>
+                    </div>
+                `).join('');
+            }
+            
+            // تحميل سجلات التضارب
+            const mismatchLogs = JSON.parse(localStorage.getItem('dataMismatchLogs') || '[]');
+            const mismatchContainer = document.getElementById('dataMismatchLogs');
+            
+            if (mismatchLogs.length === 0) {
+                mismatchContainer.innerHTML = '<p>لا توجد حالات تضارب مسجلة ✅</p>';
+            } else {
+                mismatchContainer.innerHTML = mismatchLogs.map(log => `
+                    <div class="log-item mismatch-item">
+                        <div class="timestamp">⚠️ ${new Date(log.timestamp).toLocaleString('ar-SA')}</div>
+                        <h4>تضارب في البيانات:</h4>
+                        <div class="data-comparison">
+                            <div class="data-column">
+                                <h5>البيانات قبل الإرسال:</h5>
+                                <pre>${JSON.stringify(log.preSubmission, null, 2)}</pre>
+                            </div>
+                            <div class="data-column">
+                                <h5>البيانات بعد الإرسال:</h5>
+                                <pre>${JSON.stringify(log.postSubmission, null, 2)}</pre>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function clearSuccessLogs() {
+            if (confirm('هل أنت متأكد من مسح جميع سجلات الإرساليات الناجحة؟')) {
+                localStorage.removeItem('successfulSubmissions');
+                loadLogs();
+            }
+        }
+        
+        function clearMismatchLogs() {
+            if (confirm('هل أنت متأكد من مسح جميع سجلات تضارب البيانات؟')) {
+                localStorage.removeItem('dataMismatchLogs');
+                loadLogs();
+            }
+        }
+        
+        function goBack() {
+            window.location.href = 'ALWADIYAYNFORM.html';
+        }
+        
+        // تحميل السجلات عند فتح الصفحة
+        loadLogs();
+    </script>
+</body>
+</html>

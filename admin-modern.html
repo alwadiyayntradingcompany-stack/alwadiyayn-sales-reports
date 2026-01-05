@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة الحديثة</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        .login-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .login-container h2 {
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        
+        input[type="password"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-login:hover {
+            background: #2563eb;
+        }
+        
+        .admin-container {
+            display: none;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: #1f2937;
+            padding: 24px 0;
+        }
+        
+        .sidebar-header {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid #374151;
+        }
+        
+        .sidebar-header h2 {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .sidebar-menu {
+            padding: 24px 0;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background: #374151;
+            color: white;
+        }
+        
+        .menu-item i {
+            margin-left: 12px;
+            font-size: 18px;
+        }
+        
+        .main-content {
+            margin-right: 280px;
+            padding: 24px;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #1f2937;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .logout-btn {
+            padding: 8px 16px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .stat-card.green { border-left-color: #10b981; }
+        .stat-card.yellow { border-left-color: #f59e0b; }
+        .stat-card.red { border-left-color: #ef4444; }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .stat-title {
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .stat-card .stat-icon { background: #3b82f6; }
+        .stat-card.green .stat-icon { background: #10b981; }
+        .stat-card.yellow .stat-icon { background: #f59e0b; }
+        .stat-card.red .stat-icon { background: #ef4444; }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .stat-change {
+            font-size: 14px;
+            color: #10b981;
+            font-weight: 500;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 16px;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .action-btn {
+            padding: 12px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .action-btn:hover { background: #2563eb; }
+        .action-btn.green { background: #10b981; }
+        .action-btn.green:hover { background: #059669; }
+        .action-btn.yellow { background: #f59e0b; }
+        .action-btn.yellow:hover { background: #d97706; }
+        
+        .error {
+            color: #ef4444;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <h2>🔐 تسجيل الدخول</h2>
+        <input type="password" id="adminPassword" placeholder="كلمة المرور" onkeypress="if(event.key==='Enter') adminLogin()">
+        <button class="btn-login" onclick="adminLogin()">دخول</button>
+        <div class="error" id="loginError"></div>
+    </div>
+
+    <div class="admin-container" id="adminContainer">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📊 لوحة التحكم</h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item active" onclick="showSection('dashboard')">
+                    <i>📊</i>
+                    <span>الرئيسية</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('reports')">
+                    <i>📋</i>
+                    <span>التقارير</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('analytics')">
+                    <i>📈</i>
+                    <span>التحليلات</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('settings')">
+                    <i>⚙️</i>
+                    <span>الإعدادات</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>لوحة المعلومات</h1>
+                <button class="logout-btn" onclick="adminLogout()">خروج</button>
+            </div>
+
+            <div id="dashboardSection" class="section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">إجمالي المبيعات</div>
+                            <div class="stat-icon">💰</div>
+                        </div>
+                        <div class="stat-value" id="totalSales">0</div>
+                        <div class="stat-change">+12% من الشهر الماضي</div>
+                    </div>
+                    
+                    <div class="stat-card green">
+                        <div class="stat-header">
+                            <div class="stat-title">صافي الربح</div>
+                            <div class="stat-icon">📈</div>
+                        </div>
+                        <div class="stat-value" id="netProfit">0</div>
+                        <div class="stat-change">+8% من الشهر الماضي</div>
+                    </div>
+                    
+                    <div class="stat-card yellow">
+                        <div class="stat-header">
+                            <div class="stat-title">الضريبة (15%)</div>
+                            <div class="stat-icon">📊</div>
+                        </div>
+                        <div class="stat-value" id="taxAmount">0</div>
+                        <div class="stat-change">+15% من الشهر الماضي</div>
+                    </div>
+                    
+                    <div class="stat-card red">
+                        <div class="stat-header">
+                            <div class="stat-title">هامش الربح</div>
+                            <div class="stat-icon">📉</div>
+                        </div>
+                        <div class="stat-value" id="profitMargin">0%</div>
+                        <div class="stat-change">+5% من الشهر الماضي</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">📈 تحليل المبيعات الشهرية</div>
+                    </div>
+                    <div class="chart-placeholder">
+                        رسم بياني للمبيعات (يمكن إضافة Chart.js هنا)
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">🏢 تحليل الفروع</div>
+                    </div>
+                    <div id="branchesAnalysis"></div>
+                </div>
+
+                <div class="actions-grid">
+                    <button class="action-btn green" onclick="exportData()">📄 تصدير CSV</button>
+                    <button class="action-btn" onclick="sendWhatsApp()">📱 واتساب</button>
+                    <button class="action-btn yellow" onclick="clearAllData()">🗑️ مسح البيانات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = "admin2024";
+
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('adminContainer').style.display = 'block';
+                loadAdminData();
+            } else {
+                errorDiv.textContent = 'كلمة المرور غير صحيحة';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        function adminLogout() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('adminContainer').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('loginError').textContent = '';
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function loadAdminData() {
+            const submissions = JSON.parse(localStorage.getItem('successfulSubmissions') || '[]');
+            
+            if (submissions.length === 0) {
+                document.getElementById('branchesAnalysis').innerHTML = '<p style="color: #6b7280; text-align: center; padding: 40px;">لا توجد بيانات محفوظة</p>';
+                return;
+            }
+
+            let totalSales = 0;
+            let totalPurchases = 0;
+            const branches = {};
+
+            submissions.forEach(submission => {
+                const data = submission.data;
+                const cash = parseFloat(data['كاش / Cash / নগদ'] || 0);
+                const network = parseFloat(data['شبكة / Network / নেটওয়ার্ক'] || 0);
+                const purchases = parseFloat(data['المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়'] || 0);
+                const branch = data['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || 'غير محدد';
+
+                const sales = cash + network;
+                totalSales += sales;
+                totalPurchases += purchases;
+
+                if (!branches[branch]) {
+                    branches[branch] = { sales: 0, purchases: 0, count: 0 };
+                }
+                branches[branch].sales += sales;
+                branches[branch].purchases += purchases;
+                branches[branch].count++;
+            });
+
+            const grossProfit = totalSales - totalPurchases;
+            const taxAmount = grossProfit * 0.15;
+            const netProfit = grossProfit - taxAmount;
+            const profitMargin = totalSales > 0 ? ((netProfit / totalSales) * 100).toFixed(1) : 0;
+
+            document.getElementById('totalSales').textContent = totalSales.toLocaleString() + ' ريال';
+            document.getElementById('netProfit').textContent = netProfit.toLocaleString() + ' ريال';
+            document.getElementById('taxAmount').textContent = taxAmount.toLocaleString() + ' ريال';
+            document.getElementById('profitMargin').textContent = profitMargin + '%';
+
+            const branchesContainer = document.getElementById('branchesAnalysis');
+            branchesContainer.innerHTML = '';
+
+            Object.keys(branches).forEach(branchName => {
+                const branch = branches[branchName];
+                const branchProfit = branch.sales - branch.purchases;
+                const branchMargin = branch.sales > 0 ? ((branchProfit / branch.sales) * 100).toFixed(1) : 0;
+
+                branchesContainer.innerHTML += `
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #3b82f6;">
+                        <h4 style="color: #1f2937; margin-bottom: 12px;">${branchName}</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; color: #6b7280;">
+                            <div><strong>المبيعات:</strong> ${branch.sales.toLocaleString()} ريال</div>
+                            <div><strong>الربح:</strong> ${branchProfit.toLocaleString()} ريال</div>
+                            <div><strong>هامش الربح:</strong> ${branchMargin}%</div>
+                            <div><strong>التقارير:</strong> ${branch.count}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function exportData() {
+            const submissions = JSON.parse(localStorage.getItem('successfulSubmissions') || '[]');
+            const csvContent = "data:text/csv;charset=utf-8," + 
+                "التاريخ,الفرع,الكاش,الشبكة,المشتريات\n" +
+                submissions.map(s => {
+                    const d = s.data;
+                    return `${s.timestamp},"${d['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || ''}",${d['كاش / Cash / নগদ'] || 0},${d['شبكة / Network / নেটওয়ার্ক'] || 0},${d['المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়'] || 0}`;
+                }).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "sales_report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function sendWhatsApp() {
+            const totalSales = document.getElementById('totalSales').textContent;
+            const netProfit = document.getElementById('netProfit').textContent;
+            const message = `📊 تقرير المبيعات\n\n💰 المبيعات: ${totalSales}\n📈 الربح: ${netProfit}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function clearAllData() {
+            if (confirm('مسح جميع البيانات؟')) {
+                localStorage.clear();
+                alert('تم المسح');
+                loadAdminData();
+            }
+        }
+    </script>
+</body>
+</html>

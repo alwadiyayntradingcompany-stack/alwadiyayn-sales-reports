@@ -664,3 +664,46 @@ body::before {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0.5; }
 }
+
+.data-protection-indicator {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(76, 175, 80, 0.9);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 1001;
+    display: none;
+    text-align: center;
+    min-width: 200px;
+}
+
+.data-protection-indicator.active {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+.data-protection-indicator.warning {
+    background: rgba(255, 152, 0, 0.9);
+    animation: shake 0.5s ease-in-out;
+}
+
+.data-protection-indicator.error {
+    background: rgba(255, 68, 68, 0.9);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    25% { transform: translateX(-50%) translateY(0) translateX(-5px); }
+    75% { transform: translateX(-50%) translateY(0) translateX(5px); }
+}

@@ -105,12 +105,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // نظام حماية من تضارب البيانات
+    let preSubmissionData = null;
+    let submissionInProgress = false;
+    
     // معالجة إرسال النموذج
     const form = document.querySelector('.jotform-form');
     const submitButton = document.querySelector('.submit-button');
     
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // منع الإرسال المتعدد
+        if (submissionInProgress) {
+            submitButton.textContent = 'جاري المعالجة...';
+            return;
+        }
         
         // التحقق من الحقول المطلوبة
         const requiredFields = [
@@ -209,16 +219,16 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // منع الإرسال المتكرر
-        if (isSubmitting) {
-            submitButton.textContent = 'جاري الإرسال...';
-            return;
-        }
+        // حفظ البيانات قبل التسجيل للمقارنة
+        preSubmissionData = captureFormData();
+        submissionInProgress = true;
         
-        const dataHash = generateDataHash(formData);
+        // التحقق من عدم تكرار الإرسال
+        const dataHash = generateDataHash(preSubmissionData);
         if (dataHash === lastSubmissionHash) {
             submitButton.textContent = 'تم إرسال هذه البيانات من قبل!';
             submitButton.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
+            submissionInProgress = false;
             setTimeout(() => {
                 submitButton.textContent = 'إرسال / Submit / পাঠান';
                 submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
@@ -226,25 +236,40 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        isSubmitting = true;
         lastSubmissionHash = dataHash;
         
         // إذا كانت جميع البيانات ممتلئة
         submitButton.textContent = 'جاري الإرسال...';
         submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
         
-        // جمع بيانات النموذج
+        // التحقق من تطابق البيانات قبل المتابعة
+        const currentData = captureFormData();
+        if (!validateDataConsistency(preSubmissionData, currentData)) {
+            showDataProtectionIndicator('⚠️ تم تغيير البيانات!', 'error');
+            submitButton.textContent = 'تم تغيير البيانات أثناء المعالجة!';
+            submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+            submissionInProgress = false;
+            setTimeout(() => {
+                submitButton.textContent = 'إرسال / Submit / পাঠান';
+                submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            }, 3000);
+            return;
+        }
+        
+        showDataProtectionIndicator('🔒 جاري معالجة البيانات...', 'warning');
+        
+        // جمع بيانات النموذج النهائية
         const formData = {
-            'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': document.querySelector('input[type="date"]').value,
-            'التاريخ (هجري / Hijri Date / হিজরি তারিখ)': document.querySelector('input[name="hijriDate"]').value,
-            'إسم الشركة / Company Name / কোম্পানির নাম': document.querySelector('.green-field input').value,
-            'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': document.querySelector('.purple-field input').value,
-            'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': document.querySelector('.red-field input').value,
-            'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': document.querySelector('.lightblue-field input').value,
-            'رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর': document.querySelector('.yellow-field input').value,
-            'كاش / Cash / নগদ': document.querySelector('.teal-field input').value,
-            'شبكة / Network / নেটওয়ার্ক': document.querySelector('.indigo-field input').value,
-            'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': document.querySelector('.brown-field input').value,
+            'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': preSubmissionData.date,
+            'التاريخ (هجري / Hijri Date / হিজরি তারিখ)': preSubmissionData.hijriDate,
+            'إسم الشركة / Company Name / কোম্পানির নাম': preSubmissionData.company,
+            'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': preSubmissionData.branch,
+            'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': preSubmissionData.manager,
+            'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': preSubmissionData.machineName,
+            'رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর': preSubmissionData.machineNumber,
+            'كاش / Cash / নগদ': preSubmissionData.cash,
+            'شبكة / Network / নেটওয়ার্ক': preSubmissionData.network,
+            'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': preSubmissionData.purchases,
             files: []
         };
         
@@ -273,6 +298,22 @@ document.addEventListener('DOMContentLoaded', function() {
         Promise.all(filePromises).then(fileData => {
             formData.files = fileData;
             
+            // التحقق النهائي من تطابق البيانات
+            const finalCheck = captureFormData();
+            if (!validateDataConsistency(preSubmissionData, finalCheck)) {
+                showDataProtectionIndicator('⚠️ فشل في التحقق!', 'error');
+                submitButton.textContent = 'فشل في التحقق من البيانات!';
+                submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+                submissionInProgress = false;
+                setTimeout(() => {
+                    submitButton.textContent = 'إرسال / Submit / পাঠান';
+                    submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                }, 3000);
+                return;
+            }
+            
+            showDataProtectionIndicator('🚀 جاري الإرسال...', 'warning');
+            
             // حفظ احتياطي قبل الإرسال
             backupSubmissionData(formData);
             
@@ -285,6 +326,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function sendToGoogleAppsScript(data, submitButton) {
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzp4pTpQRs7Is-QVQhO4vnqzkXQOJj0sOHCsQFCmiS3-iTsl5h78j6krKc25xqiW_ZaBA/exec';
         
+        // حفظ البيانات المرسلة للمقارنة بعد الإرسال
+        const sentDataBackup = JSON.parse(JSON.stringify(data));
+        
         fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -294,12 +338,26 @@ document.addEventListener('DOMContentLoaded', function() {
             body: JSON.stringify(data)
         })
         .then(() => {
-            // no-cors mode دايماً بيرجع success
+            // التحقق من تطابق البيانات بعد الإرسال
+            const postSubmissionData = captureFormData();
+            if (!validateDataConsistency(preSubmissionData, postSubmissionData)) {
+                // تسجيل تحذير في حالة عدم التطابق
+                console.warn('⚠️ Data mismatch detected after submission!');
+                logDataMismatch(preSubmissionData, postSubmissionData, sentDataBackup);
+                showDataProtectionIndicator('⚠️ تم اكتشاف تغيير!', 'warning');
+            } else {
+                showDataProtectionIndicator('✅ تم التحقق بنجاح', 'active');
+            }
+            
             submitButton.textContent = 'تم الإرسال بنجاح!';
             submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
             
+            // حفظ سجل الإرسال الناجح
+            saveSuccessfulSubmission(sentDataBackup);
+            
             // مسح بيانات النموذج فقط (النسخ الاحتياطية تبقى)
             localStorage.removeItem('formData');
+            submissionInProgress = false;
             
             setTimeout(() => {
                 window.open('success.html', '_self');
@@ -307,9 +365,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(() => {
             // لو فشل الإرسال
+            showDataProtectionIndicator('❌ فشل الإرسال', 'error');
             submitButton.textContent = 'فشل الإرسال - حاول مرة أخرى';
             submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-            isSubmitting = false;
+            submissionInProgress = false;
             
             setTimeout(() => {
                 submitButton.textContent = 'إرسال / Submit / পাঠান';
@@ -343,7 +402,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // منع الإرسال المتكرر
-    let isSubmitting = false;
     let lastSubmissionHash = null;
     
     function generateDataHash(data) {
@@ -498,4 +556,114 @@ document.addEventListener('DOMContentLoaded', function() {
     // تحديث الساعة كل ثانية
     setInterval(updateClock, 1000);
     updateClock();
+    
+    // تفعيل مؤشر حماية البيانات
+    showDataProtectionIndicator('🔒 حماية البيانات نشطة', 'active');
+    
+    // دالة فتح لوحة الإدارة
+    window.openAdminPanel = function() {
+        window.open('admin-panel.html', '_blank');
+    };
+    
+    // دوال حماية البيانات
+    function captureFormData() {
+        return {
+            date: document.querySelector('input[type="date"]').value,
+            hijriDate: document.querySelector('input[name="hijriDate"]').value,
+            company: document.querySelector('.green-field input').value,
+            branch: document.querySelector('.purple-field input').value,
+            manager: document.querySelector('.red-field input').value,
+            machineName: document.querySelector('.lightblue-field input').value,
+            machineNumber: document.querySelector('.yellow-field input').value,
+            cash: document.querySelector('.teal-field input').value,
+            network: document.querySelector('.indigo-field input').value,
+            purchases: document.querySelector('.brown-field input').value,
+            timestamp: new Date().toISOString()
+        };
+    }
+    
+    function validateDataConsistency(data1, data2) {
+        if (!data1 || !data2) return false;
+        
+        const fields = ['date', 'hijriDate', 'company', 'branch', 'manager', 'machineName', 'machineNumber', 'cash', 'network', 'purchases'];
+        
+        for (let field of fields) {
+            if (data1[field] !== data2[field]) {
+                console.warn(`⚠️ Data mismatch in field: ${field}`);
+                console.warn(`Before: ${data1[field]}`);
+                console.warn(`After: ${data2[field]}`);
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    function logDataMismatch(preData, postData, sentData) {
+        const mismatchLog = {
+            timestamp: new Date().toISOString(),
+            preSubmission: preData,
+            postSubmission: postData,
+            sentData: sentData,
+            type: 'DATA_MISMATCH'
+        };
+        
+        // حفظ في localStorage للمراجعة
+        let logs = JSON.parse(localStorage.getItem('dataMismatchLogs') || '[]');
+        logs.push(mismatchLog);
+        localStorage.setItem('dataMismatchLogs', JSON.stringify(logs));
+        
+        // عرض تحذير للمستخدم
+        showWarningMessage('تم اكتشاف تغيير في البيانات بعد الإرسال! تم حفظ سجل للمراجعة.');
+    }
+    
+    function saveSuccessfulSubmission(data) {
+        const successLog = {
+            timestamp: new Date().toISOString(),
+            data: data,
+            type: 'SUCCESSFUL_SUBMISSION'
+        };
+        
+        let successLogs = JSON.parse(localStorage.getItem('successfulSubmissions') || '[]');
+        successLogs.push(successLog);
+        localStorage.setItem('successfulSubmissions', JSON.stringify(successLogs));
+    }
+    
+    function showWarningMessage(message) {
+        const warningDiv = document.createElement('div');
+        warningDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.3);
+            z-index: 10000;
+            font-weight: 600;
+            max-width: 350px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        `;
+        warningDiv.textContent = message;
+        document.body.appendChild(warningDiv);
+        
+        setTimeout(() => {
+            warningDiv.remove();
+        }, 8000);
+    }
+    
+    function showDataProtectionIndicator(message, type = 'active') {
+        const indicator = document.getElementById('dataProtectionIndicator');
+        if (indicator) {
+            indicator.textContent = message;
+            indicator.className = `data-protection-indicator ${type}`;
+            
+            if (type !== 'active') {
+                setTimeout(() => {
+                    indicator.className = 'data-protection-indicator active';
+                    indicator.textContent = '🔒 حماية البيانات نشطة';
+                }, 3000);
+            }
+        }
+    }
 });
