@@ -209,6 +209,26 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // منع الإرسال المتكرر
+        if (isSubmitting) {
+            submitButton.textContent = 'جاري الإرسال...';
+            return;
+        }
+        
+        const dataHash = generateDataHash(formData);
+        if (dataHash === lastSubmissionHash) {
+            submitButton.textContent = 'تم إرسال هذه البيانات من قبل!';
+            submitButton.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
+            setTimeout(() => {
+                submitButton.textContent = 'إرسال / Submit / পাঠান';
+                submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            }, 3000);
+            return;
+        }
+        
+        isSubmitting = true;
+        lastSubmissionHash = dataHash;
+        
         // إذا كانت جميع البيانات ممتلئة
         submitButton.textContent = 'جاري الإرسال...';
         submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
@@ -289,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // لو فشل الإرسال
             submitButton.textContent = 'فشل الإرسال - حاول مرة أخرى';
             submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
+            isSubmitting = false;
             
             setTimeout(() => {
                 submitButton.textContent = 'إرسال / Submit / পাঠান';
@@ -321,7 +342,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
-    // حفظ تلقائي للبيانات
+    // منع الإرسال المتكرر
+    let isSubmitting = false;
+    let lastSubmissionHash = null;
+    
+    function generateDataHash(data) {
+        const dataString = JSON.stringify(data);
+        let hash = 0;
+        for (let i = 0; i < dataString.length; i++) {
+            const char = dataString.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return hash.toString();
+    }
     function autoSave() {
         const formData = {
             date: document.querySelector('input[type="date"]').value,
