@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { selector: '.lightblue-field input', message: 'يرجى إدخال اسم ماكينة البيع' },
             { selector: '.yellow-field input', message: 'يرجى إدخال رقم ماكينة البيع' },
             { selector: '.teal-field input', message: 'يرجى إدخال قيمة الكاش' },
-            { selector: '.indigo-field input', message: 'يرجى إدخال قيمة الشبكة' },
+            { selector: '.indigo-field input', message: 'يرجى إدخال قيمة نظام نقاط البيع' },
             { selector: '.brown-field input', message: 'يرجى إدخال قيمة المشتريات اليومية' }
         ];
         
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': preSubmissionData.machineName,
             'رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর': preSubmissionData.machineNumber,
             'كاش / Cash / নগদ': preSubmissionData.cash,
-            'شبكة / Network / নেটওয়ার্ক': preSubmissionData.network,
+            'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': preSubmissionData.network,
             'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': preSubmissionData.purchases,
             files: []
         };

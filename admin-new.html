@@ -994,7 +994,7 @@
             submissions.forEach(submission => {
                 const data = submission.data;
                 const cash = parseFloat(data['كاش / Cash / নগদ'] || 0);
-                const network = parseFloat(data['شبكة / Network / নেটওয়ার্ক'] || 0);
+                const network = parseFloat(data['نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম'] || 0);
                 const purchases = parseFloat(data['المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়'] || 0);
                 const branch = data['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || 'غير محدد';
 
@@ -1045,10 +1045,10 @@
         function exportData() {
             const submissions = JSON.parse(localStorage.getItem('successfulSubmissions') || '[]');
             const csvContent = "data:text/csv;charset=utf-8," + 
-                "التاريخ,الفرع,الكاش,الشبكة,المشتريات\n" +
+                "التاريخ,الفرع,الكاش,نظام نقاط البيع,المشتريات\n" +
                 submissions.map(s => {
                     const d = s.data;
-                    return `${s.timestamp},"${d['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || ''}",${d['كاش / Cash / নগদ'] || 0},${d['شبكة / Network / নেটওয়ার্ক'] || 0},${d['المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়'] || 0}`;
+                    return `${s.timestamp},"${d['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || ''}",${d['كاش / Cash / নগদ'] || 0},${d['نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম'] || 0},${d['المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়'] || 0}`;
                 }).join("\n");
 
             const encodedUri = encodeURI(csvContent);
