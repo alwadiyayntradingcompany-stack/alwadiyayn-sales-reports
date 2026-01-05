@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // النقر على منطقة الرفع
     if (uploadArea && fileInput) {
         uploadArea.addEventListener('click', function(e) {
-            if (e.target === fileInput) return;
+            if (e.target.classList.contains('file-input')) return;
             fileInput.click();
         });
     }
@@ -267,13 +267,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            // تجاهل الخطأ واعتبار الإرسال ناجح
-            submitButton.textContent = 'تم الإرسال بنجاح!';
-            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            console.error('خطأ في الإرسال:', error);
+            submitButton.textContent = 'فشل الإرسال - حاول مرة أخرى';
+            submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
             
             setTimeout(() => {
-                location.reload();
-            }, 2000);
+                submitButton.textContent = 'إرسال / Submit / পাঠান';
+                submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            }, 3000);
         });
     }
     
