@@ -257,11 +257,9 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.textContent = 'تم الإرسال بنجاح!';
             submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
             
-            showSuccessMessage('تم حفظ البيانات بنجاح!');
-            
             setTimeout(() => {
-                location.reload();
-            }, 2000);
+                window.location.href = 'success.html';
+            }, 1500);
         })
         .catch(() => {
             // لو فشل الإرسال
