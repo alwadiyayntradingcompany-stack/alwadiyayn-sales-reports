@@ -95,7 +95,7 @@ class SimpleHijriCalendar {
 
             const todayBtn = e.target.closest('.today-btn');
             if (todayBtn) {
-                this.selectToday();
+                this.confirmDate();
                 return;
             }
         });
@@ -254,6 +254,16 @@ class SimpleHijriCalendar {
         const popup = document.querySelector('.hijri-calendar-popup');
         if (popup) popup.classList.remove('show');
         this.renderCalendar();
+    }
+
+    confirmDate() {
+        // تأكيد التاريخ المحدد حالياً
+        if (!this.selectedDate) {
+            this.selectedDate = this.getCurrentHijriDate();
+        }
+        this.updateInput();
+        const popup = document.querySelector('.hijri-calendar-popup');
+        if (popup) popup.classList.remove('show');
     }
 
     selectToday() {
