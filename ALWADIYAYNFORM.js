@@ -318,11 +318,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // الساعة الرقمية مع تحذير الشيفت
     function updateClock() {
         const now = new Date();
-        const timeString = now.toLocaleTimeString('ar-SA', {
+        const timeString = now.toLocaleTimeString('en-US', {
             timeZone: 'Asia/Riyadh',
-            hour12: false
+            hour12: true
         });
-        const dateString = now.toLocaleDateString('ar-SA', {
+        const dateString = now.toLocaleDateString('en-US', {
             timeZone: 'Asia/Riyadh',
             weekday: 'long',
             year: 'numeric',
