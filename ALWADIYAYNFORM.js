@@ -315,7 +315,84 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
-    // الساعة الرقمية مع تحذير الشيفت
+    // حفظ تلقائي للبيانات
+    function autoSave() {
+        const formData = {
+            date: document.querySelector('input[type="date"]').value,
+            hijriDate: document.querySelector('input[name="hijriDate"]').value,
+            company: document.querySelector('.green-field input').value,
+            branch: document.querySelector('.purple-field input').value,
+            manager: document.querySelector('.red-field input').value,
+            machineName: document.querySelector('.lightblue-field input').value,
+            machineNumber: document.querySelector('.yellow-field input').value,
+            cash: document.querySelector('.teal-field input').value,
+            network: document.querySelector('.indigo-field input').value,
+            purchases: document.querySelector('.brown-field input').value
+        };
+        localStorage.setItem('formData', JSON.stringify(formData));
+    }
+    
+    // استرجاع البيانات المحفوظة
+    function loadSavedData() {
+        const saved = localStorage.getItem('formData');
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data.company) document.querySelector('.green-field input').value = data.company;
+            if (data.branch) document.querySelector('.purple-field input').value = data.branch;
+            if (data.manager) document.querySelector('.red-field input').value = data.manager;
+            if (data.machineName) document.querySelector('.lightblue-field input').value = data.machineName;
+            if (data.machineNumber) document.querySelector('.yellow-field input').value = data.machineNumber;
+        }
+    }
+    
+    // حساب المجموع تلقائياً
+    function calculateTotal() {
+        const cash = parseFloat(document.querySelector('.teal-field input').value) || 0;
+        const network = parseFloat(document.querySelector('.indigo-field input').value) || 0;
+        const total = cash + network;
+        
+        let totalDisplay = document.getElementById('totalDisplay');
+        if (!totalDisplay) {
+            totalDisplay = document.createElement('div');
+            totalDisplay.id = 'totalDisplay';
+            totalDisplay.style.cssText = `
+                background: rgba(76, 175, 80, 0.2);
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                margin-top: 10px;
+                text-align: center;
+                font-weight: bold;
+            `;
+            document.querySelector('.brown-field').appendChild(totalDisplay);
+        }
+        
+        if (total > 0) {
+            totalDisplay.textContent = `💰 Total Sales: ${total.toFixed(2)} SAR`;
+            totalDisplay.style.display = 'block';
+        } else {
+            totalDisplay.style.display = 'none';
+        }
+    }
+    
+    // ربط الأحداث
+    inputs.forEach(input => {
+        input.addEventListener('input', autoSave);
+        if (input.type === 'number') {
+            input.addEventListener('input', calculateTotal);
+        }
+    });
+    
+    // تحميل البيانات المحفوظة
+    loadSavedData();
+    
+    // مسح البيانات المحفوظة بعد الإرسال الناجح
+    const originalSendFunction = sendToGoogleAppsScript;
+    window.sendToGoogleAppsScript = function(data, submitButton) {
+        originalSendFunction(data, submitButton);
+        localStorage.removeItem('formData');
+    };
+    
     function updateClock() {
         const now = new Date();
         const timeString = now.toLocaleTimeString('en-US', {
