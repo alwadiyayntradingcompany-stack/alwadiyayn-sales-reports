@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
             submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
             
             setTimeout(() => {
-                window.location.href = 'success.html';
+                window.open('success.html', '_self');
             }, 1500);
         })
         .catch(() => {
