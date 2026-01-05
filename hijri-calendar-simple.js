@@ -57,6 +57,11 @@ class SimpleHijriCalendar {
             return;
         }
 
+        // تعيين التاريخ الحالي في الحقل عند التحميل
+        const today = this.getCurrentHijriDate();
+        this.selectedDate = today;
+        this.updateInput();
+
         // إضافة الفلاتر مباشرة عند التهيئة
         this.addFilters();
 
@@ -107,6 +112,36 @@ class SimpleHijriCalendar {
         // سيتم إعداد الفلاتر في renderCalendar
     }
 
+    updateDropdownYear() {
+        const dateSelect = document.querySelector('.filter-select');
+        if (!dateSelect) return;
+        
+        // مسح الخيارات الحالية
+        dateSelect.innerHTML = '';
+        
+        // إعادة إنشاء الخيارات بالسنة المحدثة
+        this.hijriMonths.forEach((month, monthIndex) => {
+            const daysInMonth = this.getDaysInMonth(monthIndex + 1);
+            for (let day = 1; day <= daysInMonth; day++) {
+                const option = document.createElement('option');
+                const dayStr = day.toString().padStart(2, '0');
+                const dateStr = `${dayStr}-${monthIndex + 1}-${this.currentDate.year}`;
+                option.value = dateStr;
+                option.textContent = `${dayStr} ${month.name} (${month.number}) ${this.currentDate.year}`;
+                
+                // تحديد التاريخ المحدد حالياً
+                if (this.selectedDate &&
+                    this.selectedDate.year === this.currentDate.year &&
+                    this.selectedDate.month === monthIndex + 1 &&
+                    this.selectedDate.day === day) {
+                    option.selected = true;
+                }
+                
+                dateSelect.appendChild(option);
+            }
+        });
+    }
+
     navigate(action) {
         switch (action) {
             case 'prev-year':
@@ -130,6 +165,7 @@ class SimpleHijriCalendar {
                 }
                 break;
         }
+        this.updateDropdownYear();
         this.renderCalendar();
     }
 
@@ -227,6 +263,8 @@ class SimpleHijriCalendar {
                 input.value = dateValue;
             }
             
+            // تحديث القائمة المنسدلة لتعكس السنة الجديدة
+            this.updateDropdownYear();
             this.renderCalendar();
         });
 
