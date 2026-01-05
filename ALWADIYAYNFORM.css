@@ -680,6 +680,8 @@ body::before {
     display: none;
     text-align: center;
     min-width: 200px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .data-protection-indicator.active {
