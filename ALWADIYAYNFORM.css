@@ -618,29 +618,7 @@ body::before {
         padding: 6px 12px;
     }
     
-    .theme-toggle {
-        position: fixed !important;
-        top: 80px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        margin: 0 !important;
-        display: flex !important;
-        width: 30px !important;
-        height: 30px !important;
-        font-size: 14px;
-    }
     
-    .theme-toggle {
-        position: relative;
-        top: auto;
-        right: auto;
-        margin: 10px auto;
-        display: flex;
-        width: fit-content;
-    }
-    
-    .form-section {
-        margin-top: 20px;
     }
 }
     
@@ -802,8 +780,8 @@ body::before {
 
 .digital-clock {
     position: fixed;
-    top: 60px;
-    left: 30px;
+    top: 20px;
+    left: 20px;
     background: rgba(0, 0, 0, 0.8);
     color: #00ff00;
     padding: 15px 20px;
@@ -815,8 +793,8 @@ body::before {
 
 .saudi-flag {
     position: fixed;
-    top: 60px;
-    right: 30px;
+    top: 20px;
+    right: 20px;
     z-index: 5;
     display: flex;
     align-items: flex-start;
@@ -824,17 +802,6 @@ body::before {
 }
 
 /* زر التحكم في الوضع الليلي/النهاري */
-.theme-toggle {
-    position: fixed;
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 50%;
-    font-size: 16px;
     cursor: pointer;
     z-index: 9999;
     width: 35px;
@@ -846,17 +813,6 @@ body::before {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
-}
-
-.theme-toggle:hover {
-    background: rgba(0, 0, 0, 1);
-    transform: translateX(-50%) scale(1.1);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-}
-
-.theme-toggle-icon {
-    font-size: 16px;
-    transition: transform 0.3s ease;
 }
 
 
