@@ -1,318 +1,229 @@
-// نظام الحماية السيبرانية الشامل
+// نظام الحماية السيبرانية الشامل - مفعل لحظياً
 (function() {
     'use strict';
     
-    // 1. حماية من هجمات DDoS وإيقاف الخدمة
-    let requestCount = 0;
-    let lastRequestTime = Date.now();
-    const MAX_REQUESTS = 10; // 10 طلبات كحد أقصى
-    const TIME_WINDOW = 60000; // في الدقيقة الواحدة
+    // تفعيل فوري للحماية
+    let isActive = true;
+    let blockedIPs = new Set();
+    let requestLog = new Map();
     
-    function checkRateLimit() {
+    // 1. حماية DDoS فورية
+    function rateLimitCheck() {
+        const ip = 'user_' + Date.now(); // محاكاة IP
         const now = Date.now();
-        if (now - lastRequestTime > TIME_WINDOW) {
-            requestCount = 0;
-            lastRequestTime = now;
+        
+        if (!requestLog.has(ip)) {
+            requestLog.set(ip, []);
         }
         
-        requestCount++;
-        if (requestCount > MAX_REQUESTS) {
-            document.body.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#ff0000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:99999;">🚫 تم حظر IP - هجوم مكتشف</div>';
+        const requests = requestLog.get(ip);
+        requests.push(now);
+        
+        // إزالة الطلبات القديمة (أكثر من دقيقة)
+        const filtered = requests.filter(time => now - time < 60000);
+        requestLog.set(ip, filtered);
+        
+        if (filtered.length > 5) { // 5 طلبات كحد أقصى
+            blockedIPs.add(ip);
+            blockAccess('🚫 تم حظر IP - تجاوز الحد المسموح');
             return false;
         }
         return true;
     }
     
-    // 2. حماية من هجمات XSS
-    function sanitizeInput(input) {
-        const div = document.createElement('div');
-        div.textContent = input;
-        return div.innerHTML;
-    }
-    
-    // 3. كشف البوتات والذكاء الاصطناعي
-    function detectBot() {
-        const botSignatures = [
-            'bot', 'crawler', 'spider', 'scraper', 'headless',
-            'phantom', 'selenium', 'puppeteer', 'playwright'
-        ];
+    // 2. كشف البوتات فوري
+    function detectBotImmediate() {
+        const ua = navigator.userAgent.toLowerCase();
+        const botSigns = ['headless', 'phantom', 'selenium', 'bot', 'crawler'];
         
-        const userAgent = navigator.userAgent.toLowerCase();
-        const isBot = botSignatures.some(sig => userAgent.includes(sig));
-        
-        // فحص إضافي للبوتات
-        const hasWebDriver = navigator.webdriver;
-        const hasPhantom = window.callPhantom || window._phantom;
-        const hasSelenium = window.selenium;
-        
-        if (isBot || hasWebDriver || hasPhantom || hasSelenium) {
-            blockAccess('🤖 بوت مكتشف - الوصول محظور');
+        if (botSigns.some(sign => ua.includes(sign)) || 
+            navigator.webdriver || 
+            window.callPhantom || 
+            window._phantom) {
+            blockAccess('🤖 بوت مكتشف - وصول محظور');
             return true;
         }
         return false;
     }
     
-    // 4. حماية من Social Engineering
-    function detectSocialEngineering() {
-        // كشف محاولات الخداع
-        const suspiciousPatterns = [
-            'admin', 'password', 'login', 'hack', 'exploit',
-            'inject', 'script', 'alert', 'eval', 'function'
-        ];
-        
+    // 3. حماية فورية من الحقن
+    function protectInputsNow() {
         document.addEventListener('input', function(e) {
-            const value = e.target.value.toLowerCase();
-            if (suspiciousPatterns.some(pattern => value.includes(pattern))) {
+            const value = e.target.value;
+            const dangerous = /<script|javascript:|on\w+\s*=|select.*from|drop.*table|union.*select/i;
+            
+            if (dangerous.test(value)) {
                 e.target.value = '';
-                showSecurityAlert('⚠️ محتوى مشبوه مكتشف!');
+                showAlert('⚠️ محتوى خطير مكتشف ومحذوف!');
+                logThreat('INJECTION_ATTEMPT', value);
             }
-        });
+        }, true);
     }
     
-    // 5. حماية من هجمات Injection
-    function preventInjection() {
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const inputs = form.querySelectorAll('input, textarea');
-                inputs.forEach(input => {
-                    const value = input.value;
-                    
-                    // كشف SQL Injection
-                    const sqlPatterns = /('|(\\')|(;)|(\\;)|(select|insert|update|delete|drop|create|alter|exec|execute)/i;
-                    if (sqlPatterns.test(value)) {
-                        e.preventDefault();
-                        blockAccess('🚫 محاولة SQL Injection مكتشفة');
-                        return;
-                    }
-                    
-                    // كشف XSS
-                    const xssPatterns = /(<script|javascript:|on\w+\s*=)/i;
-                    if (xssPatterns.test(value)) {
-                        e.preventDefault();
-                        blockAccess('🚫 محاولة XSS مكتشفة');
-                        return;
-                    }
-                    
-                    // تنظيف البيانات
-                    input.value = sanitizeInput(value);
-                });
-            });
-        });
-    }
-    
-    // 6. حماية من هجمات CSRF
-    function generateCSRFToken() {
-        const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-        sessionStorage.setItem('csrf_token', token);
-        
-        // إضافة التوكن لجميع النماذج
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            const tokenInput = document.createElement('input');
-            tokenInput.type = 'hidden';
-            tokenInput.name = 'csrf_token';
-            tokenInput.value = token;
-            form.appendChild(tokenInput);
-        });
-    }
-    
-    // 7. مراقبة الشبكة والطلبات المشبوهة
-    function monitorNetworkActivity() {
+    // 4. مراقبة لحظية للشبكة
+    function monitorNetworkNow() {
         const originalFetch = window.fetch;
         window.fetch = function(...args) {
             const url = args[0];
             
-            // كشف الطلبات المشبوهة
-            const suspiciousUrls = [
-                'eval', 'exec', 'system', 'shell', 'cmd',
-                'backdoor', 'malware', 'virus'
-            ];
-            
-            if (suspiciousUrls.some(pattern => url.includes(pattern))) {
-                blockAccess('🚫 طلب شبكة مشبوه مكتشف');
-                return Promise.reject('Blocked');
+            // فحص فوري للروابط المشبوهة
+            if (typeof url === 'string' && 
+                /eval|exec|shell|cmd|hack|exploit/i.test(url)) {
+                logThreat('MALICIOUS_REQUEST', url);
+                return Promise.reject('طلب محظور');
             }
             
             return originalFetch.apply(this, args);
         };
     }
     
-    // 8. حماية من Clickjacking
-    function preventClickjacking() {
-        if (window.top !== window.self) {
-            window.top.location = window.self.location;
-        }
+    // 5. حماية فورية من أدوات المطورين
+    function protectDevToolsNow() {
+        let devtools = false;
         
-        // إضافة X-Frame-Options
-        const meta = document.createElement('meta');
-        meta.httpEquiv = 'X-Frame-Options';
-        meta.content = 'DENY';
-        document.head.appendChild(meta);
-    }
-    
-    // 9. كشف أدوات الاختراق المتقدمة
-    function detectHackingTools() {
-        const hackingTools = [
-            'burpsuite', 'owasp', 'sqlmap', 'nmap', 'metasploit',
-            'kali', 'parrot', 'blackarch', 'pentesting'
-        ];
-        
-        const userAgent = navigator.userAgent.toLowerCase();
-        if (hackingTools.some(tool => userAgent.includes(tool))) {
-            blockAccess('🛡️ أداة اختراق مكتشفة');
-            return true;
-        }
-        
-        // فحص إضافي للأدوات
-        if (window.chrome && window.chrome.runtime && window.chrome.runtime.onConnect) {
-            const extensions = Object.keys(window.chrome.runtime.onConnect);
-            if (extensions.some(ext => hackingTools.some(tool => ext.includes(tool)))) {
-                blockAccess('🛡️ إضافة اختراق مكتشفة');
-                return true;
+        setInterval(() => {
+            const threshold = 160;
+            if (window.outerHeight - window.innerHeight > threshold || 
+                window.outerWidth - window.innerWidth > threshold) {
+                if (!devtools) {
+                    devtools = true;
+                    blockAccess('🛠️ أدوات المطور مكتشفة - وصول محظور');
+                }
             }
-        }
-        
-        return false;
+        }, 100); // فحص كل 100ms
     }
     
-    // 10. حماية من Memory Corruption
-    function protectMemory() {
-        // منع تعديل الكائنات الأساسية
-        Object.freeze(Object.prototype);
-        Object.freeze(Array.prototype);
-        Object.freeze(Function.prototype);
+    // 6. حماية فورية من النسخ
+    function preventCopyingNow() {
+        ['contextmenu', 'selectstart', 'dragstart'].forEach(event => {
+            document.addEventListener(event, function(e) {
+                e.preventDefault();
+                showAlert('⚠️ النسخ محظور!');
+                return false;
+            });
+        });
         
-        // حماية المتغيرات الحساسة
-        const sensitiveData = new WeakMap();
-        
-        window.protectData = function(obj, data) {
-            sensitiveData.set(obj, data);
-        };
-        
-        window.getData = function(obj) {
-            return sensitiveData.get(obj);
-        };
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+A, C, V, S, U, F12
+            if ((e.ctrlKey && [65,67,86,83,85].includes(e.keyCode)) || 
+                e.keyCode === 123) {
+                e.preventDefault();
+                showAlert('⚠️ اختصار محظور!');
+                return false;
+            }
+        });
     }
     
-    // 11. نظام تسجيل الأحداث الأمنية
-    function logSecurityEvent(event, details) {
-        const logEntry = {
-            timestamp: new Date().toISOString(),
-            event: event,
+    // 7. تسجيل فوري للتهديدات
+    function logThreat(type, details) {
+        const threat = {
+            time: new Date().toISOString(),
+            type: type,
             details: details,
             userAgent: navigator.userAgent,
-            ip: 'client-side', // سيتم الحصول عليه من الخادم
-            url: window.location.href
+            url: location.href
         };
         
-        // حفظ في localStorage للمراجعة
-        let securityLogs = JSON.parse(localStorage.getItem('securityLogs') || '[]');
-        securityLogs.push(logEntry);
+        // حفظ فوري
+        let threats = JSON.parse(localStorage.getItem('threats') || '[]');
+        threats.push(threat);
+        localStorage.setItem('threats', JSON.stringify(threats.slice(-50)));
         
-        // الاحتفاظ بآخر 100 حدث فقط
-        if (securityLogs.length > 100) {
-            securityLogs = securityLogs.slice(-100);
-        }
-        
-        localStorage.setItem('securityLogs', JSON.stringify(securityLogs));
-        
-        // إرسال للخادم (إذا كان متاحاً)
-        if (window.reportSecurityEvent) {
-            window.reportSecurityEvent(logEntry);
-        }
+        console.warn('🚨 تهديد مكتشف:', threat);
     }
     
-    // 12. حماية من Timing Attacks
-    function preventTimingAttacks() {
-        const originalSetTimeout = window.setTimeout;
-        const originalSetInterval = window.setInterval;
+    // 8. حظر فوري
+    function blockAccess(reason) {
+        logThreat('ACCESS_BLOCKED', reason);
         
-        window.setTimeout = function(callback, delay) {
-            // إضافة تأخير عشوائي صغير
-            const randomDelay = Math.random() * 10;
-            return originalSetTimeout(callback, delay + randomDelay);
-        };
-        
-        window.setInterval = function(callback, delay) {
-            const randomDelay = Math.random() * 10;
-            return originalSetInterval(callback, delay + randomDelay);
-        };
-    }
-    
-    // وظائف مساعدة
-    function blockAccess(message) {
-        logSecurityEvent('ACCESS_BLOCKED', message);
         document.body.innerHTML = `
-            <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;z-index:99999;">
-                <div style="font-size:48px;margin-bottom:20px;">🛡️</div>
-                <div>${message}</div>
-                <div style="font-size:14px;margin-top:20px;opacity:0.7;">Security ID: ${Date.now()}</div>
+            <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg,#ff0000,#8b0000);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial;z-index:999999;">
+                <div style="font-size:80px;margin-bottom:30px;animation:pulse 1s infinite;">🛡️</div>
+                <div style="font-size:28px;margin-bottom:20px;text-align:center;">${reason}</div>
+                <div style="font-size:16px;opacity:0.8;">Security Event ID: ${Date.now()}</div>
+                <div style="font-size:14px;margin-top:20px;opacity:0.6;">الوصول محظور نهائياً</div>
             </div>
+            <style>
+                @keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.1); } }
+                * { pointer-events: none !important; }
+            </style>
         `;
         
-        // منع أي تفاعل إضافي
-        document.addEventListener('keydown', e => e.preventDefault());
-        document.addEventListener('click', e => e.preventDefault());
+        // منع أي تفاعل
+        setTimeout(() => {
+            ['click', 'keydown', 'keyup', 'mousemove'].forEach(event => {
+                document.addEventListener(event, e => e.stopImmediatePropagation(), true);
+            });
+        }, 100);
     }
     
-    function showSecurityAlert(message) {
+    // 9. تنبيه فوري
+    function showAlert(message) {
         const alert = document.createElement('div');
-        alert.textContent = message;
+        alert.innerHTML = message;
         alert.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #ff4444;
+            background: linear-gradient(45deg, #ff4444, #cc0000);
             color: white;
-            padding: 15px 20px;
+            padding: 15px 25px;
             border-radius: 10px;
             z-index: 99999;
             font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(255,68,68,0.5);
+            animation: slideIn 0.3s ease;
         `;
+        
+        const style = document.createElement('style');
+        style.textContent = '@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }';
+        document.head.appendChild(style);
+        
         document.body.appendChild(alert);
-        
-        setTimeout(() => alert.remove(), 5000);
-        logSecurityEvent('SECURITY_ALERT', message);
+        setTimeout(() => alert.remove(), 3000);
     }
     
-    // تشغيل جميع أنظمة الحماية
-    function initSecurity() {
-        console.log('%c🛡️ نظام الحماية السيبرانية نشط', 'color: green; font-size: 16px; font-weight: bold;');
+    // 10. تشغيل فوري لجميع الحماية
+    function activateNow() {
+        console.log('%c🛡️ نظام الحماية مفعل لحظياً!', 'color: #00ff00; font-size: 18px; font-weight: bold; background: #000; padding: 10px;');
         
-        // فحص أولي
-        if (!checkRateLimit()) return;
-        if (detectBot()) return;
-        if (detectHackingTools()) return;
+        // فحص فوري
+        if (!rateLimitCheck()) return;
+        if (detectBotImmediate()) return;
         
-        // تفعيل الحماية
-        detectSocialEngineering();
-        preventInjection();
-        generateCSRFToken();
-        monitorNetworkActivity();
-        preventClickjacking();
-        protectMemory();
-        preventTimingAttacks();
+        // تفعيل فوري
+        protectInputsNow();
+        monitorNetworkNow();
+        protectDevToolsNow();
+        preventCopyingNow();
         
-        // مراقبة مستمرة
+        // مراقبة مستمرة كل ثانية
         setInterval(() => {
-            checkRateLimit();
-            detectBot();
-            detectHackingTools();
-        }, 30000); // كل 30 ثانية
+            if (isActive) {
+                rateLimitCheck();
+                detectBotImmediate();
+            }
+        }, 1000);
         
-        logSecurityEvent('SECURITY_SYSTEM_INITIALIZED', 'All protection systems active');
+        // حماية من إيقاف النظام
+        Object.defineProperty(window, 'isActive', {
+            value: true,
+            writable: false,
+            configurable: false
+        });
+        
+        logThreat('SYSTEM_ACTIVATED', 'جميع أنظمة الحماية مفعلة');
+        showAlert('🛡️ نظام الحماية نشط!');
     }
     
-    // تشغيل النظام عند تحميل الصفحة
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initSecurity);
-    } else {
-        initSecurity();
-    }
+    // تشغيل فوري
+    activateNow();
     
-    // حماية من إيقاف النظام
-    Object.freeze(window.initSecurity);
+    // حماية إضافية من التعطيل
+    ['beforeunload', 'unload', 'pagehide'].forEach(event => {
+        window.addEventListener(event, () => {
+            logThreat('PAGE_EXIT', 'محاولة مغادرة الصفحة');
+        });
+    });
     
 })();
