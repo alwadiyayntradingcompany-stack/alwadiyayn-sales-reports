@@ -488,7 +488,7 @@ body::before {
 }
 
 .flag-content {
-    width: 180px;
+    width: 200px;
     height: 120px;
     background: url('FLAG VIDEO.mp4') center/cover no-repeat;
     border-radius: 8px;
@@ -836,41 +836,36 @@ body::before {
 .theme-toggle {
     position: fixed;
     top: 10px;
-    right: 30px;
-    background: rgba(0, 0, 0, 0.9);
+    right: 50%;
+    transform: translateX(50px);
+    background: rgba(0, 0, 0, 0.8);
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: bold;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 16px;
     cursor: pointer;
     z-index: 9999;
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
-    font-family: 'Arial', sans-serif;
 }
 
 .theme-toggle:hover {
     background: rgba(0, 0, 0, 1);
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    transform: translateX(50px) scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .theme-toggle-icon {
     font-size: 16px;
     transition: transform 0.3s ease;
-}
-
-.theme-toggle-text {
-    font-weight: bold;
-    font-family: 'Arial', sans-serif;
-    font-size: 12px;
 }
 
 
