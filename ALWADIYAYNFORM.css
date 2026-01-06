@@ -835,9 +835,9 @@ body::before {
 /* زر التحكم في الوضع الليلي/النهاري */
 .theme-toggle {
     position: fixed;
-    top: 10px;
-    right: 50%;
-    transform: translateX(50px);
+    top: 45px;
+    left: 50%;
+    transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.8);
     color: white;
     border: none;
@@ -859,7 +859,7 @@ body::before {
 
 .theme-toggle:hover {
     background: rgba(0, 0, 0, 1);
-    transform: translateX(50px) scale(1.1);
+    transform: translateX(-50%) scale(1.1);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
