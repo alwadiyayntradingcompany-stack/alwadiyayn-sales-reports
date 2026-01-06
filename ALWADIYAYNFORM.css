@@ -628,13 +628,12 @@ body::before {
         width: fit-content;
     }
     
-    .theme-toggle {
+    .admin-btn {
         position: relative;
         top: auto;
-        left: auto;
-        transform: none;
+        right: auto;
         margin: 10px auto;
-        display: flex;
+        display: block;
         width: fit-content;
     }
     
@@ -908,6 +907,33 @@ body::before {
     font-weight: bold;
     font-family: 'Arial', sans-serif;
     font-size: 14px;
+}
+
+/* زر لوحة التحكم */
+.admin-btn {
+    position: fixed;
+    top: 250px;
+    right: 30px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1002;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    font-family: 'Arial', sans-serif;
+}
+
+.admin-btn:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
 }
 
 /* الوضع الليلي */

@@ -628,10 +628,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // تفعيل مؤشر حماية البيانات
     showDataProtectionIndicator('🔒 حماية البيانات نشطة', 'active');
     
-    // دالة فتح لوحة الإدارة
-    window.openAdminPanel = function() {
-        window.open('admin-panel.html', '_blank');
-    };
+// دالة فتح لوحة الإدارة المحدثة
+function openAdminPanel() {
+    window.open('admin-new.html', '_blank');
+}
     
     // تحميل الوضع المحفوظ
     const savedTheme = localStorage.getItem('theme');
