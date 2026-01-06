@@ -488,7 +488,7 @@ body::before {
 }
 
 .flag-content {
-    width: 200px;
+    width: 220px;
     height: 120px;
     background: url('FLAG VIDEO.mp4') center/cover no-repeat;
     border-radius: 8px;
@@ -549,7 +549,7 @@ body::before {
 .flag-content video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
     border-radius: 6px;
 }
 
