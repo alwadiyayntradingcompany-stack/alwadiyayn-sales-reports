@@ -470,7 +470,7 @@
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2>📊 لوحة التحكم</h2>
-                <p>شركة الواديين للتجارة</p>
+                <p>نموذج تقرير المبيعات</p>
             </div>
             <div class="sidebar-menu">
                 <a href="#" class="menu-item active" onclick="showSection('dashboard')">
@@ -1292,7 +1292,7 @@
             const totalSales = document.getElementById('totalSales').textContent;
             const netProfit = document.getElementById('netProfit').textContent;
             
-            const subject = 'تقرير المبيعات - شركة الواديين للتجارة';
+            const subject = 'تقرير المبيعات - نموذج تقرير المبيعات';
             const body = `تقرير المبيعات اليومية\n\nإجمالي المبيعات: ${totalSales}\nصافي الربح: ${netProfit}\n\nتاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}\n\nمع تحيات فريق الإدارة`;
             
             const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -1302,7 +1302,7 @@
         function printReport() {
             const printContent = `
                 <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right;">
-                    <h1>تقرير المبيعات - شركة الواديين للتجارة</h1>
+                    <h1>تقرير المبيعات - نموذج تقرير المبيعات</h1>
                     <hr>
                     <p><strong>إجمالي المبيعات:</strong> ${document.getElementById('totalSales').textContent}</p>
                     <p><strong>صافي الربح:</strong> ${document.getElementById('netProfit').textContent}</p>
