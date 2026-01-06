@@ -609,23 +609,23 @@ body::before {
     }
     
     .data-protection-indicator {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        margin: 10px auto;
-        display: block;
-        width: fit-content;
+        position: fixed !important;
+        top: 10px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin: 0 !important;
+        display: block !important;
+        width: auto !important;
     }
     
     .theme-toggle {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        margin: 10px auto;
-        display: flex;
-        width: fit-content;
+        position: fixed !important;
+        top: 45px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin: 0 !important;
+        display: flex !important;
+        width: auto !important;
     }
     
     .theme-toggle {
