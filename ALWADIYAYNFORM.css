@@ -30,7 +30,8 @@ body::before {
     z-index: 2;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 140px 20px 20px;
+    margin-top: 80px;
 }
 
 .background-section {
@@ -582,6 +583,12 @@ body::before {
         font-size: 8px;
     }
     
+    .form-container {
+        flex-direction: column;
+        padding: 10px;
+        margin-top: 20px;
+    }
+    
     .digital-clock {
         position: relative;
         top: auto;
@@ -619,11 +626,6 @@ body::before {
         margin: 10px auto;
         display: block;
         width: fit-content;
-    }
-    
-    .form-container {
-        flex-direction: column;
-        padding: 10px;
     }
     
     .form-section {
@@ -800,7 +802,7 @@ body::before {
 
 .digital-clock {
     position: fixed;
-    top: 80px;
+    top: 120px;
     left: 30px;
     background: rgba(0, 0, 0, 0.8);
     color: #00ff00;
@@ -811,29 +813,9 @@ body::before {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.data-protection-indicator {
-    position: absolute;
-    top: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(76, 175, 80, 0.9);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    z-index: 1001;
-    display: block;
-    text-align: center;
-    min-width: 200px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    pointer-events: none;
-}
-
 .saudi-flag {
     position: absolute;
-    top: 80px;
+    top: 120px;
     right: 30px;
     z-index: 5;
     display: flex;
