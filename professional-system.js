@@ -361,28 +361,51 @@ class ProfessionalSystem {
         };
     }
 
-    // تشغيل جميع الأنظمة
+    // تشغيل جميع الأنظمة للمستخدمين العاديين فقط
     init() {
-        console.log('%c🚀 تشغيل النظام الاحترافي الشامل', 'color: #2ecc71; font-size: 16px; font-weight: bold;');
-        
-        this.showAdvancedLoader('تحميل الميزات الاحترافية...');
-        
-        setTimeout(() => {
-            this.initPWA();
-            this.initDarkMode();
-            this.initAnalytics();
-            this.initNotifications();
-            this.optimizePerformance();
-            this.initAdvancedCharts();
+        // فحص إذا كانت صفحة المستخدم (النموذج)
+        if (location.pathname.includes('ALWADIYAYNFORM.html') || location.pathname === '/') {
+            console.log('%c📝 نظام إدخال البيانات نشط', 'color: #2ecc71; font-size: 16px; font-weight: bold;');
             
-            this.hideAdvancedLoader();
+            this.showAdvancedLoader('تحميل نموذج الإدخال...');
             
-            // إشعار بالتفعيل
             setTimeout(() => {
-                this.sendNotification('🎉 النظام جاهز!', 'تم تفعيل جميع الميزات الاحترافية بنجاح');
-            }, 1000);
+                // ميزات أساسية للمستخدمين فقط
+                this.initPWA();
+                this.initDarkMode();
+                this.optimizePerformance();
+                
+                this.hideAdvancedLoader();
+                
+                // إشعار بسيط
+                setTimeout(() => {
+                    this.sendNotification('✅ النموذج جاهز!', 'يمكنك الآن إدخال بيانات المبيعات');
+                }, 1000);
+                
+            }, 1500);
+        } 
+        // ميزات متقدمة للإدارة فقط
+        else if (location.pathname.includes('admin')) {
+            console.log('%c🚀 تشغيل النظام الاحترافي الشامل', 'color: #2ecc71; font-size: 16px; font-weight: bold;');
             
-        }, 2000);
+            this.showAdvancedLoader('تحميل الميزات الاحترافية...');
+            
+            setTimeout(() => {
+                this.initPWA();
+                this.initDarkMode();
+                this.initAnalytics();
+                this.initNotifications();
+                this.optimizePerformance();
+                this.initAdvancedCharts();
+                
+                this.hideAdvancedLoader();
+                
+                setTimeout(() => {
+                    this.sendNotification('🎉 النظام جاهز!', 'تم تفعيل جميع الميزات الاحترافية بنجاح');
+                }, 1000);
+                
+            }, 2000);
+        }
     }
 }
 
