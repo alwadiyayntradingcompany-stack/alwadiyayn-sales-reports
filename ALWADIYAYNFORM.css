@@ -608,16 +608,6 @@ body::before {
         transform: scale(0.8);
     }
     
-    .day-night-indicator {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        margin: 10px auto;
-        display: flex;
-        width: fit-content;
-    }
-    
     .data-protection-indicator {
         position: relative;
         top: auto;
@@ -625,6 +615,16 @@ body::before {
         transform: none;
         margin: 10px auto;
         display: block;
+        width: fit-content;
+    }
+    
+    .theme-toggle {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin: 10px auto;
+        display: flex;
         width: fit-content;
     }
     
@@ -776,7 +776,7 @@ body::before {
 /* مؤشر حماية البيانات */
 .data-protection-indicator {
     position: fixed;
-    top: 90px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.8);
@@ -807,41 +807,7 @@ body::before {
     color: #f44336;
     border-color: rgba(244, 67, 54, 0.3);
 }
-/* مؤشر النهار والليل */
-.day-night-indicator {
-    position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-family: 'Courier New', monospace;
-    z-index: 1002;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
 
-.sun-moon-icon {
-    font-size: 20px;
-    animation: rotate 10s linear infinite;
-}
-
-.day-night-text {
-    font-size: 14px;
-    font-weight: bold;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
 
 .digital-clock {
     position: fixed;
