@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // التحقق من الحقول المطلوبة
         const requiredFields = [
-            { selector: 'input[type="date"]', message: 'يرجى اختيار التاريخ الميلادي' },
+            { selector: '#gregorianDate', message: 'يرجى اختيار التاريخ الميلادي' },
             { selector: 'input[name="hijriDate"]', message: 'يرجى اختيار التاريخ الهجري' },
             { selector: '.green-field input', message: 'يرجى إدخال اسم الشركة' },
             { selector: '.purple-field input', message: 'يرجى إدخال الفرع/الموقع' },
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     function autoSave() {
         const formData = {
-            date: document.querySelector('input[type="date"]').value,
+            date: document.getElementById('gregorianDate').value,
             hijriDate: document.querySelector('input[name="hijriDate"]').value,
             company: document.querySelector('.green-field input').value,
             branch: document.querySelector('.purple-field input').value,
@@ -480,6 +480,29 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('input', calculateTotal);
         }
     });
+    
+    // تعيين التاريخ الحالي بالتنسيق الصحيح D-M-Y
+    const dateInput = document.getElementById('gregorianDate');
+    if (dateInput) {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        dateInput.value = `${year}-${month}-${day}`;
+        
+        // إضافة مستمع لتغيير عرض التاريخ
+        dateInput.addEventListener('input', function() {
+            if (this.value) {
+                const dateValue = new Date(this.value);
+                const displayDay = String(dateValue.getDate()).padStart(2, '0');
+                const displayMonth = String(dateValue.getMonth() + 1).padStart(2, '0');
+                const displayYear = dateValue.getFullYear();
+                
+                // عرض التاريخ بتنسيق D-M-Y في placeholder
+                this.setAttribute('data-display', `${displayDay}-${displayMonth}-${displayYear}`);
+            }
+        });
+    }
     
     // تحميل البيانات المحفوظة
     loadSavedData();
@@ -553,9 +576,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // تحديث مؤشر النهار والليل
+    function updateDayNightIndicator() {
+        const now = new Date();
+        const hour = now.getHours();
+        const sunMoonIcon = document.getElementById('sunMoonIcon');
+        const dayNightText = document.getElementById('dayNightText');
+        
+        if (hour >= 6 && hour < 18) {
+            // نهار
+            sunMoonIcon.textContent = '☀️';
+            dayNightText.textContent = 'نهار';
+        } else {
+            // ليل
+            sunMoonIcon.textContent = '🌙';
+            dayNightText.textContent = 'ليل';
+        }
+    }
+    
     // تحديث الساعة كل ثانية
     setInterval(updateClock, 1000);
+    setInterval(updateDayNightIndicator, 1000);
     updateClock();
+    updateDayNightIndicator();
     
     // تفعيل مؤشر حماية البيانات
     showDataProtectionIndicator('🔒 حماية البيانات نشطة', 'active');
@@ -568,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // دوال حماية البيانات
     function captureFormData() {
         return {
-            date: document.querySelector('input[type="date"]').value,
+            date: document.getElementById('gregorianDate').value,
             hijriDate: document.querySelector('input[name="hijriDate"]').value,
             company: document.querySelector('.green-field input').value,
             branch: document.querySelector('.purple-field input').value,

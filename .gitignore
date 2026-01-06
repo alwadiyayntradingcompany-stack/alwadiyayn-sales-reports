@@ -1,0 +1,24 @@
+# ملفات الإدارة الحساسة فقط
+admin-new.html
+system-tools.js
+advanced-tools.js
+security-protection.js
+
+# ملفات الحماية
+cyber-security.js
+protection.js
+professional-system.js
+
+# ملفات الإعدادات
+.htaccess
+.env
+config.json
+
+# ملفات النسخ الاحتياطية
+backup/
+*.backup
+*.bak
+
+# ملفات مؤقتة
+*.tmp
+.DS_Store

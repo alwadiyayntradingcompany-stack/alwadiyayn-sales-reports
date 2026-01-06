@@ -1,16 +1,36 @@
-# نظام تقارير المبيعات - شركة الوادي للتجارة
-# الحساب: alwadiyayntradingcompany@gmail.com
-
-# حماية الملفات الحساسة
 User-agent: *
-Disallow: /test-connection.html
-Disallow: /alwadiya-test.html
-Disallow: /google-apps-script*.js
-Disallow: /*.md$
-Allow: /jotform-replicate.html
-Allow: /success.html
-Allow: /jotform-replicate.js
-Allow: /jotform-replicate.css
 
-# معلومات الموقع
-Sitemap: https://alwadiya-trading.github.io/alwadiya-sales-reports/sitemap.xml
+# منع فهرسة الملفات الحساسة
+Disallow: /admin-new.html
+Disallow: /data-integrity-viewer.html
+Disallow: /system-tools.js
+Disallow: /advanced-tools.js
+Disallow: /security-protection.js
+Disallow: /cyber-security.js
+Disallow: /protection.js
+Disallow: /professional-system.js
+
+# منع فهرسة المجلدات الحساسة
+Disallow: /admin/
+Disallow: /backup/
+Disallow: /logs/
+Disallow: /config/
+
+# منع فهرسة الملفات الاحتياطية
+Disallow: *.bak
+Disallow: *.backup
+Disallow: *.log
+Disallow: *.sql
+Disallow: *.json
+
+# السماح بفهرسة الملفات العامة فقط
+Allow: /ALWADIYAYNFORM.html
+Allow: /index.html
+Allow: /success.html
+Allow: /legal-notice.html
+
+# منع الزحف السريع
+Crawl-delay: 10
+
+# خريطة الموقع (للملفات المسموحة فقط)
+Sitemap: https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/sitemap.xml
