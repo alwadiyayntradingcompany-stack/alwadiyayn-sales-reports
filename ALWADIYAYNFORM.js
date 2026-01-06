@@ -608,6 +608,51 @@ document.addEventListener('DOMContentLoaded', function() {
         window.open('admin-panel.html', '_blank');
     };
     
+    // دالة التحكم في الوضع الليلي/النهاري
+    window.toggleTheme = function() {
+        const body = document.body;
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+        
+        if (body.classList.contains('dark-mode')) {
+            // تغيير إلى الوضع النهاري
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            themeIcon.textContent = '🌙';
+            themeText.textContent = 'ليل';
+            localStorage.setItem('theme', 'light');
+            console.log('تم التغيير إلى الوضع النهاري');
+        } else {
+            // تغيير إلى الوضع الليلي
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'نهار';
+            localStorage.setItem('theme', 'dark');
+            console.log('تم التغيير إلى الوضع الليلي');
+        }
+    };
+    
+    // تحميل الوضع المحفوظ
+    const savedTheme = localStorage.getItem('theme');
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'نهار';
+    } else if (savedTheme === 'light') {
+        body.classList.add('light-mode');
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'ليل';
+    } else {
+        // الوضع الافتراضي
+        themeIcon.textContent = '🌙';
+        themeText.textContent = 'ليل';
+    }
+    
     // دوال حماية البيانات
     function captureFormData() {
         return {

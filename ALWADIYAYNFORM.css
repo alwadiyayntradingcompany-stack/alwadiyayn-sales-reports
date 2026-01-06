@@ -628,6 +628,16 @@ body::before {
         width: fit-content;
     }
     
+    .theme-toggle {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin: 10px auto;
+        display: flex;
+        width: fit-content;
+    }
+    
     .form-section {
         margin-top: 20px;
     }
@@ -764,6 +774,40 @@ body::before {
     letter-spacing: 0.3px;
 }
 
+/* مؤشر حماية البيانات */
+.data-protection-indicator {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #4CAF50;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-family: 'Arial', sans-serif;
+    z-index: 1001;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+}
+
+.data-protection-indicator.active {
+    color: #4CAF50;
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+.data-protection-indicator.warning {
+    color: #ff9800;
+    border-color: rgba(255, 152, 0, 0.3);
+}
+
+.data-protection-indicator.error {
+    color: #f44336;
+    border-color: rgba(244, 67, 54, 0.3);
+}
 /* مؤشر النهار والليل */
 .day-night-indicator {
     position: fixed;
@@ -814,11 +858,97 @@ body::before {
 }
 
 .saudi-flag {
-    position: absolute;
+    position: fixed;
     top: 120px;
     right: 30px;
     z-index: 5;
     display: flex;
     align-items: flex-start;
     gap: 5px;
+}
+
+/* زر التحكم في الوضع الليلي/النهاري */
+.theme-toggle {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    font-family: 'Arial', sans-serif;
+}
+
+.theme-toggle:hover {
+    background: rgba(0, 0, 0, 1);
+    transform: translateX(-50%) scale(1.1);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.theme-toggle-icon {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-text {
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+}
+
+/* الوضع الليلي */
+body.dark-mode {
+    background: linear-gradient(135deg, #000000, #1a1a1a, #0a0a0a) !important;
+}
+
+body.dark-mode .form-section {
+    background: rgba(0, 0, 0, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+body.dark-mode .field-input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+
+body.dark-mode .field-input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* الوضع النهاري */
+body.light-mode {
+    background: linear-gradient(135deg, #87CEEB, #98D8E8, #B0E0E6) !important;
+}
+
+body.light-mode .form-section {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-mode .field-label {
+    color: #333 !important;
+    text-shadow: none !important;
+}
+
+body.light-mode .form-header h1 {
+    color: #333 !important;
+    text-shadow: none !important;
+    background: linear-gradient(135deg, #333, #555) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
 }
