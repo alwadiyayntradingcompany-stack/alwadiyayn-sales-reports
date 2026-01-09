@@ -118,7 +118,7 @@
                 successContainer.innerHTML = successLogs.map(log => `
                     <div class="log-item">
                         <div class="timestamp">📅 ${new Date(log.timestamp).toLocaleString('ar-SA')}</div>
-                        <div><strong>الشركة:</strong> ${log.data['إسم الشركة / Company Name / কোম্পানির নাম'] || 'غير محدد'}</div>
+                        <div><strong>المؤسسة:</strong> ${log.data['إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম'] || 'غير محدد'}</div>
                         <div><strong>الفرع:</strong> ${log.data['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || 'غير محدد'}</div>
                         <div><strong>المسئول:</strong> ${log.data['المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি'] || 'غير محدد'}</div>
                         <div><strong>الكاش:</strong> ${log.data['كاش / Cash / নগদ'] || '0'} ريال</div>

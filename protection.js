@@ -60,23 +60,9 @@
         return false;
     });
     
-    // إضافة علامة مائية
+    // علامة مائية محذوفة
     function addWatermark() {
-        const watermark = document.createElement('div');
-        watermark.innerHTML = 'شركة الواديين للتجارة - محمي بحقوق الطبع والنشر';
-        watermark.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 48px;
-            color: rgba(0, 0, 0, 0.05);
-            pointer-events: none;
-            z-index: 1000;
-            user-select: none;
-            font-weight: bold;
-        `;
-        document.body.appendChild(watermark);
+        // تم حذف العلامة المائية
     }
     
     // حماية من النسخ عبر iframe
@@ -119,20 +105,20 @@
     
     // تشغيل الحماية
     document.addEventListener('DOMContentLoaded', function() {
-        addWatermark();
+        // addWatermark(); // محذوفة
         obfuscateContent();
         
         // حماية إضافية للنموذج
         const form = document.querySelector('.jotform-form');
         if (form) {
-            form.setAttribute('data-protected', 'alwadiyayn-trading');
+            form.setAttribute('data-protected', 'sales-report-form');
         }
     });
     
     // حماية من النسخ عبر console
     console.clear();
     console.log('%c🚫 تحذير أمني!', 'color: red; font-size: 30px; font-weight: bold;');
-    console.log('%cهذا الموقع محمي بحقوق الطبع والنشر لشركة الواديين للتجارة', 'color: red; font-size: 16px;');
+    console.log('%cهذا الموقع محمي بحقوق الطبع والنشر', 'color: red; font-size: 16px;');
     console.log('%cأي محاولة لنسخ أو استنساخ المحتوى مخالفة للقانون', 'color: red; font-size: 16px;');
     
 })();

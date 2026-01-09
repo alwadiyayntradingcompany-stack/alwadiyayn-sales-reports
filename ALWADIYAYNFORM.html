@@ -38,7 +38,7 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
         <div class="saudi-flag">
             <div class="flag-pole"></div>
             <div class="flag-content" ondblclick="openAdminPanel()" title="ضغط مزدوج للإدارة" style="cursor: pointer;">
-                <video autoplay muted loop>
+                <video autoplay muted loop playsinline controls="false" style="pointer-events: none;">
                     <source src="FLAG VIDEO.mp4" type="video/mp4">
                 </video>
             </div>
@@ -95,10 +95,10 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                     </div>
                 </div>
                 
-                <!-- اسم الشركة -->
+                <!-- اسم المؤسسة -->
                 <div class="form-field green-field">
-                    <label class="field-label">إسم الشركة / Company Name / কোম্পানির নাম*</label>
-                    <input type="text" class="field-input" placeholder="أدخل اسم الشركة">
+                    <label class="field-label">إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম*</label>
+                    <input type="text" class="field-input" placeholder="أدخل اسم المؤسسة">
                 </div>
                 
                 <!-- الفرع/الموقع -->
@@ -143,6 +143,18 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                     <input type="number" class="field-input" placeholder="e.g., 23">
                 </div>
                 
+                <!-- مسحوبات مالية أخرى -->
+                <div class="form-field" style="background: linear-gradient(135deg, #17a2b8, #138496); border-radius: 15px; padding: 20px; position: relative; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 20px;">
+                    <label class="field-label" style="display: block; color: white; font-weight: 600; font-size: 14px; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন*</label>
+                    <input type="number" class="field-input" placeholder="e.g., 100" style="width: 100%; padding: 15px; border: none; border-radius: 10px; background: rgba(255, 255, 255, 0.95); font-size: 16px; transition: all 0.3s ease; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);">
+                </div>
+                
+                <!-- اسم القائم بسحب المبلغ -->
+                <div class="form-field" style="background: linear-gradient(135deg, #28a745, #20c997); border-radius: 15px; padding: 20px; position: relative; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 20px;">
+                    <label class="field-label" style="display: block; color: white; font-weight: 600; font-size: 14px; margin-bottom: 12px; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম*</label>
+                    <input type="text" class="field-input" placeholder="أدخل اسم القائم بالسحب" style="width: 100%; padding: 15px; border: none; border-radius: 10px; background: rgba(255, 255, 255, 0.95); font-size: 16px; transition: all 0.3s ease; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);">
+                </div>
+                
                 <!-- رفع صور الفواتير -->
                 <div class="form-field gray-field">
                     <label class="field-label">رفع صور الفواتير</label>
@@ -179,6 +191,11 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
     <script src="protection.js"></script>
     <script src="professional-system.js"></script>
     <script src="ALWADIYAYNFORM.js"></script>
+    
+    <!-- حقوق الملكية - محمود حسين -->
+    <div style="position:fixed!important;bottom:10px!important;right:10px!important;background:rgba(0,0,0,0.9)!important;color:#d4af37!important;padding:10px 15px!important;border-radius:8px!important;font-size:12px!important;font-weight:bold!important;z-index:99999!important;border:2px solid #d4af37!important;box-shadow:0 4px 15px rgba(0,0,0,0.7)!important;display:block!important;visibility:visible!important;opacity:1!important;">
+        © محمود حسين
+    </div>
     
     <!-- إشعار حقوق النشر -->
     <footer style="text-align:center;padding:25px;background:rgba(0,0,0,0.9);color:#d4af37;margin-top:40px;border-top:3px solid #d4af37;box-shadow:0 -5px 15px rgba(0,0,0,0.3);">

@@ -168,6 +168,14 @@ body::before {
     background: linear-gradient(135deg, #8b6914, #a0522d);
 }
 
+.cyan-field {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.lime-field {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
 .gray-field {
     background: linear-gradient(135deg, #636e72, #2d3436);
 }
@@ -551,6 +559,7 @@ body::before {
     height: 100%;
     object-fit: fill;
     border-radius: 6px;
+    pointer-events: none;
 }
 
 /* التصميم المتجاوب المحسن */
@@ -686,34 +695,24 @@ body::before {
     }
 }
 
-/* علامة مائية لحقوق النشر */
-    margin-bottom: 2px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    letter-spacing: 0.5px;
-    font-family: 'Arial', sans-serif;
+/* حقوق الملكية أسفل يمين الشاشة */
+.copyright-bottom-right {
+    position: fixed !important;
+    bottom: 10px !important;
+    right: 10px !important;
+    background: rgba(0,0,0,0.8) !important;
+    color: #d4af37 !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
-
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(76, 175, 80, 0.3);
-    transition: all 0.3s ease;
-}
-
-.data-protection-indicator.active {
-    color: #4CAF50;
-    border-color: rgba(76, 175, 80, 0.3);
-}
-
-.data-protection-indicator.warning {
-    color: #ff9800;
-    border-color: rgba(255, 152, 0, 0.3);
-}
-
-.data-protection-indicator.error {
-    color: #f44336;
-    border-color: rgba(244, 67, 54, 0.3);
-}
-
 
 .digital-clock {
     position: fixed;

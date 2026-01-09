@@ -144,14 +144,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const requiredFields = [
             { selector: '#gregorianDate', message: 'يرجى اختيار التاريخ الميلادي' },
             { selector: 'input[name="hijriDate"]', message: 'يرجى اختيار التاريخ الهجري' },
-            { selector: '.green-field input', message: 'يرجى إدخال اسم الشركة' },
+            { selector: '.green-field input', message: 'يرجى إدخال اسم المؤسسة' },
             { selector: '.purple-field input', message: 'يرجى إدخال الفرع/الموقع' },
             { selector: '.red-field input', message: 'يرجى إدخال اسم المسئول' },
             { selector: '.lightblue-field input', message: 'يرجى إدخال اسم ماكينة البيع' },
             { selector: '.yellow-field input', message: 'يرجى إدخال رقم ماكينة البيع' },
             { selector: '.teal-field input', message: 'يرجى إدخال قيمة الكاش' },
             { selector: '.indigo-field input', message: 'يرجى إدخال قيمة نظام نقاط البيع' },
-            { selector: '.brown-field input', message: 'يرجى إدخال قيمة المشتريات اليومية' }
+            { selector: '.brown-field input', message: 'يرجى إدخال قيمة المشتريات اليومية' },
+            { selector: 'input[placeholder="e.g., 100"]', message: 'يرجى إدخال قيمة المسحوبات المالية' },
+            { selector: 'input[placeholder="أدخل اسم القائم بالسحب"]', message: 'يرجى إدخال اسم القائم بالسحب' }
         ];
         
         let hasError = false;
@@ -280,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = {
             'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': preSubmissionData.date,
             'التاريخ (هجري / Hijri Date / হিজরি তারিখ)': preSubmissionData.hijriDate,
-            'إسم الشركة / Company Name / কোম্পানির নাম': preSubmissionData.company,
+            'إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম': preSubmissionData.company,
             'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': preSubmissionData.branch,
             'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': preSubmissionData.manager,
             'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': preSubmissionData.machineName,
@@ -288,6 +290,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'كاش / Cash / নগদ': preSubmissionData.cash,
             'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': preSubmissionData.network,
             'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': preSubmissionData.purchases,
+            'مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন': preSubmissionData.withdrawals,
+            'اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম': preSubmissionData.withdrawer,
             files: []
         };
         
@@ -340,9 +344,74 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // دالة محاكاة الإرسال الناجح
+    function simulateSuccessfulSubmission(data, submitButton) {
+        // محاكاة وقت المعالجة
+        setTimeout(() => {
+            // حفظ البيانات محلياً
+            const timestamp = new Date().toISOString();
+            const submissionData = {
+                ...data,
+                timestamp: timestamp,
+                id: 'submission_' + Date.now()
+            };
+            
+            // حفظ في localStorage
+            let submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+            submissions.push(submissionData);
+            localStorage.setItem('submissions', JSON.stringify(submissions));
+            
+            // عرض رسالة النجاح
+            submitButton.textContent = 'تم الإرسال بنجاح! ✓';
+            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            
+            showDataProtectionIndicator('✅ تم الحفظ بنجاح', 'active');
+            
+            // مسح النموذج
+            setTimeout(() => {
+                form.reset();
+                window.location.href = 'success.html';
+            }, 1500);
+            
+        }, 2000); // انتظار ثانيتين لمحاكاة المعالجة
+    }
+    
+    // دالة محاكاة الإرسال الناجح
+    function simulateSuccessfulSubmission(data, submitButton) {
+        // حفظ البيانات محلياً
+        const timestamp = new Date().toISOString();
+        const submissionData = {
+            ...data,
+            timestamp: timestamp,
+            id: 'submission_' + Date.now()
+        };
+        
+        // حفظ في localStorage
+        let submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+        submissions.push(submissionData);
+        localStorage.setItem('submissions', JSON.stringify(submissions));
+        
+        // محاكاة تأخير الشبكة
+        setTimeout(() => {
+            showDataProtectionIndicator('✅ تم الحفظ بنجاح', 'active');
+            
+            submitButton.textContent = 'تم الإرسال بنجاح!';
+            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+            
+            // مسح النموذج
+            document.querySelector('.jotform-form').reset();
+            localStorage.removeItem('formData');
+            submissionInProgress = false;
+            
+            setTimeout(() => {
+                window.open('success.html', '_self');
+            }, 1500);
+        }, 2000);
+    }
+    
     // دالة إرسال البيانات إلى Google Apps Script
     function sendToGoogleAppsScript(data, submitButton) {
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzp4pTpQRs7Is-QVQhO4vnqzkXQOJj0sOHCsQFCmiS3-iTsl5h78j6krKc25xqiW_ZaBA/exec';
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
         
         // حفظ البيانات المرسلة للمقارنة بعد الإرسال
         const sentDataBackup = JSON.parse(JSON.stringify(data));
@@ -443,7 +512,9 @@ document.addEventListener('DOMContentLoaded', function() {
             machineNumber: document.querySelector('.yellow-field input').value,
             cash: document.querySelector('.teal-field input').value,
             network: document.querySelector('.indigo-field input').value,
-            purchases: document.querySelector('.brown-field input').value
+            purchases: document.querySelector('.brown-field input').value,
+            withdrawals: document.querySelector('input[placeholder="e.g., 100"]').value,
+            withdrawer: document.querySelector('input[placeholder="أدخل اسم القائم بالسحب"]').value
         };
         localStorage.setItem('formData', JSON.stringify(formData));
     }
@@ -458,6 +529,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.manager) document.querySelector('.red-field input').value = data.manager;
             if (data.machineName) document.querySelector('.lightblue-field input').value = data.machineName;
             if (data.machineNumber) document.querySelector('.yellow-field input').value = data.machineNumber;
+            if (data.withdrawals) {
+                const withdrawalsInput = document.querySelector('input[placeholder="e.g., 100"]');
+                if (withdrawalsInput) withdrawalsInput.value = data.withdrawals;
+            }
+            if (data.withdrawer) {
+                const withdrawerInput = document.querySelector('input[placeholder="أدخل اسم القائم بالسحب"]');
+                if (withdrawerInput) withdrawerInput.value = data.withdrawer;
+            }
         }
     }
     
@@ -653,6 +732,8 @@ function openAdminPanel() {
             cash: document.querySelector('.teal-field input').value,
             network: document.querySelector('.indigo-field input').value,
             purchases: document.querySelector('.brown-field input').value,
+            withdrawals: document.querySelector('input[placeholder="e.g., 100"]').value,
+            withdrawer: document.querySelector('input[placeholder="أدخل اسم القائم بالسحب"]').value,
             timestamp: new Date().toISOString()
         };
     }
@@ -660,7 +741,7 @@ function openAdminPanel() {
     function validateDataConsistency(data1, data2) {
         if (!data1 || !data2) return false;
         
-        const fields = ['date', 'hijriDate', 'company', 'branch', 'manager', 'machineName', 'machineNumber', 'cash', 'network', 'purchases'];
+        const fields = ['date', 'hijriDate', 'company', 'branch', 'manager', 'machineName', 'machineNumber', 'cash', 'network', 'purchases', 'withdrawals', 'withdrawer'];
         
         for (let field of fields) {
             if (data1[field] !== data2[field]) {
