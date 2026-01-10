@@ -2,7 +2,7 @@
 // يجب نسخ هذا الكود في Google Apps Script
 
 // معرف الشيت والمجلد - يجب تغيير هذه القيم
-const SHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'; // ضع ID الشيت هنا
+const SHEET_ID = '1D8o5biC3BDK6neb1PCDDOejK5S4kzV6xVT4BbQ3kYAE'; // ضع ID الشيت هنا
 const FOLDER_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'; // ضع ID المجلد هنا
 
 function doPost(e) {
