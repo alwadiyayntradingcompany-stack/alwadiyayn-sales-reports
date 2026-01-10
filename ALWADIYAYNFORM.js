@@ -242,8 +242,8 @@ function showFieldError(input, message) {
 
 // إرسال البيانات
 function sendData(data, submitButton) {
-    // URL Google Apps Script - الرابط الحقيقي الذي أعطيته
-    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
+    // URL Google Apps Script - الرابط الحقيقي الذي أعطيته اليوم
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxb_2NuwKU7YtF6K7rQcZ-VDMiqHfIZKn9fZwBOrp9R2B0UU7oV1qAAwbe778qHWAVR/exec';
     
     console.log('🚀 بدء إرسال البيانات إلى Google Apps Script');
     console.log('📊 البيانات المرسلة:', data);
