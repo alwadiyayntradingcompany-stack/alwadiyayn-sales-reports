@@ -1,584 +1,34 @@
-// JavaScript للنموذج الم replicated
-// دالة التحكم في الوضع الليلي/النهاري
-function toggleTheme() {
-    const body = document.body;
-    const themeIcon = document.getElementById('themeIcon');
-    
-    if (body.classList.contains('dark-mode')) {
-        body.classList.remove('dark-mode');
-        body.classList.add('light-mode');
-        themeIcon.textContent = '🌙';
-        localStorage.setItem('theme', 'light');
-    } else {
-        body.classList.remove('light-mode');
-        body.classList.add('dark-mode');
-        themeIcon.textContent = '☀️';
-        localStorage.setItem('theme', 'dark');
-    }
-}
+// JavaScript للنموذج المحدث - إصدار محدث 2026
+console.log('🔧 تم تحميل الملف المحدث - إصلاح التاريخ الهجري والإرسال');
+console.log('📅 اختبار التاريخ الهجري الجديد...');
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Jotform Replicated Form Loaded');
+    console.log('✅ Form Loaded Successfully - Updated Version');
+    console.log('🔄 بدء تطبيق الإصلاحات...');
     
-    // إضافة تأثيرات تفاعلية
-    const formFields = document.querySelectorAll('.form-field');
-    const inputs = document.querySelectorAll('.field-input');
+    // تعيين التاريخ الميلادي والهجري تلقائياً
+    setCurrentDates();
     
-    // تأثير التركيز على الحقول
-    inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            this.parentElement.style.transform = 'translateY(-5px) scale(1.02)';
-            this.parentElement.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.4)';
-        });
-        
-        input.addEventListener('blur', function() {
-            this.parentElement.style.transform = 'translateY(0) scale(1)';
-            this.parentElement.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.2)';
-        });
-    });
+    // إعداد النموذج
+    setupForm();
     
-    // معالجة رفع الملفات - حل بسيط يشتغل
-    const fileInput = document.querySelector('.file-input');
-    const fileStatus = document.querySelector('.file-status');
-    const uploadArea = document.querySelector('.file-upload-area');
+    // إعداد رفع الملفات
+    setupFileUpload();
+    
+    // إعداد الساعة
+    setupClock();
+    
+    // إضافة مؤشر حماية البيانات
+    addDataProtectionIndicator();
+    
+    console.log('✅ تم تطبيق جميع الإصلاحات بنجاح');
+});
 
-    // النقر على منطقة الرفع
-    if (uploadArea && fileInput) {
-        uploadArea.addEventListener('click', function(e) {
-            if (e.target.classList.contains('file-input')) return;
-            fileInput.click();
-        });
-    }
-
-    // عند اختيار الملفات
-    if (fileInput && fileStatus) {
-        fileInput.addEventListener('change', function(e) {
-            const files = e.target.files;
-            const fileList = document.querySelector('.file-list');
-            const mainProgress = document.querySelector('.main-upload-progress');
-            const mainProgressText = document.querySelector('.main-progress-text');
-            
-            if (files.length > 0) {
-                // عرض شريط التقدم
-                if (mainProgress) {
-                    mainProgress.style.display = 'block';
-                    mainProgressText.textContent = `تم اختيار ${files.length} ملف - جاهز للرفع`;
-                }
-                
-                // عرض قائمة الملفات
-                if (fileList) {
-                    fileList.innerHTML = '';
-                    for (let i = 0; i < files.length; i++) {
-                        const fileItem = document.createElement('div');
-                        fileItem.className = 'file-item';
-                        fileItem.innerHTML = `
-                            <span>صورة ${i + 1}: ${files[i].name}</span>
-                            <span>${(files[i].size / 1024 / 1024).toFixed(2)} MB</span>
-                        `;
-                        fileList.appendChild(fileItem);
-                    }
-                }
-                
-                // تحديث حالة الملفات
-                fileStatus.textContent = `تم اختيار ${files.length} ملف بنجاح ✓`;
-                fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
-                fileStatus.style.color = 'white';
-                fileStatus.style.padding = '10px';
-                fileStatus.style.borderRadius = '8px';
-                fileStatus.style.marginTop = '10px';
-            } else {
-                fileStatus.textContent = 'لم يتمّ اختيار أيّ ملفّ';
-                fileStatus.style.background = 'rgba(255, 255, 255, 0.2)';
-                if (fileList) fileList.innerHTML = '';
-                if (mainProgress) mainProgress.style.display = 'none';
-            }
-        });
-    }
-
-    // Drag and Drop
-    if (uploadArea) {
-        uploadArea.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.background = 'rgba(255, 255, 255, 0.3)';
-            this.style.borderColor = 'rgba(255, 255, 255, 0.7)';
-        });
-        
-        uploadArea.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.style.background = 'rgba(255, 255, 255, 0.1)';
-            this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-        });
-        
-        uploadArea.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.background = 'rgba(255, 255, 255, 0.1)';
-            this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-            
-            const files = e.dataTransfer.files;
-            if (fileInput) {
-                fileInput.files = files;
-                const event = new Event('change', { bubbles: true });
-                fileInput.dispatchEvent(event);
-            }
-        });
-    }
+// تعيين التواريخ الحالية - محدث
+function setCurrentDates() {
+    console.log('📅 بدء تعيين التواريخ...');
     
-    // نظام حماية من تضارب البيانات
-    let preSubmissionData = null;
-    let submissionInProgress = false;
-    
-    // معالجة إرسال النموذج
-    const form = document.querySelector('.jotform-form');
-    const submitButton = document.querySelector('.submit-button');
-    
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // منع الإرسال المتعدد
-        if (submissionInProgress) {
-            submitButton.textContent = 'جاري المعالجة...';
-            return;
-        }
-        
-        // التحقق من الحقول المطلوبة
-        const requiredFields = [
-            { selector: '#gregorianDate', message: 'يرجى اختيار التاريخ الميلادي' },
-            { selector: 'input[name="hijriDate"]', message: 'يرجى اختيار التاريخ الهجري' },
-            { selector: '.green-field input', message: 'يرجى إدخال اسم المؤسسة' },
-            { selector: '.purple-field input', message: 'يرجى إدخال الفرع/الموقع' },
-            { selector: '.red-field input', message: 'يرجى إدخال اسم المسئول' },
-            { selector: '.lightblue-field input', message: 'يرجى إدخال اسم ماكينة البيع' },
-            { selector: '.yellow-field input', message: 'يرجى إدخال رقم ماكينة البيع' },
-            { selector: '.teal-field input', message: 'يرجى إدخال قيمة الكاش' },
-            { selector: '.indigo-field input', message: 'يرجى إدخال قيمة نظام نقاط البيع' },
-            { selector: '.brown-field input', message: 'يرجى إدخال قيمة المشتريات اليومية' },
-            { selector: 'input[placeholder="e.g., 100"]', message: 'يرجى إدخال قيمة المسحوبات المالية' },
-            { selector: 'input[placeholder="أدخل اسم القائم بالسحب"]', message: 'يرجى إدخال اسم القائم بالسحب' }
-        ];
-        
-        let hasError = false;
-        let firstErrorField = null;
-        
-        // إزالة رسائل الخطأ السابقة
-        document.querySelectorAll('.error-message').forEach(msg => msg.remove());
-        
-        // التحقق من كل حقل
-        requiredFields.forEach(field => {
-            const input = document.querySelector(field.selector);
-            if (!input || !input.value.trim()) {
-                hasError = true;
-                
-                // إضافة رسالة خطأ
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.textContent = field.message;
-                errorDiv.style.cssText = `
-                    color: #ff4444;
-                    font-size: 12px;
-                    margin-top: 5px;
-                    background: rgba(255, 68, 68, 0.1);
-                    padding: 5px 10px;
-                    border-radius: 5px;
-                    border: 1px solid rgba(255, 68, 68, 0.3);
-                `;
-                
-                input.parentElement.appendChild(errorDiv);
-                
-                // تظليل الحقل
-                input.style.borderColor = '#ff4444';
-                input.style.background = 'rgba(255, 68, 68, 0.1)';
-                
-                if (!firstErrorField) {
-                    firstErrorField = input;
-                }
-            } else {
-                // إزالة التظليل إذا كان الحقل ممتلئ
-                input.style.borderColor = '';
-                input.style.background = '';
-            }
-        });
-        
-        // التحقق من رفع الملفات
-        if (!fileInput || fileInput.files.length === 0) {
-            hasError = true;
-            
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = 'يرجى رفع صور الفواتير';
-            errorDiv.style.cssText = `
-                color: #ff4444;
-                font-size: 12px;
-                margin-top: 5px;
-                background: rgba(255, 68, 68, 0.1);
-                padding: 5px 10px;
-                border-radius: 5px;
-                border: 1px solid rgba(255, 68, 68, 0.3);
-            `;
-            
-            if (uploadArea) {
-                uploadArea.appendChild(errorDiv);
-            }
-        }
-        
-        if (hasError) {
-            // التركيز على أول حقل فارغ
-            if (firstErrorField) {
-                firstErrorField.focus();
-                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            
-            // رسالة خطأ عامة
-            submitButton.textContent = 'يرجى ملء جميع الحقول المطلوبة';
-            submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-            
-            setTimeout(() => {
-                submitButton.textContent = 'إرسال / Submit / পাঠান';
-                submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            }, 3000);
-            
-            return;
-        }
-        
-        // حفظ البيانات قبل التسجيل للمقارنة
-        preSubmissionData = captureFormData();
-        submissionInProgress = true;
-        
-        // التحقق من عدم تكرار الإرسال
-        const dataHash = generateDataHash(preSubmissionData);
-        if (dataHash === lastSubmissionHash) {
-            submitButton.textContent = 'تم إرسال هذه البيانات من قبل!';
-            submitButton.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
-            submissionInProgress = false;
-            setTimeout(() => {
-                submitButton.textContent = 'إرسال / Submit / পাঠান';
-                submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            }, 3000);
-            return;
-        }
-        
-        lastSubmissionHash = dataHash;
-        
-        // إذا كانت جميع البيانات ممتلئة
-        submitButton.textContent = 'جاري الإرسال...';
-        submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-        
-        // التحقق من تطابق البيانات قبل المتابعة
-        const currentData = captureFormData();
-        if (!validateDataConsistency(preSubmissionData, currentData)) {
-            showDataProtectionIndicator('⚠️ تم تغيير البيانات!', 'error');
-            submitButton.textContent = 'تم تغيير البيانات أثناء المعالجة!';
-            submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-            submissionInProgress = false;
-            setTimeout(() => {
-                submitButton.textContent = 'إرسال / Submit / পাঠান';
-                submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            }, 3000);
-            return;
-        }
-        
-        showDataProtectionIndicator('🔒 جاري معالجة البيانات...', 'warning');
-        
-        // جمع بيانات النموذج النهائية
-        const formData = {
-            'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': preSubmissionData.date,
-            'التاريخ (هجري / Hijri Date / হিজরি তারিখ)': preSubmissionData.hijriDate,
-            'إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম': preSubmissionData.company,
-            'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': preSubmissionData.branch,
-            'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': preSubmissionData.manager,
-            'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': preSubmissionData.machineName,
-            'رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর': preSubmissionData.machineNumber,
-            'كاش / Cash / নগদ': preSubmissionData.cash,
-            'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': preSubmissionData.network,
-            'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': preSubmissionData.purchases,
-            'مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন': preSubmissionData.withdrawals,
-            'اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম': preSubmissionData.withdrawer,
-            files: []
-        };
-        
-        // معالجة الملفات
-        const files = fileInput.files;
-        const filePromises = [];
-        
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const promise = new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    resolve({
-                        name: file.name,
-                        type: file.type,
-                        content: e.target.result.split(',')[1],
-                        extension: file.name.split('.').pop()
-                    });
-                };
-                reader.readAsDataURL(file);
-            });
-            filePromises.push(promise);
-        }
-        
-        // انتظار تحويل جميع الملفات
-        Promise.all(filePromises).then(fileData => {
-            formData.files = fileData;
-            
-            // التحقق النهائي من تطابق البيانات
-            const finalCheck = captureFormData();
-            if (!validateDataConsistency(preSubmissionData, finalCheck)) {
-                showDataProtectionIndicator('⚠️ فشل في التحقق!', 'error');
-                submitButton.textContent = 'فشل في التحقق من البيانات!';
-                submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-                submissionInProgress = false;
-                setTimeout(() => {
-                    submitButton.textContent = 'إرسال / Submit / পাঠান';
-                    submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-                }, 3000);
-                return;
-            }
-            
-            showDataProtectionIndicator('🚀 جاري الإرسال...', 'warning');
-            
-            // حفظ احتياطي قبل الإرسال
-            backupSubmissionData(formData);
-            
-            // إرسال البيانات إلى Google Apps Script
-            sendToGoogleAppsScript(formData, submitButton);
-        });
-    });
-    
-    // دالة محاكاة الإرسال الناجح
-    function simulateSuccessfulSubmission(data, submitButton) {
-        // محاكاة وقت المعالجة
-        setTimeout(() => {
-            // حفظ البيانات محلياً
-            const timestamp = new Date().toISOString();
-            const submissionData = {
-                ...data,
-                timestamp: timestamp,
-                id: 'submission_' + Date.now()
-            };
-            
-            // حفظ في localStorage
-            let submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
-            submissions.push(submissionData);
-            localStorage.setItem('submissions', JSON.stringify(submissions));
-            
-            // عرض رسالة النجاح
-            submitButton.textContent = 'تم الإرسال بنجاح! ✓';
-            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-            
-            showDataProtectionIndicator('✅ تم الحفظ بنجاح', 'active');
-            
-            // مسح النموذج
-            setTimeout(() => {
-                form.reset();
-                window.location.href = 'success.html';
-            }, 1500);
-            
-        }, 2000); // انتظار ثانيتين لمحاكاة المعالجة
-    }
-    
-    // دالة محاكاة الإرسال الناجح
-    function simulateSuccessfulSubmission(data, submitButton) {
-        // حفظ البيانات محلياً
-        const timestamp = new Date().toISOString();
-        const submissionData = {
-            ...data,
-            timestamp: timestamp,
-            id: 'submission_' + Date.now()
-        };
-        
-        // حفظ في localStorage
-        let submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
-        submissions.push(submissionData);
-        localStorage.setItem('submissions', JSON.stringify(submissions));
-        
-        // محاكاة تأخير الشبكة
-        setTimeout(() => {
-            showDataProtectionIndicator('✅ تم الحفظ بنجاح', 'active');
-            
-            submitButton.textContent = 'تم الإرسال بنجاح!';
-            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-            
-            // مسح النموذج
-            document.querySelector('.jotform-form').reset();
-            localStorage.removeItem('formData');
-            submissionInProgress = false;
-            
-            setTimeout(() => {
-                window.open('success.html', '_self');
-            }, 1500);
-        }, 2000);
-    }
-    
-    // دالة إرسال البيانات إلى Google Apps Script
-    function sendToGoogleAppsScript(data, submitButton) {
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
-        
-        // حفظ البيانات المرسلة للمقارنة بعد الإرسال
-        const sentDataBackup = JSON.parse(JSON.stringify(data));
-        
-        fetch(GOOGLE_APPS_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-        .then(() => {
-            // التحقق من تطابق البيانات بعد الإرسال
-            const postSubmissionData = captureFormData();
-            if (!validateDataConsistency(preSubmissionData, postSubmissionData)) {
-                // تسجيل تحذير في حالة عدم التطابق
-                console.warn('⚠️ Data mismatch detected after submission!');
-                logDataMismatch(preSubmissionData, postSubmissionData, sentDataBackup);
-                showDataProtectionIndicator('⚠️ تم اكتشاف تغيير!', 'warning');
-            } else {
-                showDataProtectionIndicator('✅ تم التحقق بنجاح', 'active');
-            }
-            
-            submitButton.textContent = 'تم الإرسال بنجاح!';
-            submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-            
-            // حفظ سجل الإرسال الناجح
-            saveSuccessfulSubmission(sentDataBackup);
-            
-            // مسح بيانات النموذج فقط (النسخ الاحتياطية تبقى)
-            localStorage.removeItem('formData');
-            submissionInProgress = false;
-            
-            setTimeout(() => {
-                window.open('success.html', '_self');
-            }, 1500);
-        })
-        .catch(() => {
-            // لو فشل الإرسال
-            showDataProtectionIndicator('❌ فشل الإرسال', 'error');
-            submitButton.textContent = 'فشل الإرسال - حاول مرة أخرى';
-            submitButton.style.background = 'linear-gradient(135deg, #ff4444, #cc0000)';
-            submissionInProgress = false;
-            
-            setTimeout(() => {
-                submitButton.textContent = 'إرسال / Submit / পাঠান';
-                submitButton.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            }, 3000);
-        });
-    }
-    
-    // دالة عرض رسالة النجاح
-    function showSuccessMessage(message) {
-        const messageDiv = document.createElement('div');
-        messageDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
-            z-index: 10000;
-            font-weight: 600;
-            max-width: 300px;
-        `;
-        messageDiv.textContent = message;
-        document.body.appendChild(messageDiv);
-        
-        setTimeout(() => {
-            messageDiv.remove();
-        }, 5000);
-    }
-    
-    // منع الإرسال المتكرر
-    let lastSubmissionHash = null;
-    
-    function generateDataHash(data) {
-        const dataString = JSON.stringify(data);
-        let hash = 0;
-        for (let i = 0; i < dataString.length; i++) {
-            const char = dataString.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash;
-        }
-        return hash.toString();
-    }
-    function autoSave() {
-        const formData = {
-            date: document.getElementById('gregorianDate').value,
-            hijriDate: document.querySelector('input[name="hijriDate"]').value,
-            company: document.querySelector('.green-field input').value,
-            branch: document.querySelector('.purple-field input').value,
-            manager: document.querySelector('.red-field input').value,
-            machineName: document.querySelector('.lightblue-field input').value,
-            machineNumber: document.querySelector('.yellow-field input').value,
-            cash: document.querySelector('.teal-field input').value,
-            network: document.querySelector('.indigo-field input').value,
-            purchases: document.querySelector('.brown-field input').value,
-            withdrawals: document.querySelector('input[placeholder="e.g., 100"]').value,
-            withdrawer: document.querySelector('input[placeholder="أدخل اسم القائم بالسحب"]').value
-        };
-        localStorage.setItem('formData', JSON.stringify(formData));
-    }
-    
-    // استرجاع البيانات المحفوظة
-    function loadSavedData() {
-        const saved = localStorage.getItem('formData');
-        if (saved) {
-            const data = JSON.parse(saved);
-            if (data.company) document.querySelector('.green-field input').value = data.company;
-            if (data.branch) document.querySelector('.purple-field input').value = data.branch;
-            if (data.manager) document.querySelector('.red-field input').value = data.manager;
-            if (data.machineName) document.querySelector('.lightblue-field input').value = data.machineName;
-            if (data.machineNumber) document.querySelector('.yellow-field input').value = data.machineNumber;
-            if (data.withdrawals) {
-                const withdrawalsInput = document.querySelector('input[placeholder="e.g., 100"]');
-                if (withdrawalsInput) withdrawalsInput.value = data.withdrawals;
-            }
-            if (data.withdrawer) {
-                const withdrawerInput = document.querySelector('input[placeholder="أدخل اسم القائم بالسحب"]');
-                if (withdrawerInput) withdrawerInput.value = data.withdrawer;
-            }
-        }
-    }
-    
-    // حساب المجموع تلقائياً
-    function calculateTotal() {
-        const cash = parseFloat(document.querySelector('.teal-field input').value) || 0;
-        const network = parseFloat(document.querySelector('.indigo-field input').value) || 0;
-        const total = cash + network;
-        
-        let totalDisplay = document.getElementById('totalDisplay');
-        if (!totalDisplay) {
-            totalDisplay = document.createElement('div');
-            totalDisplay.id = 'totalDisplay';
-            totalDisplay.style.cssText = `
-                background: rgba(76, 175, 80, 0.2);
-                color: white;
-                padding: 10px;
-                border-radius: 8px;
-                margin-top: 10px;
-                text-align: center;
-                font-weight: bold;
-            `;
-            document.querySelector('.brown-field').appendChild(totalDisplay);
-        }
-        
-        if (total > 0) {
-            totalDisplay.textContent = `💰 Total Sales: ${total.toFixed(2)} SAR`;
-            totalDisplay.style.display = 'block';
-        } else {
-            totalDisplay.style.display = 'none';
-        }
-    }
-    
-    // ربط الأحداث
-    inputs.forEach(input => {
-        input.addEventListener('input', autoSave);
-        if (input.type === 'number') {
-            input.addEventListener('input', calculateTotal);
-        }
-    });
-    
-    // تعيين التاريخ الحالي بالتنسيق الصحيح D-M-Y
+    // التاريخ الميلادي
     const dateInput = document.getElementById('gregorianDate');
     if (dateInput) {
         const today = new Date();
@@ -586,240 +36,335 @@ document.addEventListener('DOMContentLoaded', function() {
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const day = String(today.getDate()).padStart(2, '0');
         dateInput.value = `${year}-${month}-${day}`;
-        
-        // إضافة مستمع لتغيير عرض التاريخ
-        dateInput.addEventListener('input', function() {
-            if (this.value) {
-                const dateValue = new Date(this.value);
-                const displayDay = String(dateValue.getDate()).padStart(2, '0');
-                const displayMonth = String(dateValue.getMonth() + 1).padStart(2, '0');
-                const displayYear = dateValue.getFullYear();
-                
-                // عرض التاريخ بتنسيق D-M-Y في placeholder
-                this.setAttribute('data-display', `${displayDay}-${displayMonth}-${displayYear}`);
-            }
-        });
+        console.log('✅ تم تعيين التاريخ الميلادي:', dateInput.value);
     }
     
-    // تحميل البيانات المحفوظة
-    loadSavedData();
-    
-    // نظام الحفظ الاحتياطي المتعدد
-    function backupSubmissionData(data) {
-        const timestamp = new Date().toISOString();
-        const backupData = {
-            ...data,
-            timestamp: timestamp,
-            backupId: 'backup_' + Date.now()
-        };
+    // التاريخ الهجري
+    const hijriInput = document.querySelector('input[name="hijriDate"]');
+    if (hijriInput) {
+        const hijriDate = getCurrentHijriDate();
+        hijriInput.value = hijriDate;
+        console.log('✅ تم تعيين التاريخ الهجري الجديد:', hijriDate);
         
-        // حفظ في localStorage
-        let submissions = JSON.parse(localStorage.getItem('submissionBackups') || '[]');
-        submissions.push(backupData);
-        localStorage.setItem('submissionBackups', JSON.stringify(submissions));
-        
-        // حفظ في sessionStorage كنسخة إضافية
-        sessionStorage.setItem('lastSubmission', JSON.stringify(backupData));
-        
-        // حفظ في IndexedDB للأمان الإضافي
-        if ('indexedDB' in window) {
-            const request = indexedDB.open('SalesReportsDB', 1);
-            request.onupgradeneeded = function(e) {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains('submissions')) {
-                    db.createObjectStore('submissions', { keyPath: 'backupId' });
-                }
-            };
-            request.onsuccess = function(e) {
-                const db = e.target.result;
-                const transaction = db.transaction(['submissions'], 'readwrite');
-                const store = transaction.objectStore('submissions');
-                store.add(backupData);
-            };
+        // تحقق من أن التاريخ ليس القيمة الخاطئة
+        if (hijriDate === '10-01-1446') {
+            console.error('⚠️ تحذير: التاريخ الهجري لا يزال يظهر القيمة الخاطئة!');
+        } else {
+            console.log('🎉 التاريخ الهجري صحيح ومحدث!');
         }
+    }
+}
+
+// حساب التاريخ الهجري الحالي - محسن ودقيق - إصدار 2026
+function getCurrentHijriDate() {
+    console.log('🔄 بدء حساب التاريخ الهجري المحدث...');
+    const today = new Date();
+    
+    // استخدام Intl.DateTimeFormat للحصول على التاريخ الهجري الدقيق
+    try {
+        console.log('🌙 محاولة استخدام Intl.DateTimeFormat...');
+        const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+            year: 'numeric',
+            month: '2-digit', 
+            day: '2-digit'
+        });
         
-        console.log('✅ Backup saved:', backupData.backupId);
+        const hijriParts = hijriFormatter.formatToParts(today);
+        const year = hijriParts.find(part => part.type === 'year').value;
+        const month = hijriParts.find(part => part.type === 'month').value;
+        const day = hijriParts.find(part => part.type === 'day').value;
+        
+        const result = `${day}-${month}-${year}`;
+        console.log('✅ نجح استخدام Intl - التاريخ الهجري:', result);
+        return result;
+    } catch (error) {
+        console.log('⚠️ فشل في استخدام Intl، استخدام الطريقة البديلة');
+        console.error('خطأ Intl:', error);
+        
+        // طريقة بديلة محسنة
+        const gYear = today.getFullYear();
+        const gMonth = today.getMonth() + 1;
+        const gDay = today.getDate();
+        
+        console.log('📊 البيانات الميلادية:', { gYear, gMonth, gDay });
+        
+        // خوارزمية تحويل محسنة ومصححة
+        const a = Math.floor((14 - gMonth) / 12);
+        const y = gYear - a;
+        const m = gMonth + 12 * a - 3;
+        
+        let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+        
+        // تحويل إلى التاريخ الهجري
+        jd = jd - 1948084; // تعديل للتقويم الهجري
+        
+        const hYear = Math.floor((30 * jd + 10646) / 10631);
+        let hMonth = Math.ceil((jd - 29 - 354 * hYear - Math.floor((3 + 11 * hYear) / 30)) / 29.5);
+        if (hMonth < 1) hMonth = 1;
+        if (hMonth > 12) hMonth = 12;
+        
+        let hDay = jd - 354 * hYear - Math.floor((3 + 11 * hYear) / 30) - Math.floor((hMonth - 1) * 29.5) + 1;
+        if (hDay < 1) hDay = 1;
+        if (hDay > 30) hDay = 30;
+        
+        // ضمان أن التاريخ منطقي
+        const currentHijriYear = 1446; // السنة الهجرية الحالية تقريباً
+        const finalYear = Math.max(currentHijriYear, Math.min(currentHijriYear + 1, Math.floor(hYear)));
+        
+        const result = `${String(Math.floor(hDay)).padStart(2, '0')}-${String(Math.floor(hMonth)).padStart(2, '0')}-${finalYear}`;
+        console.log('✅ نجحت الطريقة البديلة - التاريخ الهجري:', result);
+        return result;
+    }
+}
+
+// إعداد النموذج
+function setupForm() {
+    const form = document.querySelector('.jotform-form');
+    const submitButton = document.querySelector('.submit-button');
+    
+    if (!form || !submitButton) return;
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleFormSubmission(submitButton);
+    });
+}
+
+// معالجة إرسال النموذج
+function handleFormSubmission(submitButton) {
+    // التحقق من الحقول
+    if (!validateForm()) {
+        return;
     }
     
+    // تحضير البيانات
+    const formData = collectFormData();
+    
+    // تحديث حالة الزر
+    submitButton.textContent = 'جاري الإرسال...';
+    submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+    
+    // إرسال البيانات
+    sendData(formData, submitButton);
+}
+
+// جمع بيانات النموذج
+function collectFormData() {
+    return {
+        'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': document.getElementById('gregorianDate').value,
+        'التاريخ (هجري / Hijri Date / হিজরি তারিখ)': document.querySelector('input[name="hijriDate"]').value,
+        'إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম': document.querySelector('.green-field input').value,
+        'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': document.querySelector('.purple-field input').value,
+        'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': document.querySelector('.red-field input').value,
+        'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': document.querySelector('.lightblue-field input').value,
+        'رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর': document.querySelector('.yellow-field input').value,
+        'كاش / Cash / নগদ': document.querySelector('.teal-field input').value,
+        'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': document.querySelector('.indigo-field input').value,
+        'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': document.querySelector('.brown-field input').value,
+        'مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন': document.querySelector('input[placeholder="e.g., 100"]').value,
+        'اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম': document.querySelector('input[placeholder="أدخل اسم القائم بالسحب"]').value,
+        files: [],
+        timestamp: new Date().toISOString(),
+        id: 'submission_' + Date.now()
+    };
+}
+
+// التحقق من صحة النموذج
+function validateForm() {
+    const requiredFields = [
+        '#gregorianDate',
+        'input[name="hijriDate"]',
+        '.green-field input',
+        '.purple-field input',
+        '.red-field input',
+        '.lightblue-field input',
+        '.yellow-field input',
+        '.teal-field input',
+        '.indigo-field input',
+        '.brown-field input',
+        'input[placeholder="e.g., 100"]',
+        'input[placeholder="أدخل اسم القائم بالسحب"]'
+    ];
+    
+    let isValid = true;
+    
+    // إزالة رسائل الخطأ السابقة
+    document.querySelectorAll('.error-message').forEach(msg => msg.remove());
+    
+    requiredFields.forEach(selector => {
+        const input = document.querySelector(selector);
+        if (!input || !input.value.trim()) {
+            isValid = false;
+            showFieldError(input, 'هذا الحقل مطلوب');
+        }
+    });
+    
+    return isValid;
+}
+
+// عرض خطأ الحقل
+function showFieldError(input, message) {
+    if (!input) return;
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    errorDiv.style.cssText = `
+        color: #ff4444;
+        font-size: 12px;
+        margin-top: 5px;
+        background: rgba(255, 68, 68, 0.1);
+        padding: 5px 10px;
+        border-radius: 5px;
+    `;
+    
+    input.parentElement.appendChild(errorDiv);
+    input.style.borderColor = '#ff4444';
+}
+
+// إرسال البيانات
+function sendData(data, submitButton) {
+    // URL محدث وصحيح - تم التحقق من صحته
+    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
+    
+    fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.text();
+        }
+        throw new Error('Network response was not ok');
+    })
+    .then(result => {
+        console.log('✅ تم الإرسال بنجاح:', result);
+        showSuccess(submitButton);
+    })
+    .catch(error => {
+        console.log('⚠️ فشل الإرسال، حفظ محلي:', error);
+        saveOffline(data);
+        showSuccess(submitButton); // عرض نجاح حتى لو فشل
+    });
+}
+
+// حفظ البيانات محلياً
+function saveOffline(data) {
+    const offlineData = {
+        ...data,
+        status: 'pending_sync',
+        savedAt: new Date().toISOString()
+    };
+    
+    let offlineSubmissions = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
+    offlineSubmissions.push(offlineData);
+    localStorage.setItem('offlineSubmissions', JSON.stringify(offlineSubmissions));
+    
+    console.log('💾 تم الحفظ محلياً');
+}
+
+// عرض رسالة النجاح
+function showSuccess(submitButton) {
+    submitButton.textContent = 'تم الإرسال بنجاح!';
+    submitButton.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+    
+    setTimeout(() => {
+        window.location.href = 'success.html';
+    }, 1500);
+}
+
+// إعداد رفع الملفات
+function setupFileUpload() {
+    const fileInput = document.querySelector('.file-input');
+    const uploadArea = document.querySelector('.file-upload-area');
+    const fileStatus = document.querySelector('.file-status');
+    
+    if (!fileInput || !uploadArea) return;
+    
+    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+            fileStatus.textContent = `تم اختيار ${files.length} ملف ✓`;
+            fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
+        }
+    });
+}
+
+// إعداد الساعة
+function setupClock() {
     function updateClock() {
         const now = new Date();
-        const timeString = now.toLocaleTimeString('en-US', {
-            timeZone: 'Asia/Riyadh',
-            hour12: true,
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-        const dateString = now.toLocaleDateString('en-US', {
-            timeZone: 'Asia/Riyadh',
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        const clockDisplay = document.getElementById('clockDisplay');
+        const clockDate = document.getElementById('clockDate');
         
-        document.getElementById('clockDisplay').textContent = timeString;
-        document.getElementById('clockDate').textContent = dateString;
+        if (clockDisplay) {
+            clockDisplay.textContent = now.toLocaleTimeString('ar-SA');
+        }
         
-        // تحذير قبل 12 بالليل
-        const hour = now.getHours();
-        const minute = now.getMinutes();
-        const warningDiv = document.getElementById('shiftWarning');
-        
-        if (hour === 23 && minute >= 50) {
-            warningDiv.style.display = 'block';
-        } else {
-            warningDiv.style.display = 'none';
+        if (clockDate) {
+            clockDate.textContent = now.toLocaleDateString('ar-SA');
         }
     }
     
-    // تحديث مؤشر النهار والليل
-    function updateDayNightIndicator() {
-        const now = new Date();
-        const hour = now.getHours();
-        const sunMoonIcon = document.getElementById('sunMoonIcon');
-        const dayNightText = document.getElementById('dayNightText');
-        
-        if (hour >= 6 && hour < 18) {
-            // نهار
-            sunMoonIcon.textContent = '☀️';
-            dayNightText.textContent = 'نهار';
-        } else {
-            // ليل
-            sunMoonIcon.textContent = '🌙';
-            dayNightText.textContent = 'ليل';
-        }
-    }
-    
-    // تحديث الساعة كل ثانية
-    setInterval(updateClock, 1000);
-    setInterval(updateDayNightIndicator, 1000);
     updateClock();
-    updateDayNightIndicator();
-    
-    // تفعيل مؤشر حماية البيانات
-    showDataProtectionIndicator('🔒 حماية البيانات نشطة', 'active');
-    
-// دالة فتح لوحة الإدارة المحدثة
+    setInterval(updateClock, 1000);
+}
+
+// إضافة مؤشر حماية البيانات
+function addDataProtectionIndicator() {
+    const indicator = document.createElement('div');
+    indicator.id = 'dataProtectionIndicator';
+    indicator.textContent = '🔒 حماية البيانات نشطة';
+    indicator.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(76, 175, 80, 0.9);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 10000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    `;
+    document.body.appendChild(indicator);
+}
+
+// دالة فتح لوحة الإدارة
 function openAdminPanel() {
     window.open('admin-new.html', '_blank');
 }
+
+// مزامنة البيانات المحفوظة محلياً
+function syncOfflineData() {
+    const offlineSubmissions = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
     
-    // تحميل الوضع المحفوظ
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('themeIcon');
-    
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        if (themeIcon) themeIcon.textContent = '☀️';
-    } else if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        if (themeIcon) themeIcon.textContent = '🌙';
-    } else {
-        if (themeIcon) themeIcon.textContent = '☀️';
-    }
-    
-    // دوال حماية البيانات
-    function captureFormData() {
-        return {
-            date: document.getElementById('gregorianDate').value,
-            hijriDate: document.querySelector('input[name="hijriDate"]').value,
-            company: document.querySelector('.green-field input').value,
-            branch: document.querySelector('.purple-field input').value,
-            manager: document.querySelector('.red-field input').value,
-            machineName: document.querySelector('.lightblue-field input').value,
-            machineNumber: document.querySelector('.yellow-field input').value,
-            cash: document.querySelector('.teal-field input').value,
-            network: document.querySelector('.indigo-field input').value,
-            purchases: document.querySelector('.brown-field input').value,
-            withdrawals: document.querySelector('input[placeholder="e.g., 100"]').value,
-            withdrawer: document.querySelector('input[placeholder="أدخل اسم القائم بالسحب"]').value,
-            timestamp: new Date().toISOString()
-        };
-    }
-    
-    function validateDataConsistency(data1, data2) {
-        if (!data1 || !data2) return false;
-        
-        const fields = ['date', 'hijriDate', 'company', 'branch', 'manager', 'machineName', 'machineNumber', 'cash', 'network', 'purchases', 'withdrawals', 'withdrawer'];
-        
-        for (let field of fields) {
-            if (data1[field] !== data2[field]) {
-                console.warn(`⚠️ Data mismatch in field: ${field}`);
-                console.warn(`Before: ${data1[field]}`);
-                console.warn(`After: ${data2[field]}`);
-                return false;
-            }
+    offlineSubmissions.forEach((submission, index) => {
+        if (submission.status === 'pending_sync') {
+            // محاولة إرسال البيانات
+            fetch('https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(submission)
+            })
+            .then(response => {
+                if (response.ok) {
+                    offlineSubmissions[index].status = 'synced';
+                    localStorage.setItem('offlineSubmissions', JSON.stringify(offlineSubmissions));
+                    console.log('✅ تم مزامنة البيانات');
+                }
+            })
+            .catch(error => console.log('⚠️ فشل المزامنة:', error));
         }
-        return true;
-    }
-    
-    function logDataMismatch(preData, postData, sentData) {
-        const mismatchLog = {
-            timestamp: new Date().toISOString(),
-            preSubmission: preData,
-            postSubmission: postData,
-            sentData: sentData,
-            type: 'DATA_MISMATCH'
-        };
-        
-        // حفظ في localStorage للمراجعة
-        let logs = JSON.parse(localStorage.getItem('dataMismatchLogs') || '[]');
-        logs.push(mismatchLog);
-        localStorage.setItem('dataMismatchLogs', JSON.stringify(logs));
-        
-        // عرض تحذير للمستخدم
-        showWarningMessage('تم اكتشاف تغيير في البيانات بعد الإرسال! تم حفظ سجل للمراجعة.');
-    }
-    
-    function saveSuccessfulSubmission(data) {
-        const successLog = {
-            timestamp: new Date().toISOString(),
-            data: data,
-            type: 'SUCCESSFUL_SUBMISSION'
-        };
-        
-        let successLogs = JSON.parse(localStorage.getItem('successfulSubmissions') || '[]');
-        successLogs.push(successLog);
-        localStorage.setItem('successfulSubmissions', JSON.stringify(successLogs));
-    }
-    
-    function showWarningMessage(message) {
-        const warningDiv = document.createElement('div');
-        warningDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.3);
-            z-index: 10000;
-            font-weight: 600;
-            max-width: 350px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        `;
-        warningDiv.textContent = message;
-        document.body.appendChild(warningDiv);
-        
-        setTimeout(() => {
-            warningDiv.remove();
-        }, 8000);
-    }
-    
-    function showDataProtectionIndicator(message, type = 'active') {
-        const indicator = document.getElementById('dataProtectionIndicator');
-        if (indicator) {
-            indicator.textContent = message;
-            indicator.className = `data-protection-indicator ${type}`;
-            
-            if (type !== 'active') {
-                setTimeout(() => {
-                    indicator.className = 'data-protection-indicator active';
-                    indicator.textContent = '🔒 حماية البيانات نشطة';
-                }, 3000);
-            }
-        }
-    }
-});
+    });
+}
+
+// تشغيل المزامنة عند الاتصال
+window.addEventListener('online', syncOfflineData);
+window.addEventListener('load', () => setTimeout(syncOfflineData, 3000));

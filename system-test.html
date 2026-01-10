@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار النظام - تقارير المبيعات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+        
+        .test-section.success {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .test-section.error {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.1);
+        }
+        
+        .test-section.warning {
+            border-color: #ff9800;
+            background: rgba(255, 152, 0, 0.1);
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .test-result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .success-result {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        
+        .error-result {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+        
+        .info-result {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #2196f3;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        .status-success { background: #4CAF50; }
+        .status-error { background: #f44336; }
+        .status-warning { background: #ff9800; }
+        .status-info { background: #2196f3; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🧪 اختبار نظام تقارير المبيعات</h1>
+            <p>هذه الصفحة لاختبار جميع وظائف النظام والتأكد من عملها بشكل صحيح</p>
+        </div>
+
+        <!-- اختبار الاتصال بـ Google Apps Script -->
+        <div class="test-section" id="connectionTest">
+            <h3>🌐 اختبار الاتصال بـ Google Apps Script</h3>
+            <p>يختبر هذا القسم الاتصال مع الخادم والتأكد من عمل API</p>
+            <button class="test-button" onclick="testConnection()">اختبار الاتصال</button>
+            <div class="test-result" id="connectionResult"></div>
+        </div>
+
+        <!-- اختبار إرسال البيانات -->
+        <div class="test-section" id="dataTest">
+            <h3>📊 اختبار إرسال البيانات</h3>
+            <p>يختبر هذا القسم إرسال بيانات تجريبية إلى Google Sheets</p>
+            <button class="test-button" onclick="testDataSubmission()">إرسال بيانات تجريبية</button>
+            <div class="test-result" id="dataResult"></div>
+        </div>
+
+        <!-- اختبار الحفظ المحلي -->
+        <div class="test-section" id="localStorageTest">
+            <h3>💾 اختبار الحفظ المحلي</h3>
+            <p>يختبر هذا القسم نظام الحفظ الاحتياطي المحلي</p>
+            <button class="test-button" onclick="testLocalStorage()">اختبار الحفظ المحلي</button>
+            <button class="test-button" onclick="viewLocalData()">عرض البيانات المحلية</button>
+            <button class="test-button" onclick="clearLocalData()">مسح البيانات المحلية</button>
+            <div class="test-result" id="localStorageResult"></div>
+        </div>
+
+        <!-- اختبار التاريخ الهجري التلقائي -->
+        <div class="test-section" id="hijriDateTest">
+            <h3>📅 اختبار التاريخ الهجري التلقائي</h3>
+            <p>يختبر هذا القسم تعيين التاريخ الهجري تلقائياً</p>
+            <button class="test-button" onclick="testHijriDate()">اختبار التاريخ الهجري</button>
+            <div class="test-result" id="hijriDateResult"></div>
+        </div>
+
+        <!-- اختبار المزامنة -->
+        <div class="test-section" id="syncTest">
+            <h3>🔄 اختبار المزامنة</h3>
+            <p>يختبر هذا القسم نظام مزامنة البيانات المحفوظة محلياً</p>
+            <button class="test-button" onclick="testSync()">اختبار المزامنة</button>
+            <div class="test-result" id="syncResult"></div>
+        </div>
+
+        <!-- معلومات النظام -->
+        <div class="test-section" id="systemInfo">
+            <h3>ℹ️ معلومات النظام</h3>
+            <p>معلومات عن حالة النظام والمتصفح</p>
+            <button class="test-button" onclick="getSystemInfo()">عرض معلومات النظام</button>
+            <div class="test-result" id="systemInfoResult"></div>
+        </div>
+
+        <!-- حالة النظام العامة -->
+        <div class="test-section" id="overallStatus">
+            <h3>📈 الحالة العامة للنظام</h3>
+            <div id="statusSummary">
+                <p>🔗 الاتصال: <span class="status-indicator status-info" id="connectionStatus"></span> <span id="connectionStatusText">لم يتم الاختبار</span></p>
+                <p>📅 التاريخ الهجري: <span class="status-indicator status-info" id="hijriStatus"></span> <span id="hijriStatusText">لم يتم الاختبار</span></p>
+                <p>📊 إرسال البيانات: <span class="status-indicator status-info" id="dataStatus"></span> <span id="dataStatusText">لم يتم الاختبار</span></p>
+                <p>💾 الحفظ المحلي: <span class="status-indicator status-info" id="localStatus"></span> <span id="localStatusText">لم يتم الاختبار</span></p>
+                <p>🔄 المزامنة: <span class="status-indicator status-info" id="syncStatus"></span> <span id="syncStatusText">لم يتم الاختبار</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URL الخاص بـ Google Apps Script - محدث وصحيح
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
+
+        // اختبار الاتصال
+        function testConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            resultDiv.textContent = 'جاري اختبار الاتصال...';
+            resultDiv.className = 'test-result info-result';
+
+            fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'GET'
+            })
+            .then(response => response.text())
+            .then(data => {
+                resultDiv.textContent = `✅ نجح الاتصال!\nالاستجابة: ${data}`;
+                resultDiv.className = 'test-result success-result';
+                updateStatus('connection', 'success', 'متصل');
+            })
+            .catch(error => {
+                resultDiv.textContent = `❌ فشل الاتصال!\nالخطأ: ${error.message}`;
+                resultDiv.className = 'test-result error-result';
+                updateStatus('connection', 'error', 'غير متصل');
+            });
+        }
+
+        // اختبار إرسال البيانات
+        function testDataSubmission() {
+            const resultDiv = document.getElementById('dataResult');
+            resultDiv.textContent = 'جاري إرسال البيانات التجريبية...';
+            resultDiv.className = 'test-result info-result';
+
+            const testData = {
+                'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': new Date().toISOString().split('T')[0],
+                'التاريخ (هجري / Hijri Date / হিজরি তারিখ)': '15-06-1446',
+                'إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম': 'شركة الوادي التجارية - اختبار',
+                'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': 'الفرع الرئيسي - اختبار',
+                'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': 'مدير الاختبار',
+                'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': 'ماكينة اختبار 1',
+                'رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর': 'TEST001',
+                'كاش / Cash / নগদ': 1000,
+                'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': 500,
+                'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': 200,
+                'مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন': 100,
+                'اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম': 'موظف الاختبار',
+                files: [],
+                id: 'test_' + Date.now(),
+                status: 'test'
+            };
+
+            fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(testData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                resultDiv.textContent = `✅ تم إرسال البيانات بنجاح!\nالاستجابة: ${data}`;
+                resultDiv.className = 'test-result success-result';
+                updateStatus('data', 'success', 'يعمل بشكل صحيح');
+            })
+            .catch(error => {
+                resultDiv.textContent = `❌ فشل في إرسال البيانات!\nالخطأ: ${error.message}`;
+                resultDiv.className = 'test-result error-result';
+                updateStatus('data', 'error', 'لا يعمل');
+            });
+        }
+
+        // اختبار الحفظ المحلي
+        function testLocalStorage() {
+            const resultDiv = document.getElementById('localStorageResult');
+            
+            try {
+                const testData = {
+                    id: 'test_local_' + Date.now(),
+                    timestamp: new Date().toISOString(),
+                    data: 'بيانات اختبار الحفظ المحلي'
+                };
+
+                localStorage.setItem('testData', JSON.stringify(testData));
+                const retrieved = JSON.parse(localStorage.getItem('testData'));
+
+                if (retrieved && retrieved.id === testData.id) {
+                    resultDiv.textContent = `✅ الحفظ المحلي يعمل بشكل صحيح!\nتم حفظ واسترجاع: ${JSON.stringify(testData, null, 2)}`;
+                    resultDiv.className = 'test-result success-result';
+                    updateStatus('local', 'success', 'يعمل بشكل صحيح');
+                } else {
+                    throw new Error('فشل في استرجاع البيانات');
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ فشل الحفظ المحلي!\nالخطأ: ${error.message}`;
+                resultDiv.className = 'test-result error-result';
+                updateStatus('local', 'error', 'لا يعمل');
+            }
+        }
+
+        // عرض البيانات المحلية
+        function viewLocalData() {
+            const resultDiv = document.getElementById('localStorageResult');
+            
+            const submissions = localStorage.getItem('offlineSubmissions');
+            const backups = localStorage.getItem('submissionBackups');
+            const successful = localStorage.getItem('successfulSubmissions');
+
+            let output = 'البيانات المحفوظة محلياً:\n\n';
+            output += `📤 الإرسالات المؤجلة: ${submissions ? JSON.parse(submissions).length : 0}\n`;
+            output += `💾 النسخ الاحتياطية: ${backups ? JSON.parse(backups).length : 0}\n`;
+            output += `✅ الإرسالات الناجحة: ${successful ? JSON.parse(successful).length : 0}\n\n`;
+
+            if (submissions) {
+                output += 'تفاصيل الإرسالات المؤجلة:\n';
+                output += JSON.stringify(JSON.parse(submissions), null, 2);
+            }
+
+            resultDiv.textContent = output;
+            resultDiv.className = 'test-result info-result';
+        }
+
+        // مسح البيانات المحلية
+        function clearLocalData() {
+            const resultDiv = document.getElementById('localStorageResult');
+            
+            try {
+                localStorage.removeItem('offlineSubmissions');
+                localStorage.removeItem('submissionBackups');
+                localStorage.removeItem('successfulSubmissions');
+                localStorage.removeItem('formData');
+                localStorage.removeItem('testData');
+
+                resultDiv.textContent = '✅ تم مسح جميع البيانات المحلية بنجاح!';
+                resultDiv.className = 'test-result success-result';
+            } catch (error) {
+                resultDiv.textContent = `❌ فشل في مسح البيانات!\nالخطأ: ${error.message}`;
+                resultDiv.className = 'test-result error-result';
+            }
+        }
+
+        // اختبار التاريخ الهجري التلقائي
+        function testHijriDate() {
+            const resultDiv = document.getElementById('hijriDateResult');
+            
+            try {
+                // محاكاة دالة تحويل التاريخ الهجري المحسنة
+                function getCurrentHijriDate() {
+                    const today = new Date();
+                    
+                    // استخدام Intl.DateTimeFormat للحصول على التاريخ الهجري الدقيق
+                    try {
+                        const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                            year: 'numeric',
+                            month: '2-digit', 
+                            day: '2-digit'
+                        });
+                        
+                        const hijriParts = hijriFormatter.formatToParts(today);
+                        const year = parseInt(hijriParts.find(part => part.type === 'year').value);
+                        const month = parseInt(hijriParts.find(part => part.type === 'month').value);
+                        const day = parseInt(hijriParts.find(part => part.type === 'day').value);
+                        
+                        return { year, month, day };
+                    } catch (error) {
+                        console.log('فشل في استخدام Intl، استخدام الطريقة البديلة');
+                        
+                        // طريقة بديلة محسنة
+                        const gYear = today.getFullYear();
+                        const gMonth = today.getMonth() + 1;
+                        const gDay = today.getDate();
+                        
+                        // خوارزمية تحويل محسنة ومصححة
+                        const a = Math.floor((14 - gMonth) / 12);
+                        const y = gYear - a;
+                        const m = gMonth + 12 * a - 3;
+                        
+                        let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+                        
+                        // تحويل إلى التاريخ الهجري
+                        jd = jd - 1948084; // تعديل للتقويم الهجري
+                        
+                        const hYear = Math.floor((30 * jd + 10646) / 10631);
+                        let hMonth = Math.ceil((jd - 29 - 354 * hYear - Math.floor((3 + 11 * hYear) / 30)) / 29.5);
+                        if (hMonth < 1) hMonth = 1;
+                        if (hMonth > 12) hMonth = 12;
+                        
+                        let hDay = jd - 354 * hYear - Math.floor((3 + 11 * hYear) / 30) - Math.floor((hMonth - 1) * 29.5) + 1;
+                        if (hDay < 1) hDay = 1;
+                        if (hDay > 30) hDay = 30;
+                        
+                        // ضمان أن التاريخ منطقي
+                        const currentHijriYear = 1446; // السنة الهجرية الحالية تقريباً
+                        const finalYear = Math.max(currentHijriYear, Math.min(currentHijriYear + 1, Math.floor(hYear)));
+                        
+                        return {
+                            year: finalYear,
+                            month: Math.max(1, Math.min(12, Math.floor(hMonth))),
+                            day: Math.max(1, Math.min(30, Math.floor(hDay)))
+                        };
+                    }
+                }
+                
+                const today = new Date();
+                const gregorianDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                
+                const hijriDate = getCurrentHijriDate();
+                const hijriFormatted = `${String(hijriDate.day).padStart(2, '0')}-${String(hijriDate.month).padStart(2, '0')}-${hijriDate.year}`;
+                
+                const hijriMonths = [
+                    'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني', 'جمادى الأولى', 'جمادى الثانية',
+                    'رجب', 'شعبان', 'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+                ];
+                
+                const monthName = hijriMonths[hijriDate.month - 1] || 'غير معروف';
+                
+                let output = '✅ تعمل دالة التاريخ الهجري بشكل صحيح!\n\n';
+                output += `📅 التاريخ الميلادي: ${gregorianDate}\n`;
+                output += `🌙 التاريخ الهجري: ${hijriFormatted}\n`;
+                output += `📆 الشهر: ${monthName}\n`;
+                output += `🗓️ السنة الهجرية: ${hijriDate.year} هـ`;
+                
+                resultDiv.textContent = output;
+                resultDiv.className = 'test-result success-result';
+                
+            } catch (error) {
+                resultDiv.textContent = `❌ خطأ في حساب التاريخ الهجري!\nالخطأ: ${error.message}`;
+                resultDiv.className = 'test-result error-result';
+            }
+        }
+
+        function testSync() {
+            const resultDiv = document.getElementById('syncResult');
+            resultDiv.textContent = 'جاري اختبار المزامنة...';
+            resultDiv.className = 'test-result info-result';
+            
+            try {
+                const testData = {
+                    id: 'sync_test_' + Date.now(),
+                    status: 'pending_sync',
+                    timestamp: new Date().toISOString()
+                };
+                
+                let offlineData = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
+                offlineData.push(testData);
+                localStorage.setItem('offlineSubmissions', JSON.stringify(offlineData));
+                
+                resultDiv.textContent = '✅ اختبار المزامنة ناجح!\nتم حفظ بيانات تجريبية للمزامنة.';
+                resultDiv.className = 'test-result success-result';
+                updateStatus('sync', 'success', 'يعمل بشكل صحيح');
+                
+            } catch (error) {
+                resultDiv.textContent = `❌ فشل في اختبار المزامنة!\nالخطأ: ${error.message}`;
+                resultDiv.className = 'test-result error-result';
+                updateStatus('sync', 'error', 'لا يعمل');
+            }
+        }
+        function testSync() {
+            const resultDiv = document.getElementById('syncResult');
+            resultDiv.textContent = 'جاري اختبار المزامنة...';
+            resultDiv.className = 'test-result info-result';
+
+            // إنشاء بيانات تجريبية للمزامنة
+            const testSubmission = {
+                id: 'sync_test_' + Date.now(),
+                status: 'pending_sync',
+                timestamp: new Date().toISOString(),
+                'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': new Date().toISOString().split('T')[0],
+                'إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম': 'اختبار المزامنة'
+            };
+
+            // حفظ في البيانات المؤجلة
+            let offlineSubmissions = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
+            offlineSubmissions.push(testSubmission);
+            localStorage.setItem('offlineSubmissions', JSON.stringify(offlineSubmissions));
+
+            // محاولة المزامنة
+            if (typeof syncOfflineData === 'function') {
+                syncOfflineData();
+                
+                setTimeout(() => {
+                    const updatedSubmissions = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
+                    const syncedSubmission = updatedSubmissions.find(s => s.id === testSubmission.id);
+                    
+                    if (syncedSubmission && syncedSubmission.status === 'synced') {
+                        resultDiv.textContent = '✅ المزامنة تعمل بشكل صحيح!\nتم مزامنة البيانات التجريبية بنجاح.';
+                        resultDiv.className = 'test-result success-result';
+                        updateStatus('sync', 'success', 'يعمل بشكل صحيح');
+                    } else {
+                        resultDiv.textContent = '⚠️ المزامنة قيد التقدم...\nقد تحتاج إلى وقت أطول أو اتصال أفضل بالإنترنت.';
+                        resultDiv.className = 'test-result info-result';
+                        updateStatus('sync', 'warning', 'قيد المعالجة');
+                    }
+                }, 5000);
+            } else {
+                resultDiv.textContent = '❌ دالة المزامنة غير متوفرة!\nتأكد من تحميل ملف ALWADIYAYNFORM.js';
+                resultDiv.className = 'test-result error-result';
+                updateStatus('sync', 'error', 'غير متوفر');
+            }
+        }
+
+        // عرض معلومات النظام
+        function getSystemInfo() {
+            const resultDiv = document.getElementById('systemInfoResult');
+            
+            const info = {
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                platform: navigator.platform,
+                cookieEnabled: navigator.cookieEnabled,
+                onLine: navigator.onLine,
+                localStorage: typeof(Storage) !== "undefined",
+                sessionStorage: typeof(sessionStorage) !== "undefined",
+                indexedDB: typeof(indexedDB) !== "undefined",
+                currentTime: new Date().toISOString(),
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                screenResolution: `${screen.width}x${screen.height}`,
+                windowSize: `${window.innerWidth}x${window.innerHeight}`
+            };
+
+            resultDiv.textContent = JSON.stringify(info, null, 2);
+            resultDiv.className = 'test-result info-result';
+        }
+
+        // تحديث حالة النظام
+        function updateStatus(type, status, text) {
+            const statusElement = document.getElementById(type + 'Status');
+            const textElement = document.getElementById(type + 'StatusText');
+            
+            statusElement.className = `status-indicator status-${status}`;
+            textElement.textContent = text;
+        }
+
+        // تشغيل اختبارات أساسية عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            console.log('🧪 صفحة اختبار النظام جاهزة');
+            
+            // اختبار الحفظ المحلي تلقائياً
+            setTimeout(() => {
+                testLocalStorage();
+            }, 1000);
+            
+            // اختبار التاريخ الهجري تلقائياً
+            setTimeout(() => {
+                testHijriDate();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

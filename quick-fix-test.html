@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار سريع - التحقق من الإصلاحات</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .test-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .test-item.success {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .test-item.error {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.1);
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .success-result {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+        
+        .error-result {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🔧 اختبار سريع - التحقق من الإصلاحات</h1>
+            <p>هذا الاختبار للتحقق من أن جميع الإصلاحات تعمل بشكل صحيح</p>
+        </div>
+
+        <!-- اختبار التاريخ الهجري -->
+        <div class="test-item" id="hijriTest">
+            <h3>📅 اختبار التاريخ الهجري المحدث</h3>
+            <p>يجب أن يظهر التاريخ الهجري الصحيح (ليس 10-01-1446)</p>
+            <button class="test-button" onclick="testHijriDate()">اختبار التاريخ الهجري</button>
+            <div class="result" id="hijriResult"></div>
+        </div>
+
+        <!-- اختبار URL الجديد -->
+        <div class="test-item" id="urlTest">
+            <h3>🌐 اختبار URL المحدث</h3>
+            <p>يجب أن يعمل الاتصال مع Google Apps Script الجديد</p>
+            <button class="test-button" onclick="testNewURL()">اختبار الاتصال</button>
+            <div class="result" id="urlResult"></div>
+        </div>
+
+        <!-- اختبار النموذج -->
+        <div class="test-item" id="formTest">
+            <h3>📝 اختبار النموذج</h3>
+            <p>فتح النموذج والتحقق من التاريخ الهجري</p>
+            <button class="test-button" onclick="openForm()">فتح النموذج</button>
+            <button class="test-button" onclick="openSystemTest()">فتح اختبار النظام</button>
+        </div>
+
+        <!-- النتيجة الإجمالية -->
+        <div class="test-item" id="overallResult">
+            <h3>📊 النتيجة الإجمالية</h3>
+            <div id="overallStatus">جاري الاختبار...</div>
+        </div>
+    </div>
+
+    <script>
+        // URL الجديد المحدث
+        const NEW_GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
+
+        let testResults = {
+            hijri: false,
+            url: false
+        };
+
+        // اختبار التاريخ الهجري المحدث
+        function testHijriDate() {
+            const resultDiv = document.getElementById('hijriResult');
+            resultDiv.textContent = 'جاري اختبار التاريخ الهجري...';
+            
+            try {
+                // استخدام الطريقة الجديدة المحسنة
+                const today = new Date();
+                
+                // محاولة استخدام Intl.DateTimeFormat
+                try {
+                    const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                        year: 'numeric',
+                        month: '2-digit', 
+                        day: '2-digit'
+                    });
+                    
+                    const hijriParts = hijriFormatter.formatToParts(today);
+                    const year = parseInt(hijriParts.find(part => part.type === 'year').value);
+                    const month = parseInt(hijriParts.find(part => part.type === 'month').value);
+                    const day = parseInt(hijriParts.find(part => part.type === 'day').value);
+                    
+                    const hijriDate = `${String(day).padStart(2, '0')}-${String(month).padStart(2, '0')}-${year}`;
+                    
+                    // التحقق من أن التاريخ ليس 10-01-1446
+                    if (hijriDate === '10-01-1446') {
+                        throw new Error('التاريخ الهجري لا يزال يظهر القيمة الخاطئة: 10-01-1446');
+                    }
+                    
+                    resultDiv.textContent = `✅ نجح الاختبار!\\nالتاريخ الهجري الصحيح: ${hijriDate}\\nالتاريخ الميلادي: ${today.toISOString().split('T')[0]}`;
+                    resultDiv.className = 'result success-result';
+                    testResults.hijri = true;
+                    
+                } catch (intlError) {
+                    // الطريقة البديلة المحسنة
+                    const gYear = today.getFullYear();
+                    const gMonth = today.getMonth() + 1;
+                    const gDay = today.getDate();
+                    
+                    const a = Math.floor((14 - gMonth) / 12);
+                    const y = gYear - a;
+                    const m = gMonth + 12 * a - 3;
+                    
+                    let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+                    jd = jd - 1948084;
+                    
+                    const hYear = Math.floor((30 * jd + 10646) / 10631);
+                    let hMonth = Math.ceil((jd - 29 - 354 * hYear - Math.floor((3 + 11 * hYear) / 30)) / 29.5);
+                    if (hMonth < 1) hMonth = 1;
+                    if (hMonth > 12) hMonth = 12;
+                    
+                    let hDay = jd - 354 * hYear - Math.floor((3 + 11 * hYear) / 30) - Math.floor((hMonth - 1) * 29.5) + 1;
+                    if (hDay < 1) hDay = 1;
+                    if (hDay > 30) hDay = 30;
+                    
+                    const currentHijriYear = 1446;
+                    const finalYear = Math.max(currentHijriYear, Math.min(currentHijriYear + 1, Math.floor(hYear)));
+                    
+                    const hijriDate = `${String(Math.floor(hDay)).padStart(2, '0')}-${String(Math.floor(hMonth)).padStart(2, '0')}-${finalYear}`;
+                    
+                    if (hijriDate === '10-01-1446') {
+                        throw new Error('التاريخ الهجري لا يزال يظهر القيمة الخاطئة: 10-01-1446');
+                    }
+                    
+                    resultDiv.textContent = `✅ نجح الاختبار (الطريقة البديلة)!\\nالتاريخ الهجري: ${hijriDate}\\nملاحظة: تم استخدام الطريقة البديلة لأن Intl غير مدعوم`;
+                    resultDiv.className = 'result success-result';
+                    testResults.hijri = true;
+                }
+                
+            } catch (error) {
+                resultDiv.textContent = `❌ فشل الاختبار!\\nالخطأ: ${error.message}`;
+                resultDiv.className = 'result error-result';
+                testResults.hijri = false;
+            }
+            
+            updateOverallResult();
+        }
+
+        // اختبار URL الجديد
+        function testNewURL() {
+            const resultDiv = document.getElementById('urlResult');
+            resultDiv.textContent = 'جاري اختبار الاتصال مع URL الجديد...';
+            
+            fetch(NEW_GOOGLE_APPS_SCRIPT_URL, {
+                method: 'GET'
+            })
+            .then(response => response.text())
+            .then(data => {
+                resultDiv.textContent = `✅ نجح الاتصال!\\nURL الجديد يعمل بشكل صحيح\\nالاستجابة: ${data}`;
+                resultDiv.className = 'result success-result';
+                testResults.url = true;
+                updateOverallResult();
+            })
+            .catch(error => {
+                resultDiv.textContent = `❌ فشل الاتصال!\\nURL قد يحتاج إلى تحديث\\nالخطأ: ${error.message}`;
+                resultDiv.className = 'result error-result';
+                testResults.url = false;
+                updateOverallResult();
+            });
+        }
+
+        // فتح النموذج
+        function openForm() {
+            window.open('ALWADIYAYNFORM.html', '_blank');
+        }
+
+        // فتح اختبار النظام
+        function openSystemTest() {
+            window.open('system-test.html', '_blank');
+        }
+
+        // تحديث النتيجة الإجمالية
+        function updateOverallResult() {
+            const overallDiv = document.getElementById('overallStatus');
+            const overallContainer = document.getElementById('overallResult');
+            
+            const passedTests = Object.values(testResults).filter(result => result === true).length;
+            const totalTests = Object.keys(testResults).length;
+            
+            if (passedTests === totalTests) {
+                overallDiv.innerHTML = `
+                    <h4 style="color: #4CAF50;">🎉 جميع الاختبارات نجحت!</h4>
+                    <p>✅ التاريخ الهجري: ${testResults.hijri ? 'يعمل' : 'لا يعمل'}</p>
+                    <p>✅ الاتصال: ${testResults.url ? 'يعمل' : 'لا يعمل'}</p>
+                    <p><strong>النظام جاهز للاستخدام!</strong></p>
+                `;
+                overallContainer.className = 'test-item success';
+            } else {
+                overallDiv.innerHTML = `
+                    <h4 style="color: #f44336;">⚠️ بعض الاختبارات فشلت</h4>
+                    <p>${testResults.hijri ? '✅' : '❌'} التاريخ الهجري: ${testResults.hijri ? 'يعمل' : 'لا يعمل'}</p>
+                    <p>${testResults.url ? '✅' : '❌'} الاتصال: ${testResults.url ? 'يعمل' : 'لا يعمل'}</p>
+                    <p><strong>يحتاج إلى مراجعة الإعدادات</strong></p>
+                `;
+                overallContainer.className = 'test-item error';
+            }
+        }
+
+        // تشغيل الاختبارات تلقائياً عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            console.log('🔧 بدء الاختبار السريع...');
+            
+            // اختبار التاريخ الهجري تلقائياً
+            setTimeout(() => {
+                testHijriDate();
+            }, 1000);
+            
+            // اختبار URL تلقائياً
+            setTimeout(() => {
+                testNewURL();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -23,24 +23,58 @@ class SimpleHijriCalendar {
 
     getCurrentHijriDate() {
         const today = new Date();
-        // تحويل أكثر دقة للتاريخ الهجري
-        const hijriYear = Math.floor(today.getFullYear() - 579.3);
-        let hijriMonth = today.getMonth() + 1;
-        let hijriDay = today.getDate();
         
-        // تعديل بسيط للدقة
-        if (hijriMonth > 12) {
-            hijriMonth = hijriMonth - 12;
+        // استخدام Intl.DateTimeFormat للحصول على التاريخ الهجري الدقيق
+        try {
+            const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                year: 'numeric',
+                month: '2-digit', 
+                day: '2-digit'
+            });
+            
+            const hijriParts = hijriFormatter.formatToParts(today);
+            const year = parseInt(hijriParts.find(part => part.type === 'year').value);
+            const month = parseInt(hijriParts.find(part => part.type === 'month').value);
+            const day = parseInt(hijriParts.find(part => part.type === 'day').value);
+            
+            return { year, month, day };
+        } catch (error) {
+            console.log('فشل في استخدام Intl، استخدام الطريقة البديلة');
+            
+            // طريقة بديلة محسنة
+            const gYear = today.getFullYear();
+            const gMonth = today.getMonth() + 1;
+            const gDay = today.getDate();
+            
+            // خوارزمية تحويل محسنة ومصححة
+            const a = Math.floor((14 - gMonth) / 12);
+            const y = gYear - a;
+            const m = gMonth + 12 * a - 3;
+            
+            let jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+            
+            // تحويل إلى التاريخ الهجري
+            jd = jd - 1948084; // تعديل للتقويم الهجري
+            
+            const hYear = Math.floor((30 * jd + 10646) / 10631);
+            let hMonth = Math.ceil((jd - 29 - 354 * hYear - Math.floor((3 + 11 * hYear) / 30)) / 29.5);
+            if (hMonth < 1) hMonth = 1;
+            if (hMonth > 12) hMonth = 12;
+            
+            let hDay = jd - 354 * hYear - Math.floor((3 + 11 * hYear) / 30) - Math.floor((hMonth - 1) * 29.5) + 1;
+            if (hDay < 1) hDay = 1;
+            if (hDay > 30) hDay = 30;
+            
+            // ضمان أن التاريخ منطقي
+            const currentHijriYear = 1446; // السنة الهجرية الحالية تقريباً
+            const finalYear = Math.max(currentHijriYear, Math.min(currentHijriYear + 1, Math.floor(hYear)));
+            
+            return {
+                year: finalYear,
+                month: Math.max(1, Math.min(12, Math.floor(hMonth))),
+                day: Math.max(1, Math.min(30, Math.floor(hDay)))
+            };
         }
-        if (hijriDay > 30) {
-            hijriDay = 30;
-        }
-        
-        return {
-            year: hijriYear,
-            month: hijriMonth,
-            day: hijriDay
-        };
     }
 
     init() {

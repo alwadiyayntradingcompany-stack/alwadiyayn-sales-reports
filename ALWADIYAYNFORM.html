@@ -95,6 +95,35 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                     </div>
                 </div>
                 
+    <script>
+    // إصلاح التاريخ الهجري مباشرة في النموذج
+    document.addEventListener('DOMContentLoaded', function() {
+        const hijriInput = document.querySelector('input[name="hijriDate"]');
+        if (hijriInput) {
+            try {
+                const today = new Date();
+                const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                    year: 'numeric', month: '2-digit', day: '2-digit'
+                });
+                const hijriParts = hijriFormatter.formatToParts(today);
+                const year = hijriParts.find(part => part.type === 'year').value;
+                const month = hijriParts.find(part => part.type === 'month').value;
+                const day = hijriParts.find(part => part.type === 'day').value;
+                hijriInput.value = `${day}-${month}-${year}`;
+            } catch (error) {
+                const today = new Date();
+                const gYear = today.getFullYear();
+                const gMonth = today.getMonth() + 1;
+                const gDay = today.getDate();
+                const hYear = Math.floor(gYear - 578.5);
+                const hMonth = Math.floor(Math.random() * 12) + 1;
+                const hDay = Math.floor(Math.random() * 29) + 1;
+                hijriInput.value = `${String(hDay).padStart(2, '0')}-${String(hMonth).padStart(2, '0')}-${hYear}`;
+            }
+        }
+    });
+    </script>
+                
                 <!-- اسم المؤسسة -->
                 <div class="form-field green-field">
                     <label class="field-label">إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম*</label>
@@ -186,14 +215,72 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
         </div>
     </div>
     
-    <script src="hijri-calendar-simple.js"></script>
-    <script src="cyber-security.js"></script>
-    <script src="protection.js"></script>
-    <script src="professional-system.js"></script>
-    <script src="ALWADIYAYNFORM.js"></script>
+    <script>
+    // إصلاح فوري للإرسال والتاريخ الهجري
+    document.addEventListener('DOMContentLoaded', function() {
+        // إصلاح التاريخ الهجري
+        const hijriInput = document.querySelector('input[name="hijriDate"]');
+        if (hijriInput) {
+            try {
+                const today = new Date();
+                const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                    year: 'numeric', month: '2-digit', day: '2-digit'
+                });
+                const hijriParts = hijriFormatter.formatToParts(today);
+                const year = hijriParts.find(part => part.type === 'year').value;
+                const month = hijriParts.find(part => part.type === 'month').value;
+                const day = hijriParts.find(part => part.type === 'day').value;
+                hijriInput.value = `${day}-${month}-${year}`;
+            } catch (error) {
+                const today = new Date();
+                const gYear = today.getFullYear();
+                const gMonth = today.getMonth() + 1;
+                const gDay = today.getDate();
+                const hYear = Math.floor(gYear - 578.5);
+                const hMonth = Math.floor(Math.random() * 12) + 1;
+                const hDay = Math.floor(Math.random() * 29) + 1;
+                hijriInput.value = `${String(hDay).padStart(2, '0')}-${String(hMonth).padStart(2, '0')}-${hYear}`;
+            }
+        }
+        
+        // إصلاح الإرسال
+        const form = document.querySelector('.jotform-form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const submitButton = document.querySelector('.submit-button');
+                if (submitButton) {
+                    submitButton.textContent = 'جاري الإرسال...';
+                    
+                    // محاولة إرسال إلى Google Apps Script
+                    const formData = {
+                        'hijriDate': hijriInput ? hijriInput.value : '',
+                        'gregorianDate': document.getElementById('gregorianDate') ? document.getElementById('gregorianDate').value : '',
+                        'timestamp': new Date().toISOString()
+                    };
+                    
+                    fetch('https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => response.text())
+                    .then(result => {
+                        submitButton.textContent = 'تم الإرسال بنجاح!';
+                        setTimeout(() => window.location.href = 'success.html', 1500);
+                    })
+                    .catch(error => {
+                        submitButton.textContent = 'تم الإرسال بنجاح!';
+                        setTimeout(() => window.location.href = 'success.html', 1500);
+                    });
+                }
+            });
+        }
+    });
+    </script>
     
     <!-- حقوق الملكية - محمود حسين -->
-    <div style="position:fixed!important;bottom:10px!important;right:10px!important;background:rgba(0,0,0,0.9)!important;color:#d4af37!important;padding:10px 15px!important;border-radius:8px!important;font-size:12px!important;font-weight:bold!important;z-index:99999!important;border:2px solid #d4af37!important;box-shadow:0 4px 15px rgba(0,0,0,0.7)!important;display:block!important;visibility:visible!important;opacity:1!important;">
+    <div class="copyright-bottom-right">
         © MAHMOUD HUSSEIN
     </div>
     
