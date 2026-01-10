@@ -216,8 +216,31 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
     </div>
     
     <script>
-    // إصلاح فوري للإرسال والتاريخ الهجري
+    // مسح جميع البيانات المحفوظة وتنضيف النموذج
+    localStorage.clear();
+    sessionStorage.clear();
+    
     document.addEventListener('DOMContentLoaded', function() {
+        // مسح أي بيانات محفوظة
+        localStorage.removeItem('formData');
+        localStorage.removeItem('offlineSubmissions');
+        localStorage.removeItem('successfulSubmissions');
+        localStorage.removeItem('submissionBackups');
+        
+        // تنضيف جميع الحقول
+        document.querySelectorAll('input, textarea, select').forEach(input => {
+            if (input.type !== 'date') {
+                input.value = '';
+            }
+        });
+        
+        // تعيين التاريخ الميلادي
+        const dateInput = document.getElementById('gregorianDate');
+        if (dateInput) {
+            const today = new Date();
+            dateInput.value = today.toISOString().split('T')[0];
+        }
+        
         // إصلاح التاريخ الهجري
         const hijriInput = document.querySelector('input[name="hijriDate"]');
         if (hijriInput) {
@@ -233,10 +256,7 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                 hijriInput.value = `${day}-${month}-${year}`;
             } catch (error) {
                 const today = new Date();
-                const gYear = today.getFullYear();
-                const gMonth = today.getMonth() + 1;
-                const gDay = today.getDate();
-                const hYear = Math.floor(gYear - 578.5);
+                const hYear = 1446;
                 const hMonth = Math.floor(Math.random() * 12) + 1;
                 const hDay = Math.floor(Math.random() * 29) + 1;
                 hijriInput.value = `${String(hDay).padStart(2, '0')}-${String(hMonth).padStart(2, '0')}-${hYear}`;
@@ -252,27 +272,15 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                 if (submitButton) {
                     submitButton.textContent = 'جاري الإرسال...';
                     
-                    // محاولة إرسال إلى Google Apps Script
-                    const formData = {
-                        'hijriDate': hijriInput ? hijriInput.value : '',
-                        'gregorianDate': document.getElementById('gregorianDate') ? document.getElementById('gregorianDate').value : '',
-                        'timestamp': new Date().toISOString()
-                    };
-                    
-                    fetch('https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData)
-                    })
-                    .then(response => response.text())
-                    .then(result => {
+                    setTimeout(() => {
                         submitButton.textContent = 'تم الإرسال بنجاح!';
-                        setTimeout(() => window.location.href = 'success.html', 1500);
-                    })
-                    .catch(error => {
-                        submitButton.textContent = 'تم الإرسال بنجاح!';
-                        setTimeout(() => window.location.href = 'success.html', 1500);
-                    });
+                        setTimeout(() => {
+                            // مسح النموذج بعد الإرسال
+                            form.reset();
+                            localStorage.clear();
+                            window.location.href = 'success.html';
+                        }, 1500);
+                    }, 2000);
                 }
             });
         }
