@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام مؤقت - يعمل بدون Google Apps Script</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin: 0; padding: 20px; min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .header { text-align: center; margin-bottom: 30px; color: #2c3e50; }
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .status-card { padding: 20px; border-radius: 10px; text-align: center; }
+        .success { background: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; }
+        .error { background: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+        .btn { padding: 12px 25px; margin: 10px 5px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .result { margin: 15px 0; padding: 15px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; }
+        .form-section { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .form-group { margin: 15px 0; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .data-display { background: #e9ecef; padding: 15px; border-radius: 8px; margin: 10px 0; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 النظام المؤقت - يعمل محلياً</h1>
+            <p>نظام كامل يعمل بدون الحاجة لـ Google Apps Script</p>
+            <p id="currentTime"></p>
+        </div>
+
+        <!-- حالة النظام -->
+        <div class="status-grid">
+            <div class="status-card success">
+                <h3>✅ التخزين المحلي</h3>
+                <p>يعمل بشكل مثالي</p>
+            </div>
+            <div class="status-card success" id="hijriCard">
+                <h3>📅 التاريخ الهجري</h3>
+                <p id="hijriDate">جاري التحميل...</p>
+            </div>
+            <div class="status-card success">
+                <h3>🔄 المزامنة المحلية</h3>
+                <p>تعمل بشكل كامل</p>
+            </div>
+            <div class="status-card warning">
+                <h3>🌐 Google Apps Script</h3>
+                <p>غير مطلوب حالياً</p>
+            </div>
+        </div>
+
+        <!-- نموذج إدخال البيانات -->
+        <div class="form-section">
+            <h3>📝 إدخال بيانات المبيعات</h3>
+            <form id="salesForm">
+                <div class="form-group">
+                    <label>الفرع:</label>
+                    <select id="branch" required>
+                        <option value="">اختر الفرع</option>
+                        <option value="الفرع الرئيسي">الفرع الرئيسي</option>
+                        <option value="الفرع الثاني">الفرع الثاني</option>
+                        <option value="الفرع الثالث">الفرع الثالث</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المسئول:</label>
+                    <input type="text" id="responsible" placeholder="اسم المسئول" required>
+                </div>
+                <div class="form-group">
+                    <label>كاش (ريال):</label>
+                    <input type="number" id="cash" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>نظام نقاط البيع (ريال):</label>
+                    <input type="number" id="pos" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>المشتريات اليومية (ريال):</label>
+                    <input type="number" id="purchases" placeholder="0" min="0" step="0.01">
+                </div>
+                <button type="submit" class="btn btn-success">💾 حفظ البيانات</button>
+            </form>
+        </div>
+
+        <!-- أزرار التحكم -->
+        <div style="text-align: center; margin: 30px 0;">
+            <button class="btn btn-primary" onclick="viewAllData()">📊 عرض جميع البيانات</button>
+            <button class="btn btn-warning" onclick="generateReport()">📈 إنشاء تقرير</button>
+            <button class="btn btn-success" onclick="exportData()">📤 تصدير البيانات</button>
+            <button class="btn" style="background: #dc3545; color: white;" onclick="clearAllData()">🗑️ مسح البيانات</button>
+        </div>
+
+        <!-- عرض النتائج -->
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // تحديث الوقت
+        function updateTime() {
+            const now = new Date();
+            const gregorian = now.toLocaleDateString('ar-SA');
+            const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            }).format(now);
+            
+            document.getElementById('currentTime').textContent = `${gregorian} - ${hijri}`;
+            document.getElementById('hijriDate').textContent = hijri;
+        }
+
+        // حفظ البيانات
+        document.getElementById('salesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const data = {
+                id: 'local_' + Date.now(),
+                timestamp: new Date().toISOString(),
+                gregorianDate: new Date().toLocaleDateString('ar-SA'),
+                hijriDate: new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                    year: 'numeric', month: '2-digit', day: '2-digit'
+                }).format(new Date()),
+                branch: document.getElementById('branch').value,
+                responsible: document.getElementById('responsible').value,
+                cash: parseFloat(document.getElementById('cash').value || 0),
+                pos: parseFloat(document.getElementById('pos').value || 0),
+                purchases: parseFloat(document.getElementById('purchases').value || 0),
+                status: 'saved_locally'
+            };
+            
+            // حساب الإجماليات
+            data.totalSales = data.cash + data.pos;
+            data.profit = data.totalSales - data.purchases;
+            
+            // حفظ في localStorage
+            let submissions = JSON.parse(localStorage.getItem('localSubmissions') || '[]');
+            submissions.push(data);
+            localStorage.setItem('localSubmissions', JSON.stringify(submissions));
+            
+            // عرض رسالة النجاح
+            showResult(`✅ تم حفظ البيانات بنجاح!
+
+📊 ملخص الإرسال:
+• الفرع: ${data.branch}
+• المسئول: ${data.responsible}
+• إجمالي المبيعات: ${data.totalSales.toLocaleString()} ريال
+• المشتريات: ${data.purchases.toLocaleString()} ريال
+• صافي الربح: ${data.profit.toLocaleString()} ريال
+• التاريخ: ${data.gregorianDate} (${data.hijriDate})
+• معرف الإرسال: ${data.id}`, 'success');
+            
+            // إعادة تعيين النموذج
+            this.reset();
+        });
+
+        // عرض جميع البيانات
+        function viewAllData() {
+            const submissions = JSON.parse(localStorage.getItem('localSubmissions') || '[]');
+            
+            if (submissions.length === 0) {
+                showResult('📭 لا توجد بيانات محفوظة حتى الآن.', 'warning');
+                return;
+            }
+            
+            let output = `📊 إجمالي البيانات المحفوظة: ${submissions.length} إرسال\n\n`;
+            
+            submissions.forEach((submission, index) => {
+                output += `${index + 1}. ${submission.branch} - ${submission.responsible}\n`;
+                output += `   المبيعات: ${submission.totalSales.toLocaleString()} | الربح: ${submission.profit.toLocaleString()}\n`;
+                output += `   التاريخ: ${submission.gregorianDate}\n\n`;
+            });
+            
+            showResult(output, 'success');
+        }
+
+        // إنشاء تقرير شامل
+        function generateReport() {
+            const submissions = JSON.parse(localStorage.getItem('localSubmissions') || '[]');
+            
+            if (submissions.length === 0) {
+                showResult('📭 لا توجد بيانات لإنشاء التقرير.', 'warning');
+                return;
+            }
+            
+            // حساب الإحصائيات
+            let totalSales = 0;
+            let totalPurchases = 0;
+            let totalProfit = 0;
+            const branches = {};
+            const users = new Set();
+            
+            submissions.forEach(submission => {
+                totalSales += submission.totalSales;
+                totalPurchases += submission.purchases;
+                totalProfit += submission.profit;
+                
+                if (!branches[submission.branch]) {
+                    branches[submission.branch] = { sales: 0, profit: 0, count: 0 };
+                }
+                branches[submission.branch].sales += submission.totalSales;
+                branches[submission.branch].profit += submission.profit;
+                branches[submission.branch].count++;
+                
+                users.add(submission.responsible);
+            });
+            
+            // حساب الضرائب
+            const taxAmount = totalProfit * 0.15;
+            const netProfit = totalProfit - taxAmount;
+            
+            let report = `📈 تقرير المبيعات الشامل - محمود حسين
+═══════════════════════════════════════════
+
+📊 الملخص المالي:
+💰 إجمالي المبيعات: ${totalSales.toLocaleString()} ريال
+🛒 إجمالي المشتريات: ${totalPurchases.toLocaleString()} ريال
+📊 إجمالي الربح: ${totalProfit.toLocaleString()} ريال
+💸 الضرائب (15%): ${taxAmount.toLocaleString()} ريال
+💵 صافي الربح: ${netProfit.toLocaleString()} ريال
+
+📋 إحصائيات عامة:
+📝 عدد التقارير: ${submissions.length}
+🏢 عدد الفروع: ${Object.keys(branches).length}
+👥 عدد المستخدمين: ${users.size}
+
+🏪 تفاصيل الفروع:`;
+
+            Object.keys(branches).forEach(branch => {
+                const data = branches[branch];
+                report += `\n• ${branch}: ${data.sales.toLocaleString()} ريال (${data.count} تقرير)`;
+            });
+            
+            report += `\n\n📅 تاريخ التقرير: ${new Date().toLocaleString('ar-SA')}`;
+            
+            showResult(report, 'success');
+        }
+
+        // تصدير البيانات
+        function exportData() {
+            const submissions = JSON.parse(localStorage.getItem('localSubmissions') || '[]');
+            
+            if (submissions.length === 0) {
+                showResult('📭 لا توجد بيانات للتصدير.', 'warning');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(submissions, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `sales-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showResult(`✅ تم تصدير ${submissions.length} إرسال بنجاح!
+📁 اسم الملف: sales-data-${new Date().toISOString().split('T')[0]}.json`, 'success');
+        }
+
+        // مسح جميع البيانات
+        function clearAllData() {
+            if (confirm('هل أنت متأكد من مسح جميع البيانات؟ هذا الإجراء لا يمكن التراجع عنه.')) {
+                localStorage.removeItem('localSubmissions');
+                showResult('🗑️ تم مسح جميع البيانات بنجاح.', 'warning');
+            }
+        }
+
+        // عرض النتائج
+        function showResult(message, type) {
+            const results = document.getElementById('results');
+            const className = type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'error';
+            results.innerHTML = `<div class="result ${className}">${message}</div>`;
+        }
+
+        // تشغيل عند التحميل
+        window.onload = function() {
+            updateTime();
+            setInterval(updateTime, 60000); // تحديث كل دقيقة
+            
+            // عرض إحصائيات سريعة
+            const submissions = JSON.parse(localStorage.getItem('localSubmissions') || '[]');
+            if (submissions.length > 0) {
+                showResult(`📊 مرحباً! لديك ${submissions.length} إرسال محفوظ محلياً.`, 'success');
+            }
+        };
+    </script>
+</body>
+</html>

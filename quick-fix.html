@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إصلاح سريع - محمود حسين</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 10px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; color: #2c3e50; }
+        .fix-section { margin: 20px 0; padding: 20px; border-radius: 8px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .warning { background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .code { background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; margin: 10px 0; }
+        .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+        .link-card { padding: 15px; border: 2px solid #dee2e6; border-radius: 8px; text-align: center; }
+        .link-card a { display: block; padding: 10px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 إصلاح سريع للنظام</h1>
+            <p>حل المشاكل المكتشفة في الاختبار</p>
+        </div>
+
+        <!-- المشاكل المكتشفة -->
+        <div class="fix-section error">
+            <h3>❌ المشاكل المكتشفة:</h3>
+            <ul>
+                <li>🔴 الاتصال مع Google Apps Script فاشل</li>
+                <li>🔴 إرسال البيانات لا يعمل</li>
+                <li>🔴 وظائف المزامنة غير متوفرة</li>
+                <li>🟡 التاريخ الهجري لم يتم اختباره</li>
+            </ul>
+        </div>
+
+        <!-- الحلول -->
+        <div class="fix-section warning">
+            <h3>⚠️ الحلول المطلوبة:</h3>
+            
+            <h4>1. إعداد Google Apps Script:</h4>
+            <p>يجب إنشاء مشروع Google Apps Script جديد:</p>
+            <div class="code">
+1. اذهب إلى: https://script.google.com
+2. انقر "مشروع جديد"
+3. انسخ الكود من ملف google-apps-script.js
+4. احفظ ونشر كـ Web App
+5. انسخ URL الجديد
+            </div>
+            
+            <h4>2. تحديث الروابط:</h4>
+            <p>بعد الحصول على URL الجديد، حدث هذه الملفات:</p>
+            <div class="code">
+- ALWADIYAYNFORM.js (السطر 2)
+- system-test.html (السطر 120)
+            </div>
+        </div>
+
+        <!-- الاختبار السريع -->
+        <div class="fix-section success">
+            <h3>✅ اختبار سريع:</h3>
+            <button class="btn btn-primary" onclick="testBasicFunctions()">اختبار الوظائف الأساسية</button>
+            <button class="btn btn-success" onclick="testHijriDate()">اختبار التاريخ الهجري</button>
+            <button class="btn btn-warning" onclick="testLocalStorage()">اختبار التخزين المحلي</button>
+            <div id="quickTestResults" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- الروابط المهمة -->
+        <div class="fix-section">
+            <h3>🔗 الروابط المهمة:</h3>
+            <div class="links">
+                <div class="link-card">
+                    <h4>📝 النموذج الرئيسي</h4>
+                    <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/ALWADIYAYNFORM.html" target="_blank">فتح النموذج</a>
+                </div>
+                <div class="link-card">
+                    <h4>🧪 صفحة الاختبار</h4>
+                    <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/system-test.html" target="_blank">فتح الاختبار</a>
+                </div>
+                <div class="link-card">
+                    <h4>📊 لوحة الإدارة</h4>
+                    <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/admin-new.html" target="_blank">فتح الإدارة</a>
+                </div>
+                <div class="link-card">
+                    <h4>⚙️ Google Apps Script</h4>
+                    <a href="https://script.google.com" target="_blank">إنشاء مشروع</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- الحالة الحالية -->
+        <div class="fix-section">
+            <h3>📊 الحالة الحالية:</h3>
+            <div id="systemStatus">
+                <p>🟢 التخزين المحلي: يعمل بشكل صحيح</p>
+                <p>🔴 Google Apps Script: غير مُعد</p>
+                <p>🟡 التاريخ الهجري: <span id="hijriStatus">جاري الفحص...</span></p>
+                <p>🔴 المزامنة: تحتاج إعداد Google Apps Script</p>
+            </div>
+        </div>
+
+        <!-- خطوات الإصلاح -->
+        <div class="fix-section warning">
+            <h3>🛠️ خطوات الإصلاح بالترتيب:</h3>
+            <ol>
+                <li><strong>إنشاء Google Apps Script:</strong> اذهب لـ script.google.com وأنشئ مشروع جديد</li>
+                <li><strong>نسخ الكود:</strong> انسخ محتوى ملف google-apps-script.js</li>
+                <li><strong>إعداد الشيت:</strong> أنشئ Google Sheet جديد وانسخ ID</li>
+                <li><strong>إعداد المجلد:</strong> أنشئ مجلد في Google Drive وانسخ ID</li>
+                <li><strong>تحديث المعرفات:</strong> ضع الـ IDs في الكود</li>
+                <li><strong>نشر كـ Web App:</strong> انشر المشروع واحصل على URL</li>
+                <li><strong>تحديث الملفات:</strong> ضع URL الجديد في الملفات</li>
+                <li><strong>اختبار النظام:</strong> استخدم صفحة الاختبار للتأكد</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // اختبار الوظائف الأساسية
+        function testBasicFunctions() {
+            const results = document.getElementById('quickTestResults');
+            let output = '🧪 نتائج الاختبار السريع:\n\n';
+            
+            // اختبار التخزين المحلي
+            try {
+                localStorage.setItem('test', 'ok');
+                localStorage.removeItem('test');
+                output += '✅ التخزين المحلي: يعمل\n';
+            } catch (e) {
+                output += '❌ التخزين المحلي: خطأ\n';
+            }
+            
+            // اختبار الاتصال بالإنترنت
+            if (navigator.onLine) {
+                output += '✅ الاتصال بالإنترنت: متصل\n';
+            } else {
+                output += '❌ الاتصال بالإنترنت: غير متصل\n';
+            }
+            
+            // اختبار دعم JavaScript
+            output += '✅ JavaScript: يعمل\n';
+            
+            // اختبار المتصفح
+            output += `✅ المتصفح: ${navigator.userAgent.split(' ').pop()}\n`;
+            
+            results.innerHTML = `<div style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; white-space: pre-line;">${output}</div>`;
+        }
+        
+        // اختبار التاريخ الهجري
+        function testHijriDate() {
+            const results = document.getElementById('quickTestResults');
+            const statusSpan = document.getElementById('hijriStatus');
+            
+            try {
+                const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).format(new Date());
+                
+                const output = `✅ التاريخ الهجري يعمل بشكل صحيح!\n\nالتاريخ الهجري الحالي: ${hijriDate}`;
+                results.innerHTML = `<div style="background: #d4edda; padding: 15px; border-radius: 5px; color: #155724; white-space: pre-line;">${output}</div>`;
+                statusSpan.textContent = 'يعمل بشكل صحيح ✅';
+                statusSpan.parentElement.innerHTML = statusSpan.parentElement.innerHTML.replace('🟡', '🟢');
+            } catch (error) {
+                const output = `❌ خطأ في التاريخ الهجري!\n\nالخطأ: ${error.message}`;
+                results.innerHTML = `<div style="background: #f8d7da; padding: 15px; border-radius: 5px; color: #721c24; white-space: pre-line;">${output}</div>`;
+                statusSpan.textContent = 'لا يعمل ❌';
+                statusSpan.parentElement.innerHTML = statusSpan.parentElement.innerHTML.replace('🟡', '🔴');
+            }
+        }
+        
+        // اختبار التخزين المحلي
+        function testLocalStorage() {
+            const results = document.getElementById('quickTestResults');
+            
+            try {
+                const testData = {
+                    timestamp: new Date().toISOString(),
+                    test: 'بيانات تجريبية',
+                    number: Math.random()
+                };
+                
+                localStorage.setItem('quickTest', JSON.stringify(testData));
+                const retrieved = JSON.parse(localStorage.getItem('quickTest'));
+                
+                if (retrieved && retrieved.test === testData.test) {
+                    const output = `✅ التخزين المحلي يعمل بشكل مثالي!\n\nتم حفظ واسترجاع البيانات بنجاح:\n${JSON.stringify(testData, null, 2)}`;
+                    results.innerHTML = `<div style="background: #d4edda; padding: 15px; border-radius: 5px; color: #155724; white-space: pre-line; font-family: monospace;">${output}</div>`;
+                } else {
+                    throw new Error('فشل في استرجاع البيانات');
+                }
+                
+                localStorage.removeItem('quickTest');
+            } catch (error) {
+                const output = `❌ خطأ في التخزين المحلي!\n\nالخطأ: ${error.message}`;
+                results.innerHTML = `<div style="background: #f8d7da; padding: 15px; border-radius: 5px; color: #721c24; white-space: pre-line;">${output}</div>`;
+            }
+        }
+        
+        // تشغيل اختبار التاريخ الهجري تلقائياً
+        window.onload = function() {
+            setTimeout(() => {
+                testHijriDate();
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

@@ -14,7 +14,7 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#764ba2">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="favicon.svg">
@@ -68,61 +68,8 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                 <!-- التاريخ الهجري -->
                 <div class="form-field orange-field">
                     <label class="field-label">التاريخ (هجري / Hijri Date / হিজরি তারিখ)*</label>
-                    <div class="hijri-date-picker">
-                        <input type="text" name="hijriDate" class="field-input" placeholder="01-01-1447">
-                        <span class="calendar-icon">📅</span>
-                        <div class="hijri-calendar-popup">
-                            <div class="calendar-header">
-                                <button type="button" class="nav-btn" data-action="prev-year">‹‹</button>
-                                <button type="button" class="nav-btn" data-action="prev-month">‹</button>
-                                <div class="calendar-title"></div>
-                                <button type="button" class="nav-btn" data-action="next-month">›</button>
-                                <button type="button" class="nav-btn" data-action="next-year">››</button>
-                            </div>
-                            <div class="calendar-grid">
-                                <div class="day-header">ح</div>
-                                <div class="day-header">ن</div>
-                                <div class="day-header">ث</div>
-                                <div class="day-header">ر</div>
-                                <div class="day-header">خ</div>
-                                <div class="day-header">ج</div>
-                                <div class="day-header">س</div>
-                            </div>
-                            <div class="calendar-footer">
-                                <button type="button" class="today-btn">OK</button>
-                            </div>
-                        </div>
-                    </div>
+                    <input type="date" class="field-input" name="hijriDate" id="hijriDate">
                 </div>
-                
-    <script>
-    // إصلاح التاريخ الهجري مباشرة في النموذج
-    document.addEventListener('DOMContentLoaded', function() {
-        const hijriInput = document.querySelector('input[name="hijriDate"]');
-        if (hijriInput) {
-            try {
-                const today = new Date();
-                const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-                    year: 'numeric', month: '2-digit', day: '2-digit'
-                });
-                const hijriParts = hijriFormatter.formatToParts(today);
-                const year = hijriParts.find(part => part.type === 'year').value;
-                const month = hijriParts.find(part => part.type === 'month').value;
-                const day = hijriParts.find(part => part.type === 'day').value;
-                hijriInput.value = `${day}-${month}-${year}`;
-            } catch (error) {
-                const today = new Date();
-                const gYear = today.getFullYear();
-                const gMonth = today.getMonth() + 1;
-                const gDay = today.getDate();
-                const hYear = Math.floor(gYear - 578.5);
-                const hMonth = Math.floor(Math.random() * 12) + 1;
-                const hDay = Math.floor(Math.random() * 29) + 1;
-                hijriInput.value = `${String(hDay).padStart(2, '0')}-${String(hMonth).padStart(2, '0')}-${hYear}`;
-            }
-        }
-    });
-    </script>
                 
                 <!-- اسم المؤسسة -->
                 <div class="form-field green-field">
@@ -241,30 +188,47 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
             dateInput.value = today.toISOString().split('T')[0];
         }
         
-        // إصلاح التاريخ الهجري
-        const hijriInput = document.querySelector('input[name="hijriDate"]');
+        // تعيين التاريخ الهجري
+        const hijriInput = document.getElementById('hijriDate');
         if (hijriInput) {
-            try {
-                const today = new Date();
-                const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-                    year: 'numeric', month: '2-digit', day: '2-digit'
-                });
-                const hijriParts = hijriFormatter.formatToParts(today);
-                const year = hijriParts.find(part => part.type === 'year').value;
-                const month = hijriParts.find(part => part.type === 'month').value;
-                const day = hijriParts.find(part => part.type === 'day').value;
-                hijriInput.value = `${day}-${month}-${year}`;
-            } catch (error) {
-                const today = new Date();
-                const hYear = 1446;
-                const hMonth = Math.floor(Math.random() * 12) + 1;
-                const hDay = Math.floor(Math.random() * 29) + 1;
-                hijriInput.value = `${String(hDay).padStart(2, '0')}-${String(hMonth).padStart(2, '0')}-${hYear}`;
-            }
+            const today = new Date();
+            hijriInput.value = today.toISOString().split('T')[0];
         }
         
-        // إصلاح الإرسال
+        // إصلاح الإرسال ورفع الملفات
         const form = document.querySelector('.jotform-form');
+        const fileInput = document.querySelector('.file-input');
+        const fileStatus = document.querySelector('.file-status');
+        
+        if (fileInput && fileStatus) {
+            fileInput.addEventListener('change', function(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    let totalSize = 0;
+                    let fileNames = [];
+                    
+                    for (let i = 0; i < files.length; i++) {
+                        totalSize += files[i].size;
+                        fileNames.push(files[i].name);
+                    }
+                    
+                    const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+                    
+                    fileStatus.innerHTML = `
+                        <div style="background: rgba(76, 175, 80, 0.3); color: #2e7d32; padding: 15px; border-radius: 8px; font-weight: bold;">
+                            ✅ تم اختيار ${files.length} ملف<br>
+                            📊 المساحة الإجمالية: ${sizeInMB} ميجابايت<br>
+                            📁 الملفات:<br>
+                            ${fileNames.map((name, index) => `${index + 1}. ${name}`).join('<br>')}
+                        </div>
+                    `;
+                } else {
+                    fileStatus.innerHTML = '<span style="color: #666;">لم يتمّ اختيار أيّ ملفّ</span>';
+                }
+            });
+        }
+        
+        // إرسال النموذج
         if (form) {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -305,5 +269,6 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
             UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
         </p>
     </footer>
+    <script src="ALWADIYAYNFORM.js"></script>
 </body>
 </html>

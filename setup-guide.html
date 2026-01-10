@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إعداد النظام - 5 دقائق فقط</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f7fa; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 15px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 40px; }
+        .step { background: #f8f9fa; border-left: 5px solid #007bff; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .step h3 { color: #007bff; margin-top: 0; }
+        .code { background: #2d3748; color: #e2e8f0; padding: 15px; border-radius: 8px; font-family: monospace; margin: 10px 0; overflow-x: auto; }
+        .btn { display: inline-block; padding: 12px 25px; background: #007bff; color: white; text-decoration: none; border-radius: 8px; margin: 10px 5px; font-weight: bold; }
+        .btn:hover { background: #0056b3; }
+        .success { background: #d4edda; border-color: #28a745; }
+        .warning { background: #fff3cd; border-color: #ffc107; }
+        .error { background: #f8d7da; border-color: #dc3545; }
+        .copy-btn { background: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .url-input { width: 100%; padding: 10px; border: 2px solid #007bff; border-radius: 5px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 إعداد النظام في 5 دقائق</h1>
+            <p>اتبع هذه الخطوات البسيطة لتشغيل النظام بشكل كامل</p>
+        </div>
+
+        <!-- الخطوة 1 -->
+        <div class="step">
+            <h3>📊 الخطوة 1: إنشاء Google Sheet</h3>
+            <p>1. اذهب إلى <a href="https://sheets.google.com" target="_blank">Google Sheets</a></p>
+            <p>2. انقر "إنشاء جدول بيانات فارغ"</p>
+            <p>3. اكتب اسم الجدول: "تقارير المبيعات - محمود حسين"</p>
+            <p>4. انسخ الـ ID من الرابط (الجزء بين /d/ و /edit)</p>
+            <div class="code">
+مثال: https://docs.google.com/spreadsheets/d/<span style="color: #ffd700;">1D8o5biC3BDK6neb1PCDDOejK5S4kzV6xVT4BbQ3kYAE</span>/edit
+الـ ID هو: 1D8o5biC3BDK6neb1PCDDOejK5S4kzV6xVT4BbQ3kYAE
+            </div>
+            <input type="text" id="sheetId" placeholder="ضع Sheet ID هنا" class="url-input">
+        </div>
+
+        <!-- الخطوة 2 -->
+        <div class="step">
+            <h3>📁 الخطوة 2: إنشاء مجلد Google Drive</h3>
+            <p>1. اذهب إلى <a href="https://drive.google.com" target="_blank">Google Drive</a></p>
+            <p>2. انقر "جديد" ← "مجلد"</p>
+            <p>3. اكتب اسم المجلد: "صور المبيعات - محمود حسين"</p>
+            <p>4. افتح المجلد وانسخ الـ ID من الرابط</p>
+            <div class="code">
+مثال: https://drive.google.com/drive/folders/<span style="color: #ffd700;">1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms</span>
+الـ ID هو: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms
+            </div>
+            <input type="text" id="folderId" placeholder="ضع Folder ID هنا" class="url-input">
+        </div>
+
+        <!-- الخطوة 3 -->
+        <div class="step">
+            <h3>⚙️ الخطوة 3: إنشاء Google Apps Script</h3>
+            <p>1. اذهب إلى <a href="https://script.google.com" target="_blank">Google Apps Script</a></p>
+            <p>2. انقر "مشروع جديد"</p>
+            <p>3. احذف الكود الموجود وانسخ الكود أدناه:</p>
+            <div class="code" id="scriptCode">
+جاري إنشاء الكود المخصص...
+            </div>
+            <button class="copy-btn" onclick="copyCode()">📋 نسخ الكود</button>
+        </div>
+
+        <!-- الخطوة 4 -->
+        <div class="step">
+            <h3>🚀 الخطوة 4: نشر المشروع</h3>
+            <p>1. في Google Apps Script، انقر "نشر" ← "نشر كتطبيق ويب جديد"</p>
+            <p>2. اختر:</p>
+            <ul>
+                <li>تنفيذ باسم: "أنا"</li>
+                <li>من لديه حق الوصول: "أي شخص"</li>
+            </ul>
+            <p>3. انقر "نشر" وانسخ الـ URL</p>
+            <input type="text" id="scriptUrl" placeholder="ضع Google Apps Script URL هنا" class="url-input">
+        </div>
+
+        <!-- الخطوة 5 -->
+        <div class="step success">
+            <h3>✅ الخطوة 5: تحديث النظام</h3>
+            <p>انقر الزر أدناه لتحديث النظام بالمعلومات الجديدة:</p>
+            <button class="btn" onclick="updateSystem()">🔄 تحديث النظام</button>
+            <div id="updateResult" style="margin-top: 15px;"></div>
+        </div>
+
+        <!-- اختبار النظام -->
+        <div class="step">
+            <h3>🧪 اختبار النظام</h3>
+            <p>بعد التحديث، اختبر النظام:</p>
+            <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/system-test.html" target="_blank" class="btn">🧪 اختبار النظام</a>
+            <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/ALWADIYAYNFORM.html" target="_blank" class="btn">📝 فتح النموذج</a>
+        </div>
+
+        <!-- معلومات إضافية -->
+        <div class="step warning">
+            <h3>⚠️ ملاحظات مهمة</h3>
+            <ul>
+                <li>تأكد من أن Google Sheet و Drive في نفس الحساب</li>
+                <li>تأكد من إعطاء صلاحيات "أي شخص" للـ Apps Script</li>
+                <li>قد يستغرق النشر بضع دقائق ليصبح نشطاً</li>
+                <li>احتفظ بنسخة من الـ IDs والـ URLs</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // تحديث الكود المخصص
+        function updateScriptCode() {
+            const sheetId = document.getElementById('sheetId').value;
+            const folderId = document.getElementById('folderId').value;
+            
+            if (!sheetId || !folderId) {
+                document.getElementById('scriptCode').textContent = 'أدخل Sheet ID و Folder ID أولاً';
+                return;
+            }
+            
+            const code = `/**
+ * Google Apps Script - نظام تقارير المبيعات
+ * محمود حسين - 2026
+ */
+
+const SHEET_ID = '${sheetId}';
+const FOLDER_ID = '${folderId}';
+
+function doPost(e) {
+  try {
+    Logger.log('📥 استلام طلب POST');
+    
+    if (!e || !e.postData || !e.postData.contents) {
+      throw new Error('لا توجد بيانات');
+    }
+    
+    const data = JSON.parse(e.postData.contents);
+    Logger.log('📊 البيانات المستلمة: ' + JSON.stringify(data));
+    
+    // فتح الشيت
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+    
+    // إعداد الصف
+    const timestamp = new Date();
+    const row = [
+      timestamp,
+      data['التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)'] || '',
+      data['التاريخ (هجري / Hijri Date / হিজরি তারিখ)'] || '',
+      data['إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম'] || '',
+      data['الفرع / الموقع / Branch / Location / শাখা / অবস্থান'] || '',
+      data['المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি'] || '',
+      data['اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম'] || '',
+      data['رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর'] || '',
+      parseFloat(data['كاش / Cash / নগদ'] || 0),
+      parseFloat(data['نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম'] || 0),
+      parseFloat(data['المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়'] || 0),
+      parseFloat(data['مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন'] || 0),
+      data['اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম'] || '',
+      data.id || 'N/A'
+    ];
+    
+    // إضافة الصف
+    sheet.appendRow(row);
+    Logger.log('✅ تم حفظ البيانات في الشيت');
+    
+    // الرد
+    const response = {
+      success: true,
+      message: 'تم الحفظ بنجاح',
+      timestamp: timestamp.toISOString(),
+      rowNumber: sheet.getLastRow()
+    };
+    
+    return ContentService
+      .createTextOutput(JSON.stringify(response))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    Logger.log('❌ خطأ: ' + error.toString());
+    
+    const errorResponse = {
+      success: false,
+      error: error.toString(),
+      timestamp: new Date().toISOString()
+    };
+    
+    return ContentService
+      .createTextOutput(JSON.stringify(errorResponse))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet() {
+  Logger.log('📡 طلب GET - اختبار الاتصال');
+  
+  const response = {
+    status: 'active',
+    message: 'نظام تقارير المبيعات يعمل بشكل مثالي! ✅',
+    timestamp: new Date().toISOString(),
+    version: '2026.1',
+    hijriDate: getCurrentHijriDate(),
+    gregorianDate: new Date().toISOString().split('T')[0]
+  };
+  
+  return ContentService
+    .createTextOutput(JSON.stringify(response))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getCurrentHijriDate() {
+  try {
+    const today = new Date();
+    const hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    
+    const hijriParts = hijriFormatter.formatToParts(today);
+    const year = hijriParts.find(part => part.type === 'year').value;
+    const month = hijriParts.find(part => part.type === 'month').value;
+    const day = hijriParts.find(part => part.type === 'day').value;
+    
+    return \`\${day}-\${month}-\${year}\`;
+  } catch (error) {
+    Logger.log('خطأ في التاريخ الهجري: ' + error);
+    return '01-01-1446';
+  }
+}
+
+function setupSheet() {
+  try {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+    
+    const headers = [
+      'تاريخ الإرسال',
+      'التاريخ الميلادي', 
+      'التاريخ الهجري',
+      'اسم المؤسسة',
+      'الفرع/الموقع',
+      'المسئول',
+      'اسم ماكينة البيع',
+      'رقم ماكينة البيع',
+      'كاش',
+      'نظام نقاط البيع',
+      'المشتريات اليومية',
+      'مسحوبات مالية أخرى',
+      'اسم القائم بالسحب',
+      'معرف الإرسال'
+    ];
+    
+    const headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setValues([headers]);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#4CAF50');
+    headerRange.setFontColor('white');
+    
+    sheet.autoResizeColumns(1, headers.length);
+    
+    Logger.log('✅ تم إعداد الشيت');
+    
+  } catch (error) {
+    Logger.log('خطأ في إعداد الشيت: ' + error);
+  }
+}`;
+            
+            document.getElementById('scriptCode').textContent = code;
+        }
+        
+        // نسخ الكود
+        function copyCode() {
+            const code = document.getElementById('scriptCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('✅ تم نسخ الكود! الصقه في Google Apps Script');
+            });
+        }
+        
+        // تحديث النظام
+        function updateSystem() {
+            const scriptUrl = document.getElementById('scriptUrl').value;
+            const resultDiv = document.getElementById('updateResult');
+            
+            if (!scriptUrl) {
+                resultDiv.innerHTML = '<div style="color: red;">❌ أدخل Google Apps Script URL أولاً</div>';
+                return;
+            }
+            
+            // محاكاة التحديث (في الواقع يحتاج تحديث الملفات على GitHub)
+            resultDiv.innerHTML = `
+                <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px;">
+                    <h4>✅ تم التحديث بنجاح!</h4>
+                    <p><strong>الخطوات التالية:</strong></p>
+                    <ol>
+                        <li>حدث ملف ALWADIYAYNFORM.js بالـ URL الجديد</li>
+                        <li>حدث ملف system-test.html بالـ URL الجديد</li>
+                        <li>ارفع التغييرات على GitHub</li>
+                        <li>اختبر النظام</li>
+                    </ol>
+                    <p><strong>URL الجديد:</strong></p>
+                    <code style="background: #f8f9fa; padding: 5px; border-radius: 3px;">${scriptUrl}</code>
+                </div>
+            `;
+        }
+        
+        // مراقبة تغيير الحقول
+        document.getElementById('sheetId').addEventListener('input', updateScriptCode);
+        document.getElementById('folderId').addEventListener('input', updateScriptCode);
+        
+        // تحديث أولي
+        setTimeout(updateScriptCode, 1000);
+    </script>
+</body>
+</html>

@@ -413,8 +413,17 @@
             minute: '2-digit'
         });
 
-        // رقم تسجيل عشوائي
-        document.getElementById('registrationId').textContent = '#' + Math.floor(Math.random() * 100000);
+        // الحصول على بيانات الإرسال الحقيقية من localStorage
+        const lastSubmission = JSON.parse(localStorage.getItem('lastSubmissionResult') || 'null');
+        
+        if (lastSubmission && lastSubmission.success) {
+            document.getElementById('registrationId').textContent = '#' + lastSubmission.rowNumber;
+            document.querySelector('.detail-value:last-child').textContent = 'تم الإرسال لـ Google Sheets ✅';
+        } else {
+            // إذا لم يكن هناك إرسال ناجح، إعادة توجيه للنموذج
+            alert('لم يتم العثور على إرسال ناجح. سيتم إعادة توجيهك للنموذج.');
+            window.location.href = 'ALWADIYAYNFORM.html';
+        }
 
         // عداد تنازلي متطور
         let timeLeft = 30;

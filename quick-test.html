@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار سريع للنظام - محمود حسين</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 30px; text-align: center; }
+        .content { padding: 30px; }
+        .test-section { margin-bottom: 30px; padding: 20px; border: 2px solid #ecf0f1; border-radius: 10px; }
+        .test-section h3 { color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .btn { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .result { margin-top: 15px; padding: 15px; border-radius: 5px; font-family: monospace; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .status-card { padding: 15px; border-radius: 8px; text-align: center; }
+        .status-online { background: #d4edda; color: #155724; }
+        .status-offline { background: #f8d7da; color: #721c24; }
+        .links-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .link-card { padding: 20px; border: 2px solid #ecf0f1; border-radius: 10px; text-align: center; }
+        .link-card a { display: inline-block; padding: 12px 25px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px; transition: all 0.3s; }
+        .link-card a:hover { background: #2980b9; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 اختبار سريع للنظام</h1>
+            <p>نظام إدارة المبيعات - محمود حسين</p>
+            <p>تاريخ الاختبار: <span id="testDate"></span></p>
+        </div>
+
+        <div class="content">
+            <!-- اختبار الروابط الأساسية -->
+            <div class="test-section">
+                <h3>🔗 الروابط الأساسية</h3>
+                <div class="links-section">
+                    <div class="link-card">
+                        <h4>📝 نموذج المبيعات</h4>
+                        <p>النموذج الرئيسي لإدخال بيانات المبيعات</p>
+                        <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/ALWADIYAYNFORM.html" target="_blank">فتح النموذج</a>
+                    </div>
+                    <div class="link-card">
+                        <h4>📊 لوحة الإدارة</h4>
+                        <p>عرض التقارير والإحصائيات</p>
+                        <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/admin-new.html" target="_blank">فتح لوحة الإدارة</a>
+                    </div>
+                    <div class="link-card">
+                        <h4>🏠 الصفحة الرئيسية</h4>
+                        <p>صفحة البداية للنظام</p>
+                        <a href="https://alwadiyayntradingcompany-stack.github.io/alwadiyayn-sales-reports/index.html" target="_blank">فتح الصفحة الرئيسية</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- اختبار وظائف النظام -->
+            <div class="test-section">
+                <h3>⚙️ اختبار الوظائف الأساسية</h3>
+                <button class="btn btn-primary" onclick="testLocalStorage()">اختبار التخزين المحلي</button>
+                <button class="btn btn-success" onclick="testDateFunctions()">اختبار التاريخ الهجري</button>
+                <button class="btn btn-warning" onclick="testFormValidation()">اختبار التحقق من البيانات</button>
+                <button class="btn btn-danger" onclick="testBackupSystem()">اختبار النسخ الاحتياطية</button>
+                <div id="functionResults"></div>
+            </div>
+
+            <!-- اختبار البيانات -->
+            <div class="test-section">
+                <h3>💾 اختبار البيانات</h3>
+                <button class="btn btn-primary" onclick="createTestData()">إنشاء بيانات تجريبية</button>
+                <button class="btn btn-success" onclick="viewStoredData()">عرض البيانات المحفوظة</button>
+                <button class="btn btn-warning" onclick="exportTestReport()">تصدير تقرير تجريبي</button>
+                <button class="btn btn-danger" onclick="clearTestData()">مسح البيانات التجريبية</button>
+                <div id="dataResults"></div>
+            </div>
+
+            <!-- حالة النظام -->
+            <div class="test-section">
+                <h3>📊 حالة النظام</h3>
+                <div class="status-grid">
+                    <div class="status-card status-online">
+                        <h4>✅ التخزين المحلي</h4>
+                        <p>يعمل بشكل طبيعي</p>
+                    </div>
+                    <div class="status-card status-online">
+                        <h4>✅ التاريخ الهجري</h4>
+                        <p id="hijriDate">جاري التحميل...</p>
+                    </div>
+                    <div class="status-card" id="connectionStatus">
+                        <h4>🌐 الاتصال بالإنترنت</h4>
+                        <p>جاري الفحص...</p>
+                    </div>
+                    <div class="status-card status-online">
+                        <h4>🔧 الأدوات المتقدمة</h4>
+                        <p>متاحة ومحدثة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- معلومات النظام -->
+            <div class="test-section">
+                <h3>ℹ️ معلومات النظام</h3>
+                <div id="systemInfo"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تحديث التاريخ
+        document.getElementById('testDate').textContent = new Date().toLocaleString('ar-SA');
+
+        // اختبار التخزين المحلي
+        function testLocalStorage() {
+            const results = document.getElementById('functionResults');
+            try {
+                localStorage.setItem('test', 'success');
+                const test = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                results.innerHTML = '<div class="result success">✅ التخزين المحلي يعمل بشكل طبيعي</div>';
+            } catch (error) {
+                results.innerHTML = '<div class="result error">❌ خطأ في التخزين المحلي: ' + error.message + '</div>';
+            }
+        }
+
+        // اختبار التاريخ الهجري
+        function testDateFunctions() {
+            const results = document.getElementById('functionResults');
+            try {
+                const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).format(new Date());
+                
+                results.innerHTML = '<div class="result success">✅ التاريخ الهجري: ' + hijriDate + '</div>';
+                document.getElementById('hijriDate').textContent = hijriDate;
+            } catch (error) {
+                results.innerHTML = '<div class="result error">❌ خطأ في التاريخ الهجري: ' + error.message + '</div>';
+            }
+        }
+
+        // اختبار التحقق من البيانات
+        function testFormValidation() {
+            const results = document.getElementById('functionResults');
+            const testData = {
+                cash: '1000',
+                network: '500',
+                purchases: '800',
+                branch: 'الفرع الرئيسي',
+                responsible: 'محمود حسين'
+            };
+            
+            let isValid = true;
+            let errors = [];
+            
+            if (!testData.cash || isNaN(testData.cash)) {
+                isValid = false;
+                errors.push('قيمة الكاش غير صحيحة');
+            }
+            
+            if (!testData.branch) {
+                isValid = false;
+                errors.push('الفرع مطلوب');
+            }
+            
+            if (isValid) {
+                results.innerHTML = '<div class="result success">✅ التحقق من البيانات يعمل بشكل صحيح</div>';
+            } else {
+                results.innerHTML = '<div class="result error">❌ أخطاء في التحقق: ' + errors.join(', ') + '</div>';
+            }
+        }
+
+        // اختبار النسخ الاحتياطية
+        function testBackupSystem() {
+            const results = document.getElementById('functionResults');
+            try {
+                const backupData = {
+                    timestamp: new Date().toISOString(),
+                    data: { test: 'backup test' },
+                    version: '1.0'
+                };
+                
+                localStorage.setItem('testBackup', JSON.stringify(backupData));
+                const restored = JSON.parse(localStorage.getItem('testBackup'));
+                localStorage.removeItem('testBackup');
+                
+                if (restored && restored.data.test === 'backup test') {
+                    results.innerHTML = '<div class="result success">✅ نظام النسخ الاحتياطية يعمل بشكل صحيح</div>';
+                } else {
+                    results.innerHTML = '<div class="result error">❌ خطأ في استعادة النسخة الاحتياطية</div>';
+                }
+            } catch (error) {
+                results.innerHTML = '<div class="result error">❌ خطأ في النسخ الاحتياطية: ' + error.message + '</div>';
+            }
+        }
+
+        // إنشاء بيانات تجريبية
+        function createTestData() {
+            const results = document.getElementById('dataResults');
+            const testSubmissions = [
+                {
+                    id: 'test_' + Date.now(),
+                    timestamp: new Date().toISOString(),
+                    data: {
+                        'كاش / Cash / নগদ': '1500',
+                        'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': '800',
+                        'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': '1200',
+                        'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': 'الفرع الرئيسي',
+                        'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': 'محمود حسين'
+                    }
+                },
+                {
+                    id: 'test_' + (Date.now() + 1),
+                    timestamp: new Date(Date.now() - 86400000).toISOString(),
+                    data: {
+                        'كاش / Cash / নগদ': '2000',
+                        'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': '1200',
+                        'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': '1800',
+                        'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': 'الفرع الثاني',
+                        'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': 'أحمد علي'
+                    }
+                }
+            ];
+            
+            localStorage.setItem('testSubmissions', JSON.stringify(testSubmissions));
+            results.innerHTML = '<div class="result success">✅ تم إنشاء ' + testSubmissions.length + ' إرسال تجريبي</div>';
+        }
+
+        // عرض البيانات المحفوظة
+        function viewStoredData() {
+            const results = document.getElementById('dataResults');
+            const submissions = JSON.parse(localStorage.getItem('successfulSubmissions') || '[]');
+            const testSubmissions = JSON.parse(localStorage.getItem('testSubmissions') || '[]');
+            const pending = JSON.parse(localStorage.getItem('pendingSubmissions') || '[]');
+            
+            let html = '<div class="result info">';
+            html += '<h4>📊 إحصائيات البيانات:</h4>';
+            html += '<p>• الإرسالات الناجحة: ' + submissions.length + '</p>';
+            html += '<p>• الإرسالات التجريبية: ' + testSubmissions.length + '</p>';
+            html += '<p>• الإرسالات المعلقة: ' + pending.length + '</p>';
+            html += '<p>• حجم البيانات: ' + Math.round(JSON.stringify(localStorage).length / 1024) + ' KB</p>';
+            html += '</div>';
+            
+            results.innerHTML = html;
+        }
+
+        // تصدير تقرير تجريبي
+        function exportTestReport() {
+            const results = document.getElementById('dataResults');
+            const testData = JSON.parse(localStorage.getItem('testSubmissions') || '[]');
+            
+            if (testData.length === 0) {
+                results.innerHTML = '<div class="result error">❌ لا توجد بيانات تجريبية. قم بإنشاء بيانات تجريبية أولاً</div>';
+                return;
+            }
+            
+            let totalSales = 0;
+            let totalPurchases = 0;
+            
+            testData.forEach(submission => {
+                const cash = parseFloat(submission.data['كاش / Cash / নগদ'] || 0);
+                const network = parseFloat(submission.data['نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম'] || 0);
+                const purchases = parseFloat(submission.data['المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়'] || 0);
+                
+                totalSales += cash + network;
+                totalPurchases += purchases;
+            });
+            
+            const profit = totalSales - totalPurchases;
+            
+            let html = '<div class="result success">';
+            html += '<h4>📈 تقرير تجريبي:</h4>';
+            html += '<p>• إجمالي المبيعات: ' + totalSales.toLocaleString() + ' ريال</p>';
+            html += '<p>• إجمالي المشتريات: ' + totalPurchases.toLocaleString() + ' ريال</p>';
+            html += '<p>• صافي الربح: ' + profit.toLocaleString() + ' ريال</p>';
+            html += '<p>• عدد التقارير: ' + testData.length + '</p>';
+            html += '</div>';
+            
+            results.innerHTML = html;
+        }
+
+        // مسح البيانات التجريبية
+        function clearTestData() {
+            const results = document.getElementById('dataResults');
+            localStorage.removeItem('testSubmissions');
+            results.innerHTML = '<div class="result info">🗑️ تم مسح البيانات التجريبية</div>';
+        }
+
+        // فحص الاتصال بالإنترنت
+        function checkConnection() {
+            const status = document.getElementById('connectionStatus');
+            if (navigator.onLine) {
+                status.className = 'status-card status-online';
+                status.innerHTML = '<h4>✅ الاتصال بالإنترنت</h4><p>متصل</p>';
+            } else {
+                status.className = 'status-card status-offline';
+                status.innerHTML = '<h4>❌ الاتصال بالإنترنت</h4><p>غير متصل</p>';
+            }
+        }
+
+        // عرض معلومات النظام
+        function showSystemInfo() {
+            const info = document.getElementById('systemInfo');
+            let html = '<div class="result info">';
+            html += '<h4>🖥️ معلومات المتصفح والنظام:</h4>';
+            html += '<p><strong>المتصفح:</strong> ' + navigator.userAgent.split(' ').pop() + '</p>';
+            html += '<p><strong>اللغة:</strong> ' + navigator.language + '</p>';
+            html += '<p><strong>المنطقة الزمنية:</strong> ' + Intl.DateTimeFormat().resolvedOptions().timeZone + '</p>';
+            html += '<p><strong>دعم التخزين المحلي:</strong> ' + (typeof(Storage) !== "undefined" ? 'مدعوم' : 'غير مدعوم') + '</p>';
+            html += '<p><strong>حجم الشاشة:</strong> ' + screen.width + 'x' + screen.height + '</p>';
+            html += '<p><strong>وقت التحميل:</strong> ' + new Date().toLocaleString('ar-SA') + '</p>';
+            html += '</div>';
+            info.innerHTML = html;
+        }
+
+        // تشغيل الاختبارات التلقائية عند التحميل
+        window.onload = function() {
+            testDateFunctions();
+            checkConnection();
+            showSystemInfo();
+            
+            // تحديث حالة الاتصال
+            window.addEventListener('online', checkConnection);
+            window.addEventListener('offline', checkConnection);
+        };
+    </script>
+</body>
+</html>

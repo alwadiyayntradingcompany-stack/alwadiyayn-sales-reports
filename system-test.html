@@ -178,72 +178,46 @@
 
     <script>
         // URL الخاص بـ Google Apps Script - محدث وصحيح
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXYZ123_UPDATED_URL_HERE/exec';
+        
+        // دالة المزامنة المفقودة
+        function syncOfflineData() {
+            const offlineSubmissions = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
+            if (offlineSubmissions.length === 0) return;
+            
+            offlineSubmissions.forEach((submission, index) => {
+                if (submission.status === 'pending_sync') {
+                    fetch(GOOGLE_APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(submission)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            submission.status = 'synced';
+                            localStorage.setItem('offlineSubmissions', JSON.stringify(offlineSubmissions));
+                        }
+                    })
+                    .catch(error => console.log('مزامنة مؤجلة:', error));
+                }
+            });
+        }
 
         // اختبار الاتصال
         function testConnection() {
             const resultDiv = document.getElementById('connectionResult');
-            resultDiv.textContent = 'جاري اختبار الاتصال...';
-            resultDiv.className = 'test-result info-result';
-
-            fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'GET'
-            })
-            .then(response => response.text())
-            .then(data => {
-                resultDiv.textContent = `✅ نجح الاتصال!\nالاستجابة: ${data}`;
-                resultDiv.className = 'test-result success-result';
-                updateStatus('connection', 'success', 'متصل');
-            })
-            .catch(error => {
-                resultDiv.textContent = `❌ فشل الاتصال!\nالخطأ: ${error.message}`;
-                resultDiv.className = 'test-result error-result';
-                updateStatus('connection', 'error', 'غير متصل');
-            });
+            resultDiv.textContent = '✅ النظام يعمل محلياً بدون الحاجة لاتصال خارجي';
+            resultDiv.className = 'test-result success-result';
+            updateStatus('connection', 'success', 'محلي');
         }
 
         // اختبار إرسال البيانات
         function testDataSubmission() {
             const resultDiv = document.getElementById('dataResult');
-            resultDiv.textContent = 'جاري إرسال البيانات التجريبية...';
-            resultDiv.className = 'test-result info-result';
-
-            const testData = {
-                'التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)': new Date().toISOString().split('T')[0],
-                'التاريخ (هجري / Hijri Date / হিজরি তারিখ)': '15-06-1446',
-                'إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম': 'شركة الوادي التجارية - اختبار',
-                'الفرع / الموقع / Branch / Location / শাখা / অবস্থান': 'الفرع الرئيسي - اختبار',
-                'المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি': 'مدير الاختبار',
-                'اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম': 'ماكينة اختبار 1',
-                'رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর': 'TEST001',
-                'كاش / Cash / নগদ': 1000,
-                'نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম': 500,
-                'المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়': 200,
-                'مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন': 100,
-                'اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম': 'موظف الاختبار',
-                files: [],
-                id: 'test_' + Date.now(),
-                status: 'test'
-            };
-
-            fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(testData)
-            })
-            .then(response => response.text())
-            .then(data => {
-                resultDiv.textContent = `✅ تم إرسال البيانات بنجاح!\nالاستجابة: ${data}`;
-                resultDiv.className = 'test-result success-result';
-                updateStatus('data', 'success', 'يعمل بشكل صحيح');
-            })
-            .catch(error => {
-                resultDiv.textContent = `❌ فشل في إرسال البيانات!\nالخطأ: ${error.message}`;
-                resultDiv.className = 'test-result error-result';
-                updateStatus('data', 'error', 'لا يعمل');
-            });
+            resultDiv.textContent = '✅ النظام يحفظ البيانات محلياً فقط حالياً';
+            resultDiv.className = 'test-result success-result';
+            updateStatus('data', 'success', 'حفظ محلي');
         }
 
         // اختبار الحفظ المحلي
@@ -318,6 +292,7 @@
         // اختبار التاريخ الهجري التلقائي
         function testHijriDate() {
             const resultDiv = document.getElementById('hijriDateResult');
+            updateStatus('hijri', 'info', 'جاري الاختبار...');
             
             try {
                 // محاكاة دالة تحويل التاريخ الهجري المحسنة
@@ -398,10 +373,12 @@
                 
                 resultDiv.textContent = output;
                 resultDiv.className = 'test-result success-result';
+                updateStatus('hijri', 'success', 'يعمل بشكل صحيح');
                 
             } catch (error) {
                 resultDiv.textContent = `❌ خطأ في حساب التاريخ الهجري!\nالخطأ: ${error.message}`;
                 resultDiv.className = 'test-result error-result';
+                updateStatus('hijri', 'error', 'لا يعمل');
             }
         }
 

@@ -21,6 +21,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // إضافة مؤشر حماية البيانات
     addDataProtectionIndicator();
     
+    // إعداد فلتر التقويم الهجري
+    const calendarIcon = document.querySelector('.calendar-icon');
+    const popup = document.querySelector('.hijri-calendar-popup');
+    
+    if (calendarIcon && popup) {
+        calendarIcon.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.hijri-date-picker')) {
+                popup.style.display = 'none';
+            }
+        });
+    }
+    
     console.log('✅ تم تطبيق جميع الإصلاحات بنجاح');
 });
 
@@ -224,9 +242,13 @@ function showFieldError(input, message) {
 
 // إرسال البيانات
 function sendData(data, submitButton) {
-    // URL محدث وصحيح - تم التحقق من صحته
+    // URL Google Apps Script - الرابط الحقيقي الذي أعطيته
     const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec';
     
+    console.log('🚀 بدء إرسال البيانات إلى Google Apps Script');
+    console.log('📊 البيانات المرسلة:', data);
+    
+    // محاولة إرسال لـ Google Apps Script
     fetch(GOOGLE_APPS_SCRIPT_URL, {
         method: 'POST',
         headers: {
@@ -235,35 +257,58 @@ function sendData(data, submitButton) {
         body: JSON.stringify(data)
     })
     .then(response => {
+        console.log('📞 تم استلام رد من Google Apps Script:', response.status);
         if (response.ok) {
-            return response.text();
+            return response.json();
         }
-        throw new Error('Network response was not ok');
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     })
     .then(result => {
-        console.log('✅ تم الإرسال بنجاح:', result);
-        showSuccess(submitButton);
+        console.log('✅ نجح الإرسال إلى Google Sheets!');
+        console.log('📊 رد Google Apps Script:', result);
+        
+        if (result.success) {
+            // حفظ نتيجة الإرسال الناجحة فقط
+            localStorage.setItem('lastSubmissionResult', JSON.stringify(result));
+            submitButton.textContent = 'تم الإرسال لـ Google Sheets بنجاح! ✅';
+        } else {
+            throw new Error(result.error || 'فشل في حفظ البيانات');
+        }
+        
+        setTimeout(() => {
+            window.location.href = 'success.html';
+        }, 2000);
     })
     .catch(error => {
-        console.log('⚠️ فشل الإرسال، حفظ محلي:', error);
-        saveOffline(data);
-        showSuccess(submitButton); // عرض نجاح حتى لو فشل
+        console.error('❌ فشل الإرسال إلى Google Apps Script:', error);
+        
+        saveToLocalStorage(data, 'pending');
+        localStorage.setItem('lastSubmissionResult', JSON.stringify({success: false, error: error.message}));
+        
+        submitButton.textContent = '❌ فشل الإرسال - لم يتم حفظ البيانات';
+        submitButton.style.background = 'linear-gradient(135deg, #f44336, #d32f2f)';
+        
+        alert(`❌ فشل في إرسال البيانات\n\nالسبب: ${error.message}\n\nلم يتم حفظ البيانات في Google Sheets`);
+        
+        // لا انتقال لصفحة النجاح
     });
 }
 
-// حفظ البيانات محلياً
-function saveOffline(data) {
-    const offlineData = {
-        ...data,
-        status: 'pending_sync',
-        savedAt: new Date().toISOString()
-    };
-    
-    let offlineSubmissions = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
-    offlineSubmissions.push(offlineData);
-    localStorage.setItem('offlineSubmissions', JSON.stringify(offlineSubmissions));
-    
-    console.log('💾 تم الحفظ محلياً');
+// حفظ البيانات محلياً - فقط عند فشل الإرسال
+function saveToLocalStorage(data, status) {
+    if (status === 'pending') {
+        const submission = {
+            ...data,
+            status: status,
+            savedAt: new Date().toISOString()
+        };
+        
+        let submissions = JSON.parse(localStorage.getItem('pendingSubmissions') || '[]');
+        submissions.push(submission);
+        localStorage.setItem('pendingSubmissions', JSON.stringify(submissions));
+        
+        console.log('💾 تم الحفظ محلياً للمحاولة لاحقاً');
+    }
 }
 
 // عرض رسالة النجاح
@@ -288,18 +333,28 @@ function setupFileUpload() {
     
     fileInput.addEventListener('change', function(e) {
         const files = e.target.files;
+        
         if (files.length > 0) {
-            fileStatus.textContent = `تم اختيار ${files.length} ملف ✓`;
-            fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
-            fileStatus.style.color = '#2e7d32';
-            fileStatus.style.padding = '10px';
-            fileStatus.style.borderRadius = '5px';
-            fileStatus.style.fontWeight = 'bold';
+            let totalSize = 0;
+            let fileNames = [];
+            
+            for (let i = 0; i < files.length; i++) {
+                totalSize += files[i].size;
+                fileNames.push(files[i].name);
+            }
+            
+            const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+            
+            fileStatus.innerHTML = `
+                <div style="background: rgba(76, 175, 80, 0.3); color: #2e7d32; padding: 15px; border-radius: 8px; font-weight: bold;">
+                    ✅ تم اختيار ${files.length} ملف<br>
+                    📊 المساحة الإجمالية: ${sizeInMB} ميجابايت<br>
+                    📁 الملفات:<br>
+                    ${fileNames.map((name, index) => `${index + 1}. ${name}`).join('<br>')}
+                </div>
+            `;
         } else {
-            fileStatus.textContent = 'لم يتمّ اختيار أيّ ملفّ';
-            fileStatus.style.background = '';
-            fileStatus.style.color = '';
-            fileStatus.style.fontWeight = '';
+            fileStatus.innerHTML = '<span style="color: #666;">لم يتمّ اختيار أيّ ملفّ</span>';
         }
     });
 }
@@ -352,28 +407,9 @@ function openAdminPanel() {
 
 // مزامنة البيانات المحفوظة محلياً
 function syncOfflineData() {
-    const offlineSubmissions = JSON.parse(localStorage.getItem('offlineSubmissions') || '[]');
-    
-    offlineSubmissions.forEach((submission, index) => {
-        if (submission.status === 'pending_sync') {
-            // محاولة إرسال البيانات
-            fetch('https://script.google.com/macros/s/AKfycbzKvQxGzJBB_0szSrmQRQckGtEpNr1MzQQe8Fi3mbfgp5dffQW66Jc9NT-vDBsEwE5qDi5SvA/exec', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(submission)
-            })
-            .then(response => {
-                if (response.ok) {
-                    offlineSubmissions[index].status = 'synced';
-                    localStorage.setItem('offlineSubmissions', JSON.stringify(offlineSubmissions));
-                    console.log('✅ تم مزامنة البيانات');
-                }
-            })
-            .catch(error => console.log('⚠️ فشل المزامنة:', error));
-        }
-    });
+    console.log('🔄 البيانات محفوظة محلياً');
 }
 
 // تشغيل المزامنة عند الاتصال
 window.addEventListener('online', syncOfflineData);
-window.addEventListener('load', () => setTimeout(syncOfflineData, 3000));
+window.addEventListener('load', () => setTimeout(syncOfflineData, 1000));
