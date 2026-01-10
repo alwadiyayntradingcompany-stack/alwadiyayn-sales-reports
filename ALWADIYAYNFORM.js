@@ -291,6 +291,15 @@ function setupFileUpload() {
         if (files.length > 0) {
             fileStatus.textContent = `تم اختيار ${files.length} ملف ✓`;
             fileStatus.style.background = 'rgba(76, 175, 80, 0.3)';
+            fileStatus.style.color = '#2e7d32';
+            fileStatus.style.padding = '10px';
+            fileStatus.style.borderRadius = '5px';
+            fileStatus.style.fontWeight = 'bold';
+        } else {
+            fileStatus.textContent = 'لم يتمّ اختيار أيّ ملفّ';
+            fileStatus.style.background = '';
+            fileStatus.style.color = '';
+            fileStatus.style.fontWeight = '';
         }
     });
 }
