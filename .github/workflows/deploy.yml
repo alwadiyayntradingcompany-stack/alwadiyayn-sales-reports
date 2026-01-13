@@ -7,18 +7,28 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
+    # 1️⃣ سحب الملفات من الريبو
     - uses: actions/checkout@v3
-      
+
+    # 2️⃣ عرض الملفات الموجودة بعد checkout
+    - name: عرض الملفات بعد checkout
+      run: |
+        echo "قائمة الملفات:"
+        ls -R
+
+    # 3️⃣ إعداد الأمان (robots.txt)
     - name: إعداد الأمان
       run: |
         echo "User-agent: *" > robots.txt
         echo "Disallow: /test-connection.html" >> robots.txt
         echo "Disallow: /alwadiya-test.html" >> robots.txt
-        
+
+    # 4️⃣ نشر على GitHub Pages
     - name: نشر إلى GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        # غيّر ./dist لو ملفاتك في مجلد مختلف
         publish_dir: ./
