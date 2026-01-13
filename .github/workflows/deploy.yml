@@ -12,23 +12,36 @@ jobs:
     # 1️⃣ سحب الملفات من الريبو
     - uses: actions/checkout@v3
 
-    # 2️⃣ عرض الملفات الموجودة بعد checkout
+    # 2️⃣ عرض الملفات بعد checkout
     - name: عرض الملفات بعد checkout
       run: |
-        echo "قائمة الملفات:"
+        echo "قائمة الملفات في المشروع:"
         ls -R
 
-    # 3️⃣ إعداد الأمان (robots.txt)
+    # 3️⃣ البحث عن مجلد يحتوي index.html
+    - name: التحقق من مجلد الموقع
+      id: check_dir
+      run: |
+        TARGET_DIR=$(find . -type f -name "index.html" -exec dirname {} \; | head -n 1)
+        if [ -z "$TARGET_DIR" ]; then
+          echo "❌ لم يتم العثور على index.html في أي مكان!"
+          exit 1
+        fi
+        echo "🏁 مجلد الموقع للـ GitHub Pages هو: $TARGET_DIR"
+        echo "publish_dir=$TARGET_DIR" >> $GITHUB_OUTPUT
+
+    # 4️⃣ إعداد الأمان (robots.txt)
     - name: إعداد الأمان
       run: |
         echo "User-agent: *" > robots.txt
         echo "Disallow: /test-connection.html" >> robots.txt
         echo "Disallow: /alwadiya-test.html" >> robots.txt
 
-    # 4️⃣ نشر على GitHub Pages
+    # 5️⃣ نشر على GitHub Pages
     - name: نشر إلى GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        # غيّر ./dist لو ملفاتك في مجلد مختلف
-        publish_dir: ./
+        publish_dir: ${{ steps.check_dir.outputs.publish_dir }}
+        user_name: "alwadiyayntradingcompany-stack"
+        user_email: "your-email@example.com"
