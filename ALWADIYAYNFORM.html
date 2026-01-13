@@ -140,7 +140,6 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                         <div class="upload-subtitle">أو انقر للاختيار</div>
                         <input type="file" class="file-input" multiple accept=".jpg,.jpeg,.png,.pdf">
                         
-                        <!-- شريط التقدم الرئيسي -->
                         <div class="main-upload-progress">
                             <div class="main-progress-bar">
                                 <div class="main-progress-bar-fill"></div>
@@ -148,7 +147,6 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                             <div class="main-progress-text">Uploading image 0 of 0</div>
                         </div>
                         
-                        <!-- قائمة الملفات مع شريط تقدم لكل ملف -->
                         <div class="file-list"></div>
                         
                         <div class="file-status">لم يتمّ اختيار أيّ ملفّ</div>
@@ -163,57 +161,31 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
     </div>
     
     <script>
-    // مسح جميع البيانات المحفوظة وتنضيف النموذج
     localStorage.clear();
     sessionStorage.clear();
-    
+
     document.addEventListener('DOMContentLoaded', function() {
-        // مسح أي بيانات محفوظة
-        localStorage.removeItem('formData');
-        localStorage.removeItem('offlineSubmissions');
-        localStorage.removeItem('successfulSubmissions');
-        localStorage.removeItem('submissionBackups');
-        
-        // تنضيف جميع الحقول
-        document.querySelectorAll('input, textarea, select').forEach(input => {
-            if (input.type !== 'date') {
-                input.value = '';
-            }
-        });
-        
-        // تعيين التاريخ الميلادي
         const dateInput = document.getElementById('gregorianDate');
-        if (dateInput) {
-            const today = new Date();
-            dateInput.value = today.toISOString().split('T')[0];
-        }
+        if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
         
-        // تعيين التاريخ الهجري
         const hijriInput = document.getElementById('hijriDate');
-        if (hijriInput) {
-            const today = new Date();
-            hijriInput.value = today.toISOString().split('T')[0];
-        }
-        
-        // إصلاح الإرسال ورفع الملفات
+        if (hijriInput) hijriInput.value = new Date().toISOString().split('T')[0];
+
         const form = document.querySelector('.jotform-form');
         const fileInput = document.querySelector('.file-input');
         const fileStatus = document.querySelector('.file-status');
-        
+
         if (fileInput && fileStatus) {
             fileInput.addEventListener('change', function(e) {
                 const files = e.target.files;
                 if (files.length > 0) {
                     let totalSize = 0;
                     let fileNames = [];
-                    
                     for (let i = 0; i < files.length; i++) {
                         totalSize += files[i].size;
                         fileNames.push(files[i].name);
                     }
-                    
                     const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
-                    
                     fileStatus.innerHTML = `
                         <div style="background: rgba(76, 175, 80, 0.3); color: #2e7d32; padding: 15px; border-radius: 8px; font-weight: bold;">
                             ✅ تم اختيار ${files.length} ملف<br>
@@ -227,48 +199,58 @@ UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
                 }
             });
         }
-        
-        // إرسال النموذج
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const submitButton = document.querySelector('.submit-button');
-                if (submitButton) {
-                    submitButton.textContent = 'جاري الإرسال...';
-                    
-                    setTimeout(() => {
-                        submitButton.textContent = 'تم الإرسال بنجاح!';
-                        setTimeout(() => {
-                            // مسح النموذج بعد الإرسال
-                            form.reset();
-                            localStorage.clear();
-                            window.location.href = 'success.html';
-                        }, 1500);
-                    }, 2000);
+
+        // ----------- الإرسال الحقيقي ----------- 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoJNY9iL0e0rZRvHTt6N1txoKbIGR70qhOScZurHdvpTKuctstazk8RFdfr_-X3hPMrQ/exec";
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitButton = document.querySelector('.submit-button');
+            if (submitButton) submitButton.textContent = 'جاري الإرسال...';
+
+            const payload = {
+                "التاريخ (ميلادي / Gregorian Date / গ্রেগরিয়ান তারিখ)": document.getElementById('gregorianDate').value,
+                "التاريخ (هجري / Hijri Date / হিজরি তারিখ)": document.getElementById('hijriDate').value,
+                "إسم المؤسسة / Organization Name / প্রতিষ্ঠানের নাম": document.querySelectorAll('.field-input')[2].value,
+                "الفرع / الموقع / Branch / Location / শাখা / অবস্থান": document.querySelectorAll('.field-input')[3].value,
+                "المسئول / Responsible Person / দায়িত্বশীল ব্যক্তি": document.querySelectorAll('.field-input')[4].value,
+                "اسم ماكينة البيع / Sales Machine Name / বিক্রয় মেশিন নাম": document.querySelectorAll('.field-input')[5].value,
+                "رقم ماكينة البيع : Sales Machine Number / বিক্রয় মেশিন নম্বর": document.querySelectorAll('.field-input')[6].value,
+                "كاش / Cash / নগদ": document.querySelectorAll('.field-input')[7].value,
+                "نظام نقاط البيع / Point of Sale System / পয়েন্ট অফ সেল সিস্টেম": document.querySelectorAll('.field-input')[8].value,
+                "المشتريات اليومية / Daily Purchases / দৈনিক ক্রয়": document.querySelectorAll('.field-input')[9].value,
+                "مسحوبات مالية أخرى من الفرع / Other Financial Withdrawals from Branch / শাখা থেকে অন্যান্য আর্থিক উত্তোলন": document.querySelectorAll('.field-input')[10].value,
+                "اسم القائم بسحب المبلغ من الفرع / Name of Person Withdrawing Amount / শাখা থেকে টাকা উত্তোলনকারীর নাম": document.querySelectorAll('.field-input')[11].value,
+                files: []
+            };
+
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await res.json();
+                if (result.status === "success") {
+                    window.location.href = "success.html";
+                } else {
+                    alert("فشل الإرسال الحقيقي");
+                    if (submitButton) submitButton.textContent = 'إرسال / Submit / পাঠান';
                 }
-            });
-        }
+            } catch(err) {
+                alert("خطأ في الإرسال: " + err.message);
+                if (submitButton) submitButton.textContent = 'إرسال / Submit / পাঠান';
+            }
+        });
+        // ----------- نهاية الإرسال الحقيقي -----------
     });
     </script>
     
-    <!-- حقوق الملكية - محمود حسين -->
-    <div class="copyright-bottom-right">
-        © MAHMOUD HUSSEIN
-    </div>
-    
-    <!-- إشعار حقوق النشر -->
     <footer style="text-align:center;padding:25px;background:rgba(0,0,0,0.9);color:#d4af37;margin-top:40px;border-top:3px solid #d4af37;box-shadow:0 -5px 15px rgba(0,0,0,0.3);">
         <p style="font-size:14px;font-weight:bold;margin-bottom:8px;">© 2026 MAHMOUD HUSSEIN - ALL COPYRIGHTS RESERVED TO THE DEVELOPER</p>
         <p style="font-size:12px;margin:5px 0;opacity:0.9;">DESIGNED & DEVELOPED BY MAHMOUD HUSSEIN | SOFTWARE ENGINEER & FULL-STACK DEVELOPER</p>
         <p style="font-size:11px;margin:5px 0;opacity:0.8;">الكود محمي بنظام حقوق المؤلف السعودي رقم م/41</p>
-        <p style="font-size:11px;margin:5px 0;opacity:0.8;">غير مسموح بنسخه أو توزيعه بدون إذن كتابي</p>
-        <p style="font-size:11px;margin-top:8px;opacity:0.8;">
-            <a href="legal-notice.html" style="color:#d4af37;text-decoration:underline;font-weight:bold;">إشعار حقوق النشر والملكية الفكرية</a>
-        </p>
-        <p style="font-size:10px;margin-top:10px;opacity:0.7;color:#fff;">
-            UNAUTHORIZED REPRODUCTION OR DISTRIBUTION IS STRICTLY PROHIBITED
-        </p>
     </footer>
-    <script src="ALWADIYAYNFORM.js"></script>
 </body>
 </html>
